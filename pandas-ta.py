@@ -1,3 +1,8 @@
+__author__ = "Peerchemist"
+__copyright__ = "Copyright (C) 2016 Peerchemist"
+__license__ = "GLP3"
+__version__ = "0.1"
+
 import pandas as pd
 
 class TA:

@@ -17,6 +17,7 @@ Each class method expects proper `ohlc` data as input.
 
 `TA.SMA(ohlc, 42)` will return Pandas Series object with Simple moving average for 42 periods
 
+_______________________________________________________________
 
 I welcome pull requests with new indicators or fixes for existing ones. Please submit only indicators that belong in public domain and are royalty free.
 

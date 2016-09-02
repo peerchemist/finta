@@ -1,4 +1,4 @@
-# pandas-ta
+# FinTA (Financial Technical Analysis)
 Common financial technical indicators implemented in Pandas.
 
 > Dependencies:
@@ -13,9 +13,11 @@ Each class method expects proper `ohlc` data as input.
 
 > How to:
 
-`from pandas-ta import TA`
+`from finta import TA`
 
-`TA.SMA(ohlc, 42)` will return Pandas Series object with Simple moving average for 42 periods
+`TA.SMA(ohlc, 42)` ## will return Pandas Series object with Simple moving average for 42 periods
+
+`TA.AO(ohlc)` ## will return Pandas series object with "Awesome oscillator" values
 
 _______________________________________________________________
 
@@ -24,4 +26,4 @@ I welcome pull requests with new indicators or fixes for existing ones. Please s
 _______________________________________________________________
 
 Some of the code is based from [pandas_talib](https://github.com/femtotrader/pandas_talib) project but it is so radically changed that fork would not be a valid option.
-I invite the authors to merge with my code manually and continue developing on it.
+I urge the authors to merge with my code manually and continue developing on it.

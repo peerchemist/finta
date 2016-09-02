@@ -1,7 +1,7 @@
 __author__ = "Peerchemist"
 __copyright__ = "Copyright (C) 2016 Peerchemist"
 __license__ = "GLP3"
-__version__ = "0.1"
+__version__ = "0.2"
 
 import pandas as pd
 
@@ -460,7 +460,7 @@ class TA:
 
     @classmethod
     def TSI(cls, ohlc, long=25, short=13, signal=13):
-        """True Strength Index"""
+        """True Strength Index (TSI) is a momentum oscillator based on a double smoothing of price changes."""
         
         ## Double smoother price change
         momentum = pd.Series(ohlc["close"].diff()) ## 1 period momentum
@@ -479,7 +479,8 @@ class TA:
     
     @classmethod
     def TP(cls, ohlc):
-        """Typical price."""
+        """Typical Price refers to the arithmetic average of the high, low, and closing prices for a given period."""
+
         return pd.Series((ohlc['high'] + ohlc['low'] + ohlc['close']) / 3, name="TP")
 
     @classmethod

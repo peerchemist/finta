@@ -1,8 +1,3 @@
-__author__ = "Peerchemist"
-__copyright__ = "Copyright (C) 2016 Peerchemist"
-__license__ = "GLP3"
-__version__ = "0.2"
-
 import pandas as pd
 
 class TA:
@@ -280,13 +275,11 @@ class TA:
         DMm = []
 
         for row in ohlc.itertuples():
-            # If UpMove > DownMove and UpMove > 0, then +DM = UpMove, else +DM = 0
             if row.up_move > row.down_move and row.up_move > 0:
                 DMp.append(row.up_move)
             else:
                 DMp.append(0)
             
-            #If DownMove > Upmove and Downmove > 0, then -DM = DownMove, else -DM = 0
             if row.down_move > row.up_move and row.down_move > 0:
                 DMm.append(row.down_move)
             else:
@@ -444,13 +437,9 @@ class TA:
         KST measures price momentum for four different price cycles. It can be used just like any momentum oscillator. 
         Chartists can look for divergences, overbought/oversold readings, signal line crossovers and centerline crossovers."""
 
-        # RCMA1 = 10-Period SMA of 10-Period Rate-of-Change 
         r1 = cls.ROC(ohlc, r1).rolling(window=10).mean()
-        #RCMA2 = 10-Period SMA of 15-Period Rate-of-Change
         r2 = cls.ROC(ohlc, r2).rolling(window=10).mean()
-        # RCMA3 = 10-Period SMA of 20-Period Rate-of-Change 
         r3 = cls.ROC(ohlc, r3).rolling(window=10).mean()
-        # RCMA4 = 15-Period SMA of 30-Period Rate-of-Change 
         r4 = cls.ROC(ohlc, r4).rolling(window=15).mean()
 
         k = pd.Series((r1 * 1) + (r2 * 2) + (r3 * 3) + (r4 * 4), name="KST")
@@ -599,4 +588,37 @@ class TA:
         
         return pd.Series((roc1 + roc2).ewm(span=10, min_periods=9).mean(), name="Coppock Curve")
 
-    
+    @classmethod
+    def BASP(cls, ohlc, period=40):
+        """BASP serves to identify buying and selling pressure."""
+
+        sp = ohlc["high"] - ohlc["close"]
+        bp = ohlc["close"] - ohlc["low"]
+        spavg = sp.ewm(span=period, min_periods=period-1).mean()
+        bpavg = bp.ewm(span=period, min_periods=period-1).mean()
+        
+        nbp = bp/bpavg
+        nsp = sp/spavg
+
+        varg = ohlc["volume"].ewm(span=period, min_periods=period-1).mean()
+        nv = ohlc["volume"] / varg
+        
+        nbfraw = pd.Series(nbp * nv, name="Buying pressure")
+        nsfraw = pd.Series(nsp * nv, name="Selling pressure")
+        
+        basp_raw = pd.concat([nbfraw, nsfraw], axis=1)
+
+        nbf = pd.Series((nbp * nv).ewm(span=20).mean(), name="Buying pressure normalized.")
+        nsf = pd.Series((nsp * nv).ewm(span=20).mean(), name="Selling pressure normalized.")
+
+        return pd.concat([basp_raw, nbf, nsf], axis=1)
+
+    @classmethod
+    def CMO(cls, ohlc, period=9):
+        """A technical momentum indicator invented by the technical analyst Tushar Chande. It is created by calculating the difference between the sum of 
+        all recent gains and the sum of all recent losses and then dividing the result by the sum of all price movement over the period. 
+        This oscillator is similar to other momentum indicators such as the Relative Strength Index and the Stochastic Oscillator 
+        because it is range bounded (+100 and -100)."""
+        raise NotImplementedError
+
+        

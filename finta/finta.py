@@ -98,20 +98,43 @@ class TA:
         #VolRatio = Volume / VolInc.
 
         raise NotImplementedError
-    
+
+    @classmethod
+    def KAMA(cls, ohlc, er=10, ema_fast=2, ema_slow=30, period=20):
+        """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility. 
+        KAMA will closely follow prices when the price swings are relatively small and the noise is low. 
+        KAMA will adjust when the price swings widen and follow prices from a greater distance."""
+
+        er = cls.ER(ohlc, er)
+        sc = (er * ((2/ema_fast+1) - (2/ema_slow+1)) + (2/ema_slow+1)) **2 ## smoothing constant
+
+        # Current KAMA = Prior KAMA + SC x (Price - Prior KAMA)
+        
+        raise NotImplementedError
+
     @classmethod
     def VWAP(cls, ohlcv):
         '''The volume weighted average price (VWAP) is a trading benchmark used especially in pension plans. 
         VWAP is calculated by adding up the dollars traded for every transaction (price multiplied by number of shares traded) and then dividing 
         by the total shares traded for the day.'''
-        # ( df.Volume * (df.High+df.Low+df.Close)/3 ).cumsum() / df.Volume.cumsum()
-        raise NotImplementedError
-    
+        
+        return pd.Series(((ohlcv["volume"] * cls.TP(ohlcv)).cumsum()) / ohlcv["volume"].cumsum(), name="VWAP")
+
     @classmethod
     def SMMA(cls, ohlc, period=42, column="close"):
         """The SMMA gives recent prices an equal weighting to historic prices."""
         
         return pd.Series(ohlc[column].ewm(alpha=1/period).mean(), name="SMMA")
+    
+    @classmethod
+    def ER(cls, ohlc, period=10):
+        """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
+         +100 is upward forex trending market and -100 is downwards trending markets."""
+        
+        change = ohlc["close"].diff(period).abs()
+        volatility = ohlc["close"].diff().abs().rolling(window=period).sum()
+
+        return pd.Series(change/volatility, name="KER")
 
     @classmethod
     def MACD(cls, ohlc, period_fast=12, period_slow=26, signal=9):
@@ -127,7 +150,7 @@ class TA:
         A bullish crossover occurs when the MACD turns up and crosses above the signal line.  
         A bearish crossover occurs when the MACD turns down and crosses below the signal line.
         '''
-
+        
         EMA_fast = pd.Series(ohlc["close"].ewm(ignore_na=False, min_periods=period_slow-1, span=period_fast).mean(), name="EMA_fast")
         EMA_slow = pd.Series(ohlc["close"].ewm(ignore_na=False, min_periods=period_slow-1, span=period_slow).mean(), name="EMA_slow")
         MACD = pd.Series(EMA_fast - EMA_slow, name="macd")
@@ -620,5 +643,16 @@ class TA:
         This oscillator is similar to other momentum indicators such as the Relative Strength Index and the Stochastic Oscillator 
         because it is range bounded (+100 and -100)."""
         raise NotImplementedError
+
+    @classmethod
+    def CHANDELIER(cls, ohlc, period_1=14, period_2=22, k=3):
+        """Chandelier Exit sets a trailing stop-loss based on the Average True Range (ATR). 
+        The indicator is designed to keep traders in a trend and prevent an early exit as long as the trend extends. 
+        Typically, the Chandelier Exit will be above prices during a downtrend and below prices during an uptrend."""
+
+        l = pd.Series(ohlc["close"].rolling(window=period_2).max() - cls.ATR(ohlc, 22) * k, name="Chandelier exit - long.")
+        s = pd.Series(ohlc["close"].rolling(window=period_1).min() - cls.ATR(ohlc, 22) * k, name="Chandelier exit - short.")
+
+        return pd.concat([s, l], axis=1)
 
         

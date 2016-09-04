@@ -26,7 +26,7 @@ or
 
 `from finta.finta import TA`
 
-finta expectes properly formated `ohlc` dataframe, with column names in `lowercase` ["open", "high", "low", close"] and ["volume"] for some indicators.
+finta expectes properly formated `ohlc` dataframe, with column names in `lowercase` ["open", "high", "low", close"] and ["volume"] for indicators that expect `ohlcv` input.
 
 To prepare dataframe into ohlc format you can do something as following:
 
@@ -34,7 +34,7 @@ To prepare dataframe into ohlc format you can do something as following:
 
 `df.index = df["date"]` ## set index on the date column, which is requirement to sort it by time periods
 
-`ohlc = df["price"].resample(24h).ohlc()` ## ## select only price column, resample by time period and return daily ohlc (you can choose different time period)
+`ohlc = df["price"].resample(24h).ohlc()` ## select only price column, resample by time period and return daily ohlc (you can choose different time period)
 
 Resulting `ohlc` Series is ready to use with this library.
 

@@ -22,7 +22,7 @@ exploring it and using with your data. Each class method expects proper
 
 or 
 
-`pip install --user .` ## to install locally (as user) which is preffered
+`pip install --user .` ## to install locally (as user) which is prefered
 
 `from finta.finta import TA`
 
@@ -30,13 +30,15 @@ finta expectes properly formated `ohlc` dataframe, with column names in `lowerca
 
 To prepare dataframe into ohlc format you can do something as following:
 
-`df.columns = ["date", 'price', 'volume']` ## standardize column names of your source
+`df.columns = ["date", 'close', 'volume']` ## standardize column names of your source
 
 `df.index = df["date"]` ## set index on the date column, which is requirement to sort it by time periods
 
 `ohlc = df["price"].resample(24h).ohlc()` ## select only price column, resample by time period and return daily ohlc (you can choose different time period)
 
-Resulting `ohlc` Series is ready to use with this library.
+`ohlc()` method aplied on the Series above will automatically format the dataframe in format expected by the library so resulting `ohlc` Series is ready to use.
+
+____________________________________________________________________________
 
 > Examples:
 

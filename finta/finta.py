@@ -68,13 +68,13 @@ class TA:
     def TRIX(cls, ohlc, period=15):
         '''The Triple Exponential Moving Average Oscillator (TRIX) by Jack Hutson is a momentum indicator that oscillates around zero. 
         It displays the percentage rate of change between two triple smoothed exponential moving averages.
-        To calculate TRIX we calculate triple smoothed EMA3 of n periods and then substract previous [-2] period EMA3 value 
+        To calculate TRIX we calculate triple smoothed EMA3 of n periods and then substract previous period EMA3 value 
         from last EMA3 value and divide the result with yesterdays EMA3 value.'''
 
         EMA1 = cls.EMA(ohlc, period)
         EMA2 = EMA1.ewm(span=period).mean()
         EMA3 = EMA2.ewm(span=period).mean()
-        TRIX = (EMA3[-1] - EMA3[-2]) / EMA3[-2]
+        TRIX = (EMA3 - EMA3.diff()) / EMA3.diff()
         
         return pd.Series(TRIX, name="TRIX")
 
@@ -89,15 +89,25 @@ class TA:
         raise NotImplementedError
     
     @classmethod
-    def VAMA(cls, ohlcv, period=55, column="close"):
+    def VAMA(cls, ohlcv, period=8, column="close"):
         '''Volume Adjusted Moving Average'''
-        #http://www.neuroshell.com/manuals/ais1/vama.htm
-        #avgvol = Average(Volume, all bars in the chart)
-        #avgvol = ohlcv["volume"].rolling(center=False, window=period).mean()
-        #VolInc = AvgVol * 0.67.
-        #VolRatio = Volume / VolInc.
 
-        raise NotImplementedError
+        vp = ohlcv["volume"] * ohlcv["close"]
+        volsum = ohlcv["volume"].rolling(window=period).mean()
+        volRatio = pd.Series(vp / volsum, name="VAMA")
+        cumSum = (volRatio * ohlcv[column]).rolling(window=period).sum()
+        cumDiv = volRatio.rolling(window=period).sum()
+        
+        return pd.Series(cumSum/cumDiv, name="VAMA")
+
+    @classmethod
+    def VIDYA(cls, ohlcv, period=9, smoothing_period=12):
+        """ Vidya (variable index dynamic average) indicator is a modification of the traditional Exponential Moving Average (EMA) indicator. 
+        The main difference between EMA and Vidya is in the way the smoothing factor F is calculated. 
+        In EMA the smoothing factor is a constant value F=2/(period+1); 
+        in Vidya the smoothing factor is variable and depends on bar-to-bar price movements."""
+        
+        raise NotImplemetedError  
 
     @classmethod
     def KAMA(cls, ohlc, er=10, ema_fast=2, ema_slow=30, period=20):
@@ -109,8 +119,46 @@ class TA:
         sc = (er * ((2/ema_fast+1) - (2/ema_slow+1)) + (2/ema_slow+1)) **2 ## smoothing constant
 
         # Current KAMA = Prior KAMA + SC x (Price - Prior KAMA)
-        
+
         raise NotImplementedError
+    
+    @classmethod
+    def ZLEMA(cls, ohlc, period=26):
+        """ZLEMA is an abbreviation of Zero Lag Exponential Moving Average. It was developed by John Ehlers and Rick Way. 
+        ZLEMA is a kind of Exponential moving average but its main idea is to eliminate the lag arising from the very nature of the moving averages 
+        and other trend following indicators. As it follows price closer, it also provides better price averaging and responds better to price swings."""
+
+        lag = (period-1)/2
+        return pd.Series((ohlc["close"] + (ohlc["close"].diff(lag))), name="ZLEMA")
+
+    @classmethod
+    def WMA(cls, ohlc, period=42, column="close"):
+        """WMA stands for weighted moving average. It helps to smooth the price curve for better trend identification. 
+        It places even greater importance on recent data than the EMA does."""
+
+        d = (period * (period + 1)) / 2
+
+        raise NotImplementedError
+
+    @classmethod
+    def HMA(cls, ohlc, period=16):
+        """HMA indicator is a common abbreviation of Hull Moving Average. The average was developed by Allan Hull and is used mainly to identify the 
+        current market trend. Unlike SMA (simple moving average) the curve of Hull moving average is considerably smoother. 
+        Moreover, because its aim is to minimize the lag between HMA and price it does follow the price activity much closer. 
+        It is used especially for middle-term and long-term trading."""
+
+        """
+        Calculate WMA (weighted moving average) for half of the period (8-day WMA in this case) and multiple the result by 2.
+        Calculate WMA of the full period (16-day WMA) and subtract if from the first result (2 * WMA8).
+        Calculate the square root of the full time period, i. e. √16 = 4.
+        Calculate 4-day WMA from the result you got in step 2.
+        """
+
+        """
+        wmaA     = closes.apply(talib.MA,   timeperiod = HMAPeriodsb / 2, matype = MAType.WMA).dropna() * 2.0  
+        wmaB     = closes.apply(talib.MA,   timeperiod = HMAPeriodsb, matype = MAType.WMA).dropna()  
+        wmaDiffs = wmaA - wmaB  
+        hma      = wmaDiffs.apply(talib.MA, timeperiod = math.sqrt(HMAPeriodsb), matype = MAType.WMA)  """
 
     @classmethod
     def VWAP(cls, ohlcv):
@@ -119,7 +167,7 @@ class TA:
         by the total shares traded for the day.'''
         
         return pd.Series(((ohlcv["volume"] * cls.TP(ohlcv)).cumsum()) / ohlcv["volume"].cumsum(), name="VWAP")
-
+    
     @classmethod
     def SMMA(cls, ohlc, period=42, column="close"):
         """The SMMA gives recent prices an equal weighting to historic prices."""
@@ -134,7 +182,7 @@ class TA:
         change = ohlc["close"].diff(period).abs()
         volatility = ohlc["close"].diff().abs().rolling(window=period).sum()
 
-        return pd.Series(change/volatility, name="KER")
+        return pd.Series(change/volatility, name="ER")
 
     @classmethod
     def MACD(cls, ohlc, period_fast=12, period_slow=26, signal=9):
@@ -227,6 +275,13 @@ class TA:
         
         TR = cls.TR(ohlc, period*2)
         return pd.Series(TR.rolling(center=False, window=period, min_periods=period-1).mean(), name="ATR").tail(period)
+
+    @classmethod
+    def SAR(cls, ohlc):
+        """SAR stands for “stop and reverse,” which is the actual indicator used in the system. 
+        SAR trails price as the trend extends over time. The indicator is below prices when prices are rising and above prices when prices are falling.
+        In this regard, the indicator stops and reverses when the price trend reverses and breaks above or below the indicator."""
+        raise NotImplementedError
 
     @classmethod
     def BBANDS(cls, ohlc, period=20, column='close'):
@@ -568,7 +623,7 @@ class TA:
         
         ohlcv["OBV"] = obv
         return pd.Series(ohlcv["OBV"], name="On Volume Balance")
-        
+
     @classmethod
     def EFI(cls, ohlcv, period=13):
         """Elder's Force Index is an indicator that uses price and volume to assess the power
@@ -638,10 +693,11 @@ class TA:
 
     @classmethod
     def CMO(cls, ohlc, period=9):
-        """A technical momentum indicator invented by the technical analyst Tushar Chande. It is created by calculating the difference between the sum of 
+        """Chande Momentum Oscillator (CMO) - technical momentum indicator invented by the technical analyst Tushar Chande. It is created by calculating the difference between the sum of 
         all recent gains and the sum of all recent losses and then dividing the result by the sum of all price movement over the period. 
         This oscillator is similar to other momentum indicators such as the Relative Strength Index and the Stochastic Oscillator 
         because it is range bounded (+100 and -100)."""
+
         raise NotImplementedError
 
     @classmethod
@@ -655,4 +711,58 @@ class TA:
 
         return pd.concat([s, l], axis=1)
 
+    @classmethod
+    def WTO(cls, ohlc, channel_lenght=10, average_lenght=21):
+        """Wave Trend Oscillator"""
+
+        ap = cls.TP(ohlc)
+        esa = ap.ewm(span=channel_lenght).mean()
+        d = pd.Series((ap - esa).abs().ewm(span=cl).mean(), name="d")
+        ci = (ap - esa) / (0.015 * d)
+        wt1 = ci.ewm(span=average_lenght).mean()
+        wt2 = wt1.rolling(window=4).mean()
+
+        return pd.concat([wt1, wt2], axis=1)
+
+    @classmethod
+    def FTIE(cls, ohlc, period=10):
+        """Copyright by HPotter v1.0 01/07/2014
+        Market prices do not have a Gaussian probability density function as many traders think. Their probability curve is not bell-shaped.
+        But trader can create a nearly Gaussian PDF for prices by normalizing them or creating a normalized indicator such as the 
+        relative strength index and applying the Fisher transform. Such a transformed output creates the peak swings as relatively rare events.
+        Fisher transform formula is: y = 0.5 * ln ((1+x)/(1-x)) The sharp turning points of these peak swings clearly and unambiguously 
+        identify price reversals in a timely manner. """
+
+        """Length = input(10, minval=1)
+        xHL2 = hl2
+        xMaxH = highest(xHL2, Length)
+        xMinL = lowest(xHL2,Length)
+        nValue1 = 0.33 * 2 * ((xHL2 - xMinL) / (xMaxH - xMinL) - 0.5) + 0.67 * nz(nValue1[1])
+        nValue2 = iff(nValue1 > .99,  .999,
+                    iff(nValue1 < -.99, -.999, nValue1))
+        nFish = 0.5 * log((1 + nValue2) / (1 - nValue2)) + 0.5 * nz(nFish[1])
+        pos =	iff(nFish > nz(nFish[1]), 1,
+                iff(nFish < nz(nFish[1]), -1, nz(pos[1], 0))) """
         
+        #xHL2 = (ohlc["high"] + ohlc["low"]) / 2
+        #xMaxH = hl2.rolling(window=period).max()
+        #xMinL = hl2.rolling(window=period).min()
+        #nValue1 = 0.33 * 2 * ( (xHL2 - xMinL) / (xMaxH - xMinL) - 0.5) + 0.67 * nValue1[1]
+        
+        raise NotImplementedError
+    
+    @classmethod
+    def ICHIMOKU(cls, ohlc):
+        """The Ichimoku Cloud, also known as Ichimoku Kinko Hyo, is a versatile indicator that defines support and resistance,
+        identifies trend direction, gauges momentum and provides trading signals. 
+        Ichimoku Kinko Hyo translates into “one look equilibrium chart”."""
+
+        tenkan_sen = pd.Series((ohlc["high"].rolling(window=9).mean() + ohlc["low"].rolling(window=9).mean()) / 2, name="tenkan_sen") ## conversion line
+        kijun_sen = pd.Series((ohlc["high"].rolling(window=26).mean() + ohlc["low"].rolling(window=26).mean()) / 2, name="kijun_sen") ## base line
+        
+        senkou_span_a = pd.Series(((tenkan_sen / kijun_sen) / 2), name="senkou_span_a") ## Leading span
+        senkou_span_b = pd.Series(((ohlc["high"].rolling(window=52).mean() + ohlc["low"].rolling(window=52).mean()) / 2), name="senkou_span_b")
+        chikou_span = pd.Series(ohlc["close"].shift(-26).rolling(window=26).mean(), name="chikou_span")
+
+        return pd.concat([tenkan_sen, kijun_sen, senkou_span_a, senkou_span_b, chikou_span], axis=1)
+

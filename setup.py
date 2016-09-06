@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='finta',
-      version='0.2.2',
+      version='0.2.3',
       description=' Common financial technical indicators implemented in Pandas.',
       url='https://github.com/peerchemist/finta',
       author='Peerchemist',

@@ -132,13 +132,13 @@ class TA:
         return pd.Series((ohlc["close"] + (ohlc["close"].diff(lag))), name="ZLEMA")
 
     @classmethod
-    def WMA(cls, ohlc, period=42, column="close"):
+    def WMA(cls, ohlc, period=9, column="close"):
         """WMA stands for weighted moving average. It helps to smooth the price curve for better trend identification. 
         It places even greater importance on recent data than the EMA does."""
 
         d = (period * (period + 1)) / 2
 
-        raise NotImplementedError
+        return wma
 
     @classmethod
     def HMA(cls, ohlc, period=16):
@@ -174,6 +174,25 @@ class TA:
         
         return pd.Series(ohlc[column].ewm(alpha=1/period).mean(), name="SMMA")
     
+    @classmethod
+    def ALMA(cls, ohlc, period=9, sigma=6, offset=0.85):
+        """Arnaud Legoux Moving Average."""
+
+        """dataWindow = _.last(data, period)
+        size = _.size(dataWindow)
+        m = offset * (size - 1)
+        s = size / sigma
+        sum = 0
+        norm = 0
+        for i in [size-1..0] by -1
+        coeff = Math.exp(-1 * (i - m) * (i - m) / 2 * s * s)
+        sum = sum + dataWindow[i] * coeff
+        norm = norm + coeff
+        return sum / norm"""
+
+        
+        raise NotImplementedError
+
     @classmethod
     def ER(cls, ohlc, period=10):
         """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
@@ -250,6 +269,21 @@ class TA:
         RS = avg_gain / avg_loss
         return pd.Series(100 - (100 / (1 + RS)), name="RSI")
     
+    @classmethod
+    def INFT_RSI(cls, ohlc, period=14):
+        """Inverse Fisher Transfor applied on RSI."""
+
+        """length=input(14, "RSI length")
+        lengthwma=input(9, title="Smoothing length")
+
+        calc_ifish(series, lengthwma) =>
+        v1=0.1*(series-50)
+        v2=wma(v1,lengthwma)
+        ifish=(exp(2*v2)-1)/(exp(2*v2)+1)
+        ifish"""
+
+        raise NotImplementedError
+
     @classmethod
     def TR(cls, ohlc, period=14):
         """True Range is the maximum of three price ranges.    
@@ -625,6 +659,19 @@ class TA:
         return pd.Series(ohlcv["OBV"], name="On Volume Balance")
 
     @classmethod
+    def VZO(cls, ohlc, period=14):
+        """VZO uses price, previous price and moving averages to compute its oscillating value. 
+        It is a leading indicator that calculates buy and sell signals based on oversold / overbought conditions. 
+        The VZO system also uses a 60 period Exponential Moving Average and a 14 period Average Directional Movement Index (ADX)"""
+
+        sign = lambda a: (a>0) - (a<0)
+        r = ohlc["close"].diff().apply(sign) * ohlc["volume"]
+        dvma = r.ewm(span=period).mean()
+        vma = ohlc["volume"].ewm(span=period).mean()
+        
+        return pd.Series(100 * (dvma / vma), name="VZO")
+
+    @classmethod
     def EFI(cls, ohlcv, period=13):
         """Elder's Force Index is an indicator that uses price and volume to assess the power
          behind a move or identify possible turning points."""
@@ -668,7 +715,7 @@ class TA:
 
     @classmethod
     def BASP(cls, ohlc, period=40):
-        """BASP serves to identify buying and selling pressure."""
+        """BASP indicator serves to identify buying and selling pressure."""
 
         sp = ohlc["high"] - ohlc["close"]
         bp = ohlc["close"] - ohlc["low"]
@@ -693,12 +740,17 @@ class TA:
 
     @classmethod
     def CMO(cls, ohlc, period=9):
-        """Chande Momentum Oscillator (CMO) - technical momentum indicator invented by the technical analyst Tushar Chande. It is created by calculating the difference between the sum of 
-        all recent gains and the sum of all recent losses and then dividing the result by the sum of all price movement over the period. 
+        """Chande Momentum Oscillator (CMO) - technical momentum indicator invented by the technical analyst Tushar Chande. 
+        It is created by calculating the difference between the sum of all recent gains and the sum of all recent losses and then
+        dividing the result by the sum of all price movement over the period. 
         This oscillator is similar to other momentum indicators such as the Relative Strength Index and the Stochastic Oscillator 
         because it is range bounded (+100 and -100)."""
 
-        raise NotImplementedError
+        mom = ohlc["close"].diff().abs()
+        sma_mom = mom.rolling(window=period).mean()
+        mom_len = ohlc["close"].diff(period)
+
+        return pd.Series(100 * (mom_len / (sma_mom * period)))
 
     @classmethod
     def CHANDELIER(cls, ohlc, period_1=14, period_2=22, k=3):

@@ -34,7 +34,7 @@ To prepare dataframe into ohlc format you can do something as following:
 
 `df.index = df["date"]` ## set index on the date column, which is requirement to sort it by time periods
 
-`ohlc = df["price"].resample(24h).ohlc()` ## select only price column, resample by time period and return daily ohlc (you can choose different time period)
+`ohlc = df["close"].resample(24h).ohlc()` ## select only price column, resample by time period and return daily ohlc (you can choose different time period)
 
 `ohlc()` method aplied on the Series above will automatically format the dataframe in format expected by the library so resulting `ohlc` Series is ready to use.
 

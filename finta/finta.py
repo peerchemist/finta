@@ -5,16 +5,14 @@ class TA:
     @classmethod
     def SMA(cls, ohlc, period=41, column="close"):
         '''Simple moving average - rolling mean in pandas lingo. Also known as "MA".
-        The simple moving average (SMA) is the most basic of the moving averages used for trading. 
-        The simple moving average formula is calculated by taking the average closing price of a stock over the last n periods.'''
+        The simple moving average (SMA) is the most basic of the moving averages used for trading.'''
 
         return pd.Series(ohlc[column].rolling(center=False, window=period, min_periods=period-1).mean(), name="SMA")
         
     @classmethod
     def SMM(cls, ohlc, period=9, column="close"):
         '''Simple moving median, an alternative to moving average. SMA, when used to estimate the underlying trend in a time series, 
-        is susceptible to rare events such as rapid shocks or other anomalies. 
-        A more robust estimate of the trend is the simple moving median over n time periods'''
+        is susceptible to rare events such as rapid shocks or other anomalies. A more robust estimate of the trend is the simple moving median over n time periods.'''
 
         return pd.Series(ohlc[column].rolling(center=False, window=period, min_periods=period-1).median(), name="SMM")
 
@@ -110,17 +108,39 @@ class TA:
         raise NotImplemetedError  
 
     @classmethod
+    def ER(cls, ohlc, period=10):
+        """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
+         +100 is upward forex trending market and -100 is downwards trending markets."""
+        
+        change = ohlc["close"].diff(period).abs()
+        volatility = ohlc["close"].diff().abs().rolling(window=period).sum()
+
+        return pd.Series(change/volatility, name="ER")
+
+    @classmethod
     def KAMA(cls, ohlc, er=10, ema_fast=2, ema_slow=30, period=20):
-        """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility. 
-        KAMA will closely follow prices when the price swings are relatively small and the noise is low. 
-        KAMA will adjust when the price swings widen and follow prices from a greater distance."""
+        """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
+        Its main advantage is that it takes into consideration not just the direction, but the market volatility as well."""
 
-        er = cls.ER(ohlc, er)
-        sc = (er * ((2/ema_fast+1) - (2/ema_slow+1)) + (2/ema_slow+1)) **2 ## smoothing constant
+        er = TA.ER(ohlc, er)
+        fast_alpha = 2 / (ema_fast + 1)
+        slow_alpha = 2 / (ema_slow + 1)
+        sc = pd.Series((er * (fast_alpha - slow_alpha) + slow_alpha)**2, name="smoothing_constant") ## smoothing constant
 
-        # Current KAMA = Prior KAMA + SC x (Price - Prior KAMA)
+        sma = pd.Series(ohlc["close"].rolling(period).mean(), name="SMA") ## first KAMA is SMA
+        kama = []
+        # Current KAMA = Prior KAMA + smoothing_constant * (Price - Prior KAMA)
+        for s, ma, price in zip(sc.iteritems(), sma.shift(-1).iteritems(), ohlc["close"].iteritems()):
+            try:
+                kama.append(kama[-1] + s[1] * (price[1] - kama[-1]))
+            except:
+                if pd.notnull(ma[1]):
+                    kama.append(ma[1] + s[1] * (price[1] - ma[1]))
+                else:
+                    kama.append(None)
 
-        raise NotImplementedError
+        sma["KAMA"] = pd.Series(kama, index=sma.index) ## apply the kama list to existing index
+        return sma["KAMA"]
     
     @classmethod
     def ZLEMA(cls, ohlc, period=26):
@@ -189,19 +209,8 @@ class TA:
         sum = sum + dataWindow[i] * coeff
         norm = norm + coeff
         return sum / norm"""
-
         
         raise NotImplementedError
-
-    @classmethod
-    def ER(cls, ohlc, period=10):
-        """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
-         +100 is upward forex trending market and -100 is downwards trending markets."""
-        
-        change = ohlc["close"].diff(period).abs()
-        volatility = ohlc["close"].diff().abs().rolling(window=period).sum()
-
-        return pd.Series(change/volatility, name="ER")
 
     @classmethod
     def MACD(cls, ohlc, period_fast=12, period_slow=26, signal=9):
@@ -318,32 +327,33 @@ class TA:
         raise NotImplementedError
 
     @classmethod
-    def BBANDS(cls, ohlc, period=20, column='close'):
+    def BBANDS(cls, ohlc, period=20, ma=None, column='close'):
         """Developed by John Bollinger, Bollinger Bands® are volatility bands placed above and below a moving average.
          Volatility is based on the standard deviation, which changes as volatility increases and decreases. 
-         The bands automatically widen when volatility increases and narrow when volatility decreases. 
-         This dynamic nature of Bollinger Bands also means they can be used on different securities with the standard settings. 
-         For signals, Bollinger Bands can be used to identify M-Tops and W-Bottoms or to determine the strength of the trend.
+         The bands automatically widen when volatility increases and narrow when volatility decreases.
+
+         This method allows input of some other form of moving average like EMA or KAMA around which BBAND will be formed.
+         This method returns other variations and derivatives of BBANDS as well.
          
          %b (pronounced "percent b") is derived from the formula for Stochastics and shows where price is in relation to the bands. 
-         %b equals 1 at the upper band and 0 at the lower band. Writing upperBB for the upper Bollinger Band, 
-         lowerBB for the lower Bollinger Band, and last for the last (price) valu%b (pronounced "percent b") is derived from the 
-         formula for Stochastics and shows where price is in relation to the bands. %b equals 1 at the upper band and 0 at the 
-         lower band. Writing upperBB for the upper Bollinger Band, lowerBB for the lower Bollinger Band, and last for the last (price) value
+         %b equals 1 at the upper band and 0 at the lower band.
          
-         Bandwidth tells how wide the Bollinger Bands are on a normalized basis. 
-         Writing the same symbols as before, and middleBB for the moving average, or middle Bollinger Band:
-         """ 
-        
-        std = ohlc["close"].tail(period).std()
-        SMA = pd.Series(cls.SMA(ohlc, period), name="middle_bband")
-        upper_bb = pd.Series(SMA + (2 * std), name="upper_bband")
-        lower_bb = pd.Series(SMA - (2 * std), name="lower_bband")
+         Bandwidth tells how wide the Bollinger Bands are on a normalized basis.""" 
+         
+        std = ohlc["close"].std()
+
+        if type(ma) != pd.core.series.Series:
+            middle_band = pd.Series(cls.SMA(ohlc, period), name="middle_bband")
+        else:
+            middle_band = pd.Series(ma, name="middle_bband")
+
+        upper_bb = pd.Series(middle_band + (2 * std), name="upper_bband")
+        lower_bb = pd.Series(middle_band - (2 * std), name="lower_bband")
         
         percent_b = pd.Series((ohlc["close"] - lower_bb) / (upper_bb - lower_bb), name="%b")
-        b_bandwith = pd.Series((upper_bb - lower_bb) / SMA, name="b_bandwith")
+        b_bandwith = pd.Series((upper_bb - lower_bb) / middle_band, name="b_bandwith")
         
-        return pd.concat([upper_bb, SMA, lower_bb, b_bandwith, percent_b], axis=1)
+        return pd.concat([upper_bb, middle_band, lower_bb, b_bandwith, percent_b], axis=1)
 
     @classmethod
     def KC(cls, ohlc, period=20):
@@ -363,7 +373,8 @@ class TA:
 
     @classmethod
     def DO(cls, ohlc, period=20):
-        """Donchian Channel, a moving average indicator developed by Richard Donchian. It plots the highest high and lowest low over the last period time intervals."""
+        """Donchian Channel, a moving average indicator developed by Richard Donchian. 
+        It plots the highest high and lowest low over the last period time intervals."""
 
         upper = pd.Series(ohlc["high"].max(), name="upper_dchannel")
         lower = pd.Series(ohlc["low"].min(), name="lower_dchannel")
@@ -662,7 +673,9 @@ class TA:
     def VZO(cls, ohlc, period=14):
         """VZO uses price, previous price and moving averages to compute its oscillating value. 
         It is a leading indicator that calculates buy and sell signals based on oversold / overbought conditions. 
-        The VZO system also uses a 60 period Exponential Moving Average and a 14 period Average Directional Movement Index (ADX)"""
+        Oscillations between the 5% and 40% levels mark a bullish trend zone, while oscillations between -40% and 5% mark a bearish trend zone. 
+        Meanwhile, readings above 40% signal an overbought condition, while readings above 60% signal an extremely overbought condition. 
+        Alternatively, readings below -40% indicate an oversold condition, which becomes extremely oversold below -60%."""
 
         sign = lambda a: (a>0) - (a<0)
         r = ohlc["close"].diff().apply(sign) * ohlc["volume"]

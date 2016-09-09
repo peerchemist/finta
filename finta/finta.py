@@ -160,7 +160,7 @@ class TA:
         rev = ohlc["close"].iloc[::-1] ## reverse the series
         wma = []
 
-        def chunks(series, period): ## split into chunks of n elements
+        def _chunks(series, period): ## split into chunks of n elements
             for i in enumerate(series):
                 c = rev.iloc[i[0]:i[0]+period]
                 if len(c) != period:
@@ -174,12 +174,13 @@ class TA:
                 w.append(price[1] * i/d)
             return sum(w)
         
-        for i in chunks(rev, period):
+        for i in _chunks(rev, period):
             try:
                 wma.append(_wma(i))
             except:
                 wma.append(None)
-
+        
+        wma.reverse() ## reverse the wma list to match the Series
         ohlc["WMA"] = pd.Series(wma, index=ohlc.index) ## apply the wma list to existing index
         return pd.Series(ohlc["WMA"], name="WMA")
 

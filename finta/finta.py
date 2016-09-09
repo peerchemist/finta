@@ -122,7 +122,7 @@ class TA:
         """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
         Its main advantage is that it takes into consideration not just the direction, but the market volatility as well."""
 
-        er = TA.ER(ohlc, er)
+        er = cls.ER(ohlc, er)
         fast_alpha = 2 / (ema_fast + 1)
         slow_alpha = 2 / (ema_slow + 1)
         sc = pd.Series((er * (fast_alpha - slow_alpha) + slow_alpha)**2, name="smoothing_constant") ## smoothing constant
@@ -138,7 +138,7 @@ class TA:
                     kama.append(ma[1] + s[1] * (price[1] - ma[1]))
                 else:
                     kama.append(None)
-
+        
         sma["KAMA"] = pd.Series(kama, index=sma.index) ## apply the kama list to existing index
         return sma["KAMA"]
     
@@ -156,9 +156,32 @@ class TA:
         """WMA stands for weighted moving average. It helps to smooth the price curve for better trend identification. 
         It places even greater importance on recent data than the EMA does."""
 
-        d = (period * (period + 1)) / 2
+        d = (period * (period + 1)) / 2 # denominator
+        rev = ohlc["close"].iloc[::-1] ## reverse the series
+        wma = []
 
-        return wma
+        def chunks(series, period): ## split into chunks of n elements
+            for i in enumerate(series):
+                c = rev.iloc[i[0]:i[0]+period]
+                if len(c) != period:
+                    yield None
+                else:
+                    yield c
+
+        def _wma(chunk): ## calculate wma for each chunk
+            w = []
+            for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
+                w.append(price[1] * i/d)
+            return sum(w)
+        
+        for i in chunks(rev, period):
+            try:
+                wma.append(_wma(i))
+            except:
+                wma.append(None)
+
+        ohlc["WMA"] = pd.Series(wma, index=ohlc.index) ## apply the wma list to existing index
+        return pd.Series(ohlc["WMA"], name="WMA")
 
     @classmethod
     def HMA(cls, ohlc, period=16):

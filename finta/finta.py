@@ -157,7 +157,7 @@ class TA:
         It places even greater importance on recent data than the EMA does."""
 
         d = (period * (period + 1)) / 2 # denominator
-        rev = ohlc["close"].iloc[::-1] ## reverse the series
+        rev = ohlc[column].iloc[::-1] ## reverse the series
         wma = []
 
         def _chunks(series, period): ## split into chunks of n elements
@@ -191,18 +191,41 @@ class TA:
         Moreover, because its aim is to minimize the lag between HMA and price it does follow the price activity much closer. 
         It is used especially for middle-term and long-term trading."""
 
-        """
-        Calculate WMA (weighted moving average) for half of the period (8-day WMA in this case) and multiple the result by 2.
-        Calculate WMA of the full period (16-day WMA) and subtract if from the first result (2 * WMA8).
-        Calculate the square root of the full time period, i. e. √16 = 4.
-        Calculate 4-day WMA from the result you got in step 2.
-        """
+        import math
 
-        """
-        wmaA     = closes.apply(talib.MA,   timeperiod = HMAPeriodsb / 2, matype = MAType.WMA).dropna() * 2.0  
-        wmaB     = closes.apply(talib.MA,   timeperiod = HMAPeriodsb, matype = MAType.WMA).dropna()  
-        wmaDiffs = wmaA - wmaB  
-        hma      = wmaDiffs.apply(talib.MA, timeperiod = math.sqrt(HMAPeriodsb), matype = MAType.WMA)  """
+        wmaA = cls.WMA(ohlc, int(period/2)) * 2
+        wmaB = cls.WMA(ohlc, period)
+        deltawma = wmaA - wmaB
+
+        # now calculate WMA of deltawma for sqrt(period)
+        p = round(math.sqrt(period)) # period
+        d = (p * (p + 1)) / 2
+        rev = deltawma.iloc[::-1] ## reverse the series
+        wma = []
+
+        def _chunks(series, period): ## split into chunks of n elements
+            for i in enumerate(series):
+                c = rev.iloc[i[0]:i[0]+p]
+                if len(c) != p:
+                    yield None
+                else:
+                    yield c
+        
+        def _wma(chunk): ## calculate wma for each chunk
+            w = []
+            for price, i in zip(chunk.iloc[::-1].items(), range(p + 1)[1:]):
+                w.append(price[1] * i/d)
+            return sum(w)
+        
+        for i in _chunks(rev, p):
+            try:
+                wma.append(_wma(i))
+            except:
+                wma.append(None)
+
+        wma.reverse()
+        deltawma["_WMA"] = pd.Series(wma, index=ohlc.index)
+        return pd.Series(deltawma["_WMA"], name="WMA")
 
     @classmethod
     def VWAP(cls, ohlcv):

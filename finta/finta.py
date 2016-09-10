@@ -168,7 +168,7 @@ class TA:
                 else:
                     yield c
 
-        def _wma(chunk): ## calculate wma for each chunk
+        def _wma(chunk, period): ## calculate wma for each chunk
             w = []
             for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
                 w.append(price[1] * i/d)
@@ -176,7 +176,7 @@ class TA:
         
         for i in _chunks(rev, period):
             try:
-                wma.append(_wma(i))
+                wma.append(_wma(i, period))
             except:
                 wma.append(None)
         
@@ -205,21 +205,21 @@ class TA:
 
         def _chunks(series, period): ## split into chunks of n elements
             for i in enumerate(series):
-                c = rev.iloc[i[0]:i[0]+p]
-                if len(c) != p:
+                c = rev.iloc[i[0]:i[0]+period]
+                if len(c) != period:
                     yield None
                 else:
                     yield c
         
-        def _wma(chunk): ## calculate wma for each chunk
+        def _wma(chunk, period): ## calculate wma for each chunk
             w = []
-            for price, i in zip(chunk.iloc[::-1].items(), range(p + 1)[1:]):
+            for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
                 w.append(price[1] * i/d)
             return sum(w)
         
         for i in _chunks(rev, p):
             try:
-                wma.append(_wma(i))
+                wma.append(_wma(i, p))
             except:
                 wma.append(None)
 
@@ -257,6 +257,16 @@ class TA:
         norm = norm + coeff
         return sum / norm"""
         
+        raise NotImplementedError
+    
+    @classmethod
+    def MAMA(cls, ohlc, period=16):
+        """MESA Adaptive Moving Average"""
+        raise NotImplementedError
+
+    @classmethod
+    def FRAMA(cls, ohlc, period=16):
+        """Fractal Adaptive Moving Average"""
         raise NotImplementedError
 
     @classmethod
@@ -326,8 +336,11 @@ class TA:
         return pd.Series(100 - (100 / (1 + RS)), name="RSI")
     
     @classmethod
-    def INFT_RSI(cls, ohlc, period=14):
-        """Inverse Fisher Transfor applied on RSI."""
+    def IFT_RSI(cls, ohlc, rsi_period=14, wma_period=9):
+        """Modified Inverse Fisher Transfor applied on RSI.
+        Suggested method to use any IFT indicator is to buy when the indicator crosses over –0.5 or crosses over +0.5 
+        if it has not previously crossed over –0.5 and to sell short when the indicators crosses under +0.5 or crosses under –0.5 
+        if it has not previously crossed under +0.5."""
 
         """length=input(14, "RSI length")
         lengthwma=input(9, title="Smoothing length")
@@ -337,7 +350,42 @@ class TA:
         v2=wma(v1,lengthwma)
         ifish=(exp(2*v2)-1)/(exp(2*v2)+1)
         ifish"""
+        v1 = pd.Series(0.1 * (cls.RSI(ohlc, rsi_period) - 50), name="v1") 
+        
+        ### v1 = WMA(wma_period) of v1
+        d = (wma_period * (wma_period + 1)) / 2 # denominator
+        rev = v1.iloc[::-1] ## reverse the series
+        wma = []
 
+        def _chunks(series, period): ## split into chunks of n elements
+            for i in enumerate(series):
+                c = rev.iloc[i[0]:i[0]+period]
+                if len(c) != period:
+                    yield None
+                else:
+                    yield c
+
+        def _wma(chunk, period): ## calculate wma for each chunk
+            w = []
+            for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
+                w.append(price[1] * i/d)
+            return sum(w)
+        
+        for i in _chunks(rev, wma_period):
+            try:
+                wma.append(_wma(i, wma_period))
+            except:
+                wma.append(None)
+        
+        wma.reverse() ## reverse the wma list to match the Series
+        ###
+        v1["v2"] = pd.Series(wma, index=v1.index)
+        fish = pd.Series( ((2 * v1["v2"])-1) **2 / ((2 * v1["v2"]) +1) **2, name="IFT_RSI")
+        return fish
+    
+    @classmethod
+    def SWI(cls, ohlc, period=16):
+        """Sine Wave indicator"""
         raise NotImplementedError
 
     @classmethod
@@ -575,20 +623,12 @@ class TA:
     @classmethod
     def VORTEX(cls, ohlc, period=14):
         """The Vortex indicator plots two oscillating lines, one to identify positive trend movement and the other
-         to identify negative price movement. Crosses between the lines trigger buy and sell signals that are designed 
-         to capture the most dynamic trending action, higher or lower. 
-         There’s no neutral setting for the indicator, which will always generate a bullish or bearish bias. 
+         to identify negative price movement.
          Indicator construction revolves around the highs and lows of the last two days or periods. 
          The distance from the current high to the prior low designates positive trend movement while the
          distance between the current low and the prior high designates negative trend movement. 
          Strongly positive or negative trend movements will show a longer length between the two numbers while 
-         weaker positive or negative trend movement will show a shorter length.
-         Readings are usually captured over 14 periods (though the technician can choose any length), 
-         and then adjusted using technical indicator creator J. Welles Wilder’s True Range.
-         Results are posted as continuous lines beneath price bars, while crossovers are compared to other 
-         trend-following indicators to produce valid trading signals. 
-         Traders can use the vortex indicator as a standalone signal generator, 
-         but keep in mind it is vulnerable to significant whipsaws and false signals in congested or mixed markets."""
+         weaker positive or negative trend movement will show a shorter length."""
         
         VMP = pd.Series(ohlc["high"] - ohlc["low"].shift(-1).abs())
         VMM = pd.Series(ohlc["low"] - ohlc["high"].shift(-1).abs())
@@ -751,7 +791,7 @@ class TA:
         
         _emv = pd.Series(distance / box_ratio)
         
-        return pd.Series(_emv.rolling(window=period).mean(), name="EMV")
+        return pd.Series(_emv.rolling(window=period).mean(), name="{0} period EMV.".format(period))
 
     @classmethod
     def CCI(cls, ohlc, period=20):
@@ -837,12 +877,13 @@ class TA:
         return pd.concat([wt1, wt2], axis=1)
 
     @classmethod
-    def FTIE(cls, ohlc, period=10):
-        """Copyright by HPotter v1.0 01/07/2014
-        Market prices do not have a Gaussian probability density function as many traders think. Their probability curve is not bell-shaped.
-        But trader can create a nearly Gaussian PDF for prices by normalizing them or creating a normalized indicator such as the 
-        relative strength index and applying the Fisher transform. Such a transformed output creates the peak swings as relatively rare events.
-        Fisher transform formula is: y = 0.5 * ln ((1+x)/(1-x)) The sharp turning points of these peak swings clearly and unambiguously 
+    def FTIE(cls, ohlc, period1=10, period2=2):
+        """Fisher Transform Indicator by Ehlers - Market prices do not have a Gaussian probability density function as many traders think. 
+        Their probability curve is not bell-shaped. But trader can create a nearly Gaussian PDF for prices by normalizing them or creating a normalized
+        indicator such as the  relative strength index and applying the Fisher transform. 
+        Such a transformed output creates the peak swings as relatively rare events.
+        Fisher transform formula is: y = 0.5 * ln ((1+x)/(1-x)) 
+        The sharp turning points of these peak swings clearly and unambiguously 
         identify price reversals in a timely manner. """
 
         """Length = input(10, minval=1)
@@ -856,10 +897,10 @@ class TA:
         pos =	iff(nFish > nz(nFish[1]), 1,
                 iff(nFish < nz(nFish[1]), -1, nz(pos[1], 0))) """
         
-        #xHL2 = (ohlc["high"] + ohlc["low"]) / 2
-        #xMaxH = hl2.rolling(window=period).max()
-        #xMinL = hl2.rolling(window=period).min()
-        #nValue1 = 0.33 * 2 * ( (xHL2 - xMinL) / (xMaxH - xMinL) - 0.5) + 0.67 * nValue1[1]
+        median = cls.SMM(ohlc, period1)
+        min_median = median.rolling(window=period1).min()
+        max_median = median.rolling(window=period).max()
+        nValue1 = 0.33 * 2 * ( (median - min_median) / (max_median - min_median) - 0.5) + 0.67 * nValue1[1]
         
         raise NotImplementedError
     

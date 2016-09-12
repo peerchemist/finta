@@ -51,6 +51,8 @@ moving average for 42 periods
 
 `TA.BBANDS(ohlc)` ## will return Series with Bollinger Bands columns [upper_bb, SMA, lower_bb, b_bandwith, percent_b]
 
+`TA.BBANDS(ohlc, TA.KAMA(ohlc, 20))` ## will return Series with calculated BBANDS values but will use KAMA instead of MA for calculation, other types of Moving Averages are allowed as well.
+
 ------------------------------------------------------------------------
 
 I welcome pull requests with new indicators or fixes for existing ones.

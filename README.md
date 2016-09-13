@@ -26,6 +26,8 @@ or
 
 `from finta.finta import TA`
 
+> Prepare data to use with Finta:
+
 finta expectes properly formated `ohlc` dataframe, with column names in `lowercase` ["open", "high", "low", close"] and ["volume"] for indicators that expect `ohlcv` input.
 
 To prepare dataframe into ohlc format you can do something as following:

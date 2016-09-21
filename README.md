@@ -24,7 +24,7 @@ or
 
 `pip install --user .` ## to install locally (as user) which is prefered
 
-`from finta.finta import TA`
+`from finta import TA`
 
 > Prepare data to use with Finta:
 

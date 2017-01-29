@@ -1,4 +1,5 @@
 import pandas as pd
+import math
 
 class TA:
 
@@ -186,12 +187,13 @@ class TA:
 
     @classmethod
     def HMA(cls, ohlc, period=16):
-        """HMA indicator is a common abbreviation of Hull Moving Average. The average was developed by Allan Hull and is used mainly to identify the 
-        current market trend. Unlike SMA (simple moving average) the curve of Hull moving average is considerably smoother. 
+        """
+        HMA indicator is a common abbreviation of Hull Moving Average.
+        The average was developed by Allan Hull and is used mainly to identify the current market trend.
+        Unlike SMA (simple moving average) the curve of Hull moving average is considerably smoother.
         Moreover, because its aim is to minimize the lag between HMA and price it does follow the price activity much closer. 
-        It is used especially for middle-term and long-term trading."""
-
-        import math
+        It is used especially for middle-term and long-term trading.
+        """
 
         wmaA = cls.WMA(ohlc, int(period/2)) * 2
         wmaB = cls.WMA(ohlc, period)
@@ -210,13 +212,13 @@ class TA:
                     yield None
                 else:
                     yield c
-        
+
         def _wma(chunk, period): ## calculate wma for each chunk
             w = []
             for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
                 w.append(price[1] * i/d)
             return sum(w)
-        
+
         for i in _chunks(rev, p):
             try:
                 wma.append(_wma(i, p))
@@ -225,7 +227,7 @@ class TA:
 
         wma.reverse()
         deltawma["_WMA"] = pd.Series(wma, index=ohlc.index)
-        return pd.Series(deltawma["_WMA"], name="{0} period WMA".format(period))
+        return pd.Series(deltawma["_WMA"], name="{0} period HMA".format(period))
 
     @classmethod
     def VWAP(cls, ohlcv):

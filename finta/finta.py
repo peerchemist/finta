@@ -713,11 +713,13 @@ class TA:
 
     @classmethod
     def MFI(cls, ohlcv, period=14):
-        """The money flow index (MFI) is a momentum indicator that measures 
+        """
+        The money flow index (MFI) is a momentum indicator that measures
         the inflow and outflow of money into a security over a specific period of time.
         MFI can be understood as RSI adjusted for volume.
         The money flow indicator is one of the more reliable indicators of overbought and oversold conditions, perhaps partly because
-        it uses the higher readings of 80 and 20 as compared to the RSI's overbought/oversold readings of 70 and 30"""
+        it uses the higher readings of 80 and 20 as compared to the RSI's overbought/oversold readings of 70 and 30.
+        """
 
         tp = cls.TP(ohlcv)
         rmf = pd.Series(tp * ohlcv["volume"], name="rmf") ## Real Money Flow
@@ -727,7 +729,7 @@ class TA:
         mfn = [] # Negative money flow is calculated by adding the money flow of all the days where the typical price is lower than the previous day's typical price.
 
         for row, _row in zip(_mf.itertuples(), _mf.shift(-1).itertuples()):
-            if row.tp > _row.tp:
+            if row.TP > _row.TP:
                 mfp.append(row.rmf)
                 mfn.append(0)
             else:

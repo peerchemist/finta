@@ -418,33 +418,44 @@ class TA:
         raise NotImplementedError
 
     @classmethod
-    def BBANDS(cls, ohlc, period=20, ma=None, column='close'):
-        """Developed by John Bollinger, Bollinger Bands® are volatility bands placed above and below a moving average.
+    def BBANDS(cls, ohlc, period=20, MA=None, column='close'):
+        """
+         Developed by John Bollinger, Bollinger Bands® are volatility bands placed above and below a moving average.
          Volatility is based on the standard deviation, which changes as volatility increases and decreases. 
          The bands automatically widen when volatility increases and narrow when volatility decreases.
 
          This method allows input of some other form of moving average like EMA or KAMA around which BBAND will be formed.
+         Pass desired moving average as <MA> argument. For example BBANDS(MA=TA.KAMA(20)).
          This method returns other variations and derivatives of BBANDS as well.
-         
-         %b (pronounced "percent b") is derived from the formula for Stochastics and shows where price is in relation to the bands. 
-         %b equals 1 at the upper band and 0 at the lower band.
-         
-         Bandwidth tells how wide the Bollinger Bands are on a normalized basis.""" 
+ 
+         Bandwidth tells how wide the Bollinger Bands are on a normalized basis.
+         """ 
          
         std = ohlc["close"].std()
 
-        if type(ma) != pd.core.series.Series:
+        if not isinstance(MA, pd.core.series.Series):
             middle_band = pd.Series(cls.SMA(ohlc, period), name="middle_bband")
         else:
-            middle_band = pd.Series(ma, name="middle_bband")
+            middle_band = pd.Series(MA, name="middle_bband")
 
         upper_bb = pd.Series(middle_band + (2 * std), name="upper_bband")
         lower_bb = pd.Series(middle_band - (2 * std), name="lower_bband")
-        
-        percent_b = pd.Series((ohlc["close"] - lower_bb) / (upper_bb - lower_bb), name="%b")
+
         b_bandwith = pd.Series((upper_bb - lower_bb) / middle_band, name="b_bandwith")
         
-        return pd.concat([upper_bb, middle_band, lower_bb, b_bandwith, percent_b], axis=1)
+        return pd.concat([upper_bb, middle_band, lower_bb, b_bandwith], axis=1)
+
+    @classmethod
+    def PERCENT_B(cls, ohlc, period=20, MA=None, column="close"):
+        '''
+        %b (pronounced "percent b") is derived from the formula for Stochastics and shows where price is in relation to the bands.
+        %b equals 1 at the upper band and 0 at the lower band.
+        '''
+
+        BB = TA.BBANDS(ohlc, period, MA, column)
+        percent_b = pd.Series((ohlc["close"] - BB["lower_bband"]) / (BB["upper_bband"] - BB["lower_bband"]), name="%b")
+
+        return percent_b
 
     @classmethod
     def KC(cls, ohlc, period=20):

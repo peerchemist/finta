@@ -945,4 +945,22 @@ class TA:
 
         return pd.concat([tenkan_sen, kijun_sen, senkou_span_a, senkou_span_b, chikou_span], axis=1)
 
-    
+    @classmethod
+    def APZ(cls, ohlc, period=21, dev_factor=2):
+        '''
+        The adaptive price zone (APZ) is a technical indicator developed by Lee Leibfarth.
+        The APZ is a volatility based indicator that appears as a set of bands placed over a price chart.
+        Especially useful in non-trending, choppy markets,
+        the APZ was created to help traders find potential turning points in the markets.
+        '''
+
+        dema = cls.DEMA(ohlc, period)
+        price_range = pd.Series((ohlc["high"] - ohlc["low"]).ewm(span=period, min_periods=period-1).mean())
+        volatility_value = pd.Series(price_range.ewm(span=period, min_periods=period-1).mean(), name="vol_val")
+
+        #upper_band = dev_factor * volatility_value + dema
+        upper_band = pd.Series((volatility_value * dev_factor) + dema, name="APZ upper band")
+        lower_band = pd.Series(dema - (volatility_value * dev_factor), name="APZ lower band")
+
+        return pd.concat([upper_band, lower_band], axis=1)
+

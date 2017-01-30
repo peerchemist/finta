@@ -120,8 +120,10 @@ class TA:
 
     @classmethod
     def KAMA(cls, ohlc, er=10, ema_fast=2, ema_slow=30, period=20):
-        """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
-        Its main advantage is that it takes into consideration not just the direction, but the market volatility as well."""
+        """
+        Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
+        Its main advantage is that it takes into consideration not just the direction, but the market volatility as well.
+        """
 
         er = cls.ER(ohlc, er)
         fast_alpha = 2 / (ema_fast + 1)
@@ -139,10 +141,10 @@ class TA:
                     kama.append(ma[1] + s[1] * (price[1] - ma[1]))
                 else:
                     kama.append(None)
-        
-        sma["KAMA"] = pd.Series(kama, index=sma.index) ## apply the kama list to existing index
+
+        sma["KAMA"] = pd.Series(kama, index=sma.index, name="{0} period KAMA.".format(period)) ## apply the kama list to existing index
         return sma["KAMA"]
-    
+
     @classmethod
     def ZLEMA(cls, ohlc, period=26):
         """ZLEMA is an abbreviation of Zero Lag Exponential Moving Average. It was developed by John Ehlers and Rick Way. 

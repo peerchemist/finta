@@ -962,8 +962,8 @@ class TA:
         volatility_value = pd.Series(price_range.ewm(span=period, min_periods=period-1).mean(), name="vol_val")
 
         #upper_band = dev_factor * volatility_value + dema
-        upper_band = pd.Series((volatility_value * dev_factor) + dema, name="APZ upper band")
-        lower_band = pd.Series(dema - (volatility_value * dev_factor), name="APZ lower band")
+        upper_band = pd.Series((volatility_value * dev_factor) + MA, name="APZ upper band")
+        lower_band = pd.Series(MA - (volatility_value * dev_factor), name="APZ lower band")
 
         return pd.concat([upper_band, lower_band], axis=1)
 

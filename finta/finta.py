@@ -708,39 +708,37 @@ class TA:
         return pd.Series(cls.ADL(ohlcv).ewm(span=3, min_periods=2).mean() - cls.ADL(ohlcv).ewm(span=10, min_periods=9).mean())
 
     @classmethod
-    def MFI(cls, ohlcv, period=14):
-        """
-        The money flow index (MFI) is a momentum indicator that measures
+    def MFI(cls, ohlc, period=14):
+        """The money flow index (MFI) is a momentum indicator that measures 
         the inflow and outflow of money into a security over a specific period of time.
         MFI can be understood as RSI adjusted for volume.
         The money flow indicator is one of the more reliable indicators of overbought and oversold conditions, perhaps partly because
-        it uses the higher readings of 80 and 20 as compared to the RSI's overbought/oversold readings of 70 and 30.
-        """
+        it uses the higher readings of 80 and 20 as compared to the RSI's overbought/oversold readings of 70 and 30"""
 
-        tp = cls.TP(ohlcv)
-        rmf = pd.Series(tp * ohlcv["volume"], name="rmf") ## Real Money Flow
+        tp = cls.TP(ohlc)
+        rmf = pd.Series(tp * ohlc["volume"], name="rmf") ## Real Money Flow
         _mf = pd.concat([tp, rmf], axis=1)
+        _mf["delta"] = _mf["TP"].diff()
 
-        mfp = [] # Positive money flow is calculated by adding the money flow of all the days where the typical price is higher than the previous day's typical price.
-        mfn = [] # Negative money flow is calculated by adding the money flow of all the days where the typical price is lower than the previous day's typical price.
-
-        for row, _row in zip(_mf.itertuples(), _mf.shift(-1).itertuples()):
-            if row.TP > _row.TP:
-                mfp.append(row.rmf)
-                mfn.append(0)
+        def pos(row):
+            if row["delta"] > 0:
+                return row["rmf"]
             else:
-                mfn.append(row.rmf)
-                mfp.append(0)
+                return 0
         
-        _mf["mfp"] = mfp
-        _mf["mfn"] = mfn
-        _mf["{0} period positive Money Flow".format(period)] = _mf["mfp"].rolling(window=period).sum()
-        _mf["{0} period negative Money Flow".format(period)] = _mf["mfn"].rolling(window=period).sum()
+        def neg(row):
+            if row["delta"] < 0:
+                return row["rmf"]
+            else:
+                return 0
         
-        mfratio = pd.Series(_mf["{0} period positive Money Flow".format(period)].tail(period) / 
-                            _mf["{0} period negative Money Flow".format(period)].tail(period), name="Money Flow Ratio")  
+        _mf["neg"] = _mf.apply(neg, axis=1)
+        _mf["pos"] = _mf.apply(pos, axis=1)
+       
+        mfratio = pd.Series(_mf["pos"].rolling(window=period, min_periods=period-1).sum() / 
+                            _mf["neg"].rolling(window=period, min_periods=period-1).sum())  
         
-        return pd.Series(100 - (100 / (1 + mfratio)), name="{0} period MFI".format(period))
+        return pd.Series(100 - (100 / (1 + mfratio)), name="MFI".format(period))
 
     @classmethod
     def OBV(cls, ohlcv):

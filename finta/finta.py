@@ -842,15 +842,30 @@ class TA:
         varg = ohlc["volume"].ewm(span=period, min_periods=period-1).mean()
         nv = ohlc["volume"] / varg
         
-        nbfraw = pd.Series(nbp * nv, name="Buying pressure")
-        nsfraw = pd.Series(nsp * nv, name="Selling pressure")
+        nbfraw = pd.Series(nbp * nv, name="buyPressure")
+        nsfraw = pd.Series(nsp * nv, name="sellPressure")
         
-        basp_raw = pd.concat([nbfraw, nsfraw], axis=1)
+        return pd.concat([nbfraw, nsfraw], axis=1)
 
-        nbf = pd.Series((nbp * nv).ewm(span=period/2).mean(), name="Buying pressure normalized.")
-        nsf = pd.Series((nsp * nv).ewm(span=period/2).mean(), name="Selling pressure normalized.")
+    @classmethod
+    def BASPN(cls, ohlc, period=40):
+        '''Normalized BASP indicator'''
 
-        return pd.concat([basp_raw, nbf, nsf], axis=1)
+        sp = ohlc["high"] - ohlc["close"]
+        bp = ohlc["close"] - ohlc["low"]
+        spavg = sp.ewm(span=period, min_periods=period-1).mean()
+        bpavg = bp.ewm(span=period, min_periods=period-1).mean()
+        
+        nbp = bp/bpavg
+        nsp = sp/spavg
+
+        varg = ohlc["volume"].ewm(span=period, min_periods=period-1).mean()
+        nv = ohlc["volume"] / varg
+
+        nbf = pd.Series((nbp * nv).ewm(span=20).mean(), name="buyPN")
+        nsf = pd.Series((nsp * nv).ewm(span=20).mean(), name="sellPN")
+
+        return pd.concat([nbf, nsf], axis=1)
 
     @classmethod
     def CMO(cls, ohlc, period=9):

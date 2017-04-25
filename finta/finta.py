@@ -1,5 +1,4 @@
 import pandas as pd
-import math
 
 class TA:
 
@@ -15,7 +14,7 @@ class TA:
         '''Simple moving median, an alternative to moving average. SMA, when used to estimate the underlying trend in a time series, 
         is susceptible to rare events such as rapid shocks or other anomalies. A more robust estimate of the trend is the simple moving median over n time periods.'''
 
-        return pd.Series(ohlc[column].rolling(center=False, window=period, min_periods=period-1).median(), name="{0} period SMM".format(period))
+        return pd.Series(ohlc[column].rolling(center=False, window=period, min_periods=period-1).median(), name="SMM")
 
     @classmethod
     def EMA(cls, ohlc, period=9, column="close"): ## EWMA
@@ -23,7 +22,7 @@ class TA:
         When the market is in a strong and sustained uptrend, the EMA indicator line will also show an uptrend and vice-versa for a down trend.
         EMAs are commonly used in conjunction with other indicators to confirm significant market moves and to gauge their validity.'''
 
-        return pd.Series(ohlc[column].ewm(ignore_na=False, min_periods=period-1, span=period).mean(), name="{0} EMA".format(period))
+        return pd.Series(ohlc[column].ewm(ignore_na=False, min_periods=period-1, span=period).mean(), name="EMA")
     
     @classmethod
     def DEMA(cls, ohlc, period=9, column="close"):
@@ -36,7 +35,7 @@ class TA:
         
         DEMA = 2 * cls.EMA(ohlc, period) - cls.EMA(ohlc, period).ewm(ignore_na=False, min_periods=period-1, span=period).mean()
 
-        return pd.Series(DEMA, name="{0} period DEMA".format(period))
+        return pd.Series(DEMA, name="DEMA")
     
     @classmethod
     def TEMA(cls, ohlc, period=9):
@@ -52,7 +51,7 @@ class TA:
         ema_ema_ema = cls.EMA(ohlc, period).ewm(ignore_na=False, span=period).mean().ewm(ignore_na=False, span=period).mean()
         TEMA = triple_ema - 3 * cls.EMA(ohlc, period).ewm(ignore_na=False, min_periods=period-1, span=period).mean() + ema_ema_ema
 
-        return pd.Series(TEMA, name="{0} period TEMA".format(period))
+        return pd.Series(TEMA, name="TEMA")
     
     @classmethod
     def TRIMA(cls, ohlc, period=18): ## TMA
@@ -61,7 +60,7 @@ class TA:
         The TRIMA is simply the SMA of the SMA'''
         
         SMA = cls.SMA(ohlc, period).rolling(center=False, window=period, min_periods=period-1).mean()
-        return pd.Series(SMA, name="{0} period TRIMA".format(period))
+        return pd.Series(SMA, name="TRIMA")
     
     @classmethod
     def TRIX(cls, ohlc, period=15):
@@ -75,7 +74,7 @@ class TA:
         EMA3 = EMA2.ewm(span=period).mean()
         TRIX = (EMA3 - EMA3.diff()) / EMA3.diff()
         
-        return pd.Series(TRIX, name="{0} period TRIX".format(period))
+        return pd.Series(TRIX, name="TRIX")
 
     @classmethod
     def AMA(cls, ohlc, period=None, column="close"):
@@ -86,7 +85,7 @@ class TA:
     def LWMA(cls, ohlc, period=None, column="close"):
         '''Linear Weighter Moving Average'''
         raise NotImplementedError
-    
+
     @classmethod
     def VAMA(cls, ohlcv, period=8, column="close"):
         '''Volume Adjusted Moving Average'''
@@ -97,7 +96,7 @@ class TA:
         cumSum = (volRatio * ohlcv[column]).rolling(window=period).sum()
         cumDiv = volRatio.rolling(window=period).sum()
         
-        return pd.Series(cumSum/cumDiv, name="{0} period VAMA".format(period))
+        return pd.Series(cumSum/cumDiv, name="VAMA")
 
     @classmethod
     def VIDYA(cls, ohlcv, period=9, smoothing_period=12):
@@ -120,10 +119,8 @@ class TA:
 
     @classmethod
     def KAMA(cls, ohlc, er=10, ema_fast=2, ema_slow=30, period=20):
-        """
-        Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
-        Its main advantage is that it takes into consideration not just the direction, but the market volatility as well.
-        """
+        """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
+        Its main advantage is that it takes into consideration not just the direction, but the market volatility as well."""
 
         er = cls.ER(ohlc, er)
         fast_alpha = 2 / (ema_fast + 1)
@@ -133,7 +130,7 @@ class TA:
         sma = pd.Series(ohlc["close"].rolling(period).mean(), name="SMA") ## first KAMA is SMA
         kama = []
         # Current KAMA = Prior KAMA + smoothing_constant * (Price - Prior KAMA)
-        for s, ma, price in zip(sc.iteritems(), sma.shift(-1).iteritems(), ohlc["close"].iteritems()):
+        for s, ma, price in zip(sc.iteritems(), sma.shift().iteritems(), ohlc["close"].iteritems()):
             try:
                 kama.append(kama[-1] + s[1] * (price[1] - kama[-1]))
             except:
@@ -152,7 +149,7 @@ class TA:
         and other trend following indicators. As it follows price closer, it also provides better price averaging and responds better to price swings."""
 
         lag = (period-1)/2
-        return pd.Series((ohlc["close"] + (ohlc["close"].diff(lag))), name="{0} period ZLEMA".format(period))
+        return pd.Series((ohlc["close"] + (ohlc["close"].diff(lag))), name="ZLEMA")
 
     @classmethod
     def WMA(cls, ohlc, period=9, column="close"):
@@ -185,17 +182,19 @@ class TA:
         
         wma.reverse() ## reverse the wma list to match the Series
         ohlc["WMA"] = pd.Series(wma, index=ohlc.index) ## apply the wma list to existing index
-        return pd.Series(ohlc["WMA"], name="{0} period WMA".format(period))
+        return pd.Series(ohlc["WMA"], name="WMA")
 
     @classmethod
     def HMA(cls, ohlc, period=16):
         """
-        HMA indicator is a common abbreviation of Hull Moving Average.
+        HMA indicator is a common abbreviation of Hull Moving Average. 
         The average was developed by Allan Hull and is used mainly to identify the current market trend.
-        Unlike SMA (simple moving average) the curve of Hull moving average is considerably smoother.
-        Moreover, because its aim is to minimize the lag between HMA and price it does follow the price activity much closer. 
+        Unlike SMA (simple moving average) the curve of Hull moving average is considerably smoother. 
+        Moreover, because its aim is to minimize the lag between HMA and price it does follow the price activity much closer.
         It is used especially for middle-term and long-term trading.
         """
+
+        import math
 
         wmaA = cls.WMA(ohlc, int(period/2)) * 2
         wmaB = cls.WMA(ohlc, period)
@@ -229,7 +228,7 @@ class TA:
 
         wma.reverse()
         deltawma["_WMA"] = pd.Series(wma, index=ohlc.index)
-        return pd.Series(deltawma["_WMA"], name="{0} period HMA".format(period))
+        return pd.Series(deltawma["_WMA"], name="HMA")
 
     @classmethod
     def VWAP(cls, ohlcv):
@@ -288,7 +287,7 @@ class TA:
         A bearish crossover occurs when the MACD turns down and crosses below the signal line.
         '''
         
-        EMA_fast = pd.Series(ohlc["close"].ewm(ignore_na=False, min_periods=period_fast-1, span=period_fast).mean(), name="EMA_fast")
+        EMA_fast = pd.Series(ohlc["close"].ewm(ignore_na=False, min_periods=period_slow-1, span=period_fast).mean(), name="EMA_fast")
         EMA_slow = pd.Series(ohlc["close"].ewm(ignore_na=False, min_periods=period_slow-1, span=period_slow).mean(), name="EMA_slow")
         MACD = pd.Series(EMA_fast - EMA_slow, name="macd")
         MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name="macd_signal")
@@ -334,19 +333,15 @@ class TA:
         return pd.Series(100 - (100 / (1 + RS)), name="RSI")
     
     @classmethod
-    def IFT_RSI(cls, ohlc, rsi_period=5, wma_period=9):
+    def IFT_RSI(cls, ohlc, rsi_period=14, wma_period=9):
         """Modified Inverse Fisher Transfor applied on RSI.
         Suggested method to use any IFT indicator is to buy when the indicator crosses over –0.5 or crosses over +0.5 
-        RSI is smoothed with WMA before applying inverse Fisher transformation.
-        IFT_RSI signals to buy  when  the  indicator  crosses  over –0.5  or  crosses over  +0.5  if  it  has  not  previously  crossed  over 
-        –0.5  and  to  sell  short  when  the indicators  crosses  under  +0.5  or  crosses  under –0.5  if  it  has  not  previously 
-        crossed under +0.5. """
+        if it has not previously crossed over –0.5 and to sell short when the indicators crosses under +0.5 or crosses under –0.5 
+        if it has not previously crossed under +0.5."""
 
-        import numpy as np
-
-        v1 = pd.Series(0.1 * (cls.RSI(ohlc, rsi_period) - 50), name="v1") 
+        v1 = pd.Series(0.1 * (cls.RSI(ohlc, rsi_period) - 50), name="v1")
         
-        ## v2 = WMA(v1, wma_period)
+        ### v2 = WMA(wma_period) of v1
         d = (wma_period * (wma_period + 1)) / 2 # denominator
         rev = v1.iloc[::-1] ## reverse the series
         wma = []
@@ -372,10 +367,10 @@ class TA:
                 wma.append(None)
         
         wma.reverse() ## reverse the wma list to match the Series
+        ###
         v1["v2"] = pd.Series(wma, index=v1.index)
-        v2 = v1["v2"] 
-        return pd.Series( (np.exp(2 * v2) - 1) /
-                            (np.exp(2 * v2) + 1), name="{0} period IFT_RSI".format(rsi_period) )
+        fish = pd.Series( ((2 * v1["v2"])-1) **2 / ((2 * v1["v2"]) +1) **2, name="IFT_RSI")
+        return fish
     
     @classmethod
     def SWI(cls, ohlc, period=16):
@@ -511,8 +506,10 @@ class TA:
         ohlc["DMp"] = DMp
         ohlc["DMm"] = DMm
         
-        diplus = pd.Series(100 * (ohlc["DMp"] / cls.ATR(ohlc, period * 6)).ewm(span=period, min_periods=period - 1).mean(), name="positive_DMI")
-        diminus = pd.Series(100 * (ohlc["DMm"] / cls.ATR(ohlc, period * 6)).ewm(span=period, min_periods=period - 1).mean(), name="negative_DMI")
+        diplus = pd.Series(100 * (ohlc["DMp"] / cls.ATR(ohlc, period * 6)).ewm(span=period, min_periods=period - 1).mean(),
+                           name="diplus")
+        diminus = pd.Series(100 * (ohlc["DMm"] / cls.ATR(ohlc, period * 6)).ewm(span=period, min_periods=period - 1).mean(),
+                            name="diminus")
         
         return pd.concat([diplus, diminus], axis=1)
     
@@ -523,8 +520,8 @@ class TA:
         and readings above 40 indicate trend strength. An extremely strong trend is indicated by readings above 50"""
 
         dmi = cls.DMI(ohlc, period)
-        return pd.Series(100 * (abs(dmi["positive_DMI"] - dmi["negative_DMI"]) / 
-                            (dmi["positive_DMI"] + dmi["negative_DMI"])).ewm(alpha=1/period).mean(), name="ADX")
+        return pd.Series(100 * (abs(dmi["diplus"] - dmi["diminus"]) / 
+                            (dmi["diplus"] + dmi["diminus"])).ewm(alpha=1/period).mean(), name="ADX")
 
     @classmethod
     def PIVOTS(cls, ohlc):
@@ -762,6 +759,20 @@ class TA:
         return pd.Series(ohlcv["OBV"], name="On Volume Balance")
 
     @classmethod
+    def WOBV(cls, ohlcv):
+        '''
+        Weighted OBV
+        Can also be seen as an OBV indicator that takes the price differences into account.
+        In a regular OBV, a high volume bar can make a huge difference,
+        even if the price went up only 0.01, and it it goes down 0.01
+        instead, that huge volume makes the OBV go down, even though
+        hardly anything really happened.
+        '''
+
+        wobv = pd.Series(ohlcv["volume"] * ohlcv["close"].diff(), name="WOBV")
+        return wobv.cumsum()
+
+    @classmethod
     def VZO(cls, ohlc, period=14):
         """VZO uses price, previous price and moving averages to compute its oscillating value. 
         It is a leading indicator that calculates buy and sell signals based on oversold / overbought conditions. 
@@ -782,8 +793,20 @@ class TA:
          behind a move or identify possible turning points."""
 
         fi = pd.Series((ohlcv['close'] - ohlcv['close'].diff()) * ohlcv["volume"])
-        return pd.Series(fi.ewm(ignore_na=False, min_periods=period-1, span=period).mean(), name="{0} period Force Index")
-    
+        return pd.Series(fi.ewm(ignore_na=False, min_periods=period-1, span=period).mean(), name="{0} period Force Index".format(period))
+
+    @classmethod
+    def CFI(cls, ohlcv):
+        '''
+        Cummulative Force Index.
+        Adopted from  Elder's Force Index.
+        '''
+
+        fi1 = pd.Series(ohlcv["volume"] * ohlcv["close"].diff())
+        cfi = pd.Series(fi1.ewm(ignore_na=False, min_periods=9, span=10).mean(), name="CFI")
+
+        return cfi.cumsum()
+
     @classmethod
     def EBBP(cls, ohlc):
         """Bull power and bear power by Dr. Alexander Elder show where today’s high and low lie relative to the a 13-day EMA"""
@@ -937,7 +960,7 @@ class TA:
         raw = (2 * ((med - ndaylow) / (ndayhigh - ndaylow))) - 1
         smooth = raw.ewm(span=5).mean()
 
-        return pd.Series((np.log((1 + smooth) / (1 - smooth))).ewm(span=3).mean(), name="{0} period FISH".format(period))
+        return pd.Series((np.log((1 + smooth) / (1 - smooth))).ewm(span=3).mean(), name="FISH")
         
     @classmethod
     def ICHIMOKU(cls, ohlc):

@@ -104,14 +104,14 @@ class TA:
         The main difference between EMA and Vidya is in the way the smoothing factor F is calculated. 
         In EMA the smoothing factor is a constant value F=2/(period+1); 
         in Vidya the smoothing factor is variable and depends on bar-to-bar price movements."""
-        
-        raise NotImplemetedError  
+
+        raise NotImplementedError  
 
     @classmethod
     def ER(cls, ohlc, period=10):
         """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
          +100 is upward forex trending market and -100 is downwards trending markets."""
-        
+
         change = ohlc["close"].diff(period).abs()
         volatility = ohlc["close"].diff().abs().rolling(window=period).sum()
 
@@ -551,7 +551,7 @@ class TA:
         STOCH%D is a 3 period simple moving average of %K.
         """
         
-        return pd.Series(cls.STOCHK(ohlc).rolling(center=False, window=period, min_periods=period-1).mean(), name="STOCH %D")
+        return pd.Series(cls.STOCH(ohlc).rolling(center=False, window=period, min_periods=period-1).mean(), name="STOCH %D")
 
     @classmethod
     def STOCHRSI(cls, ohlc, rsi_period=14, stoch_period=14):

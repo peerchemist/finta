@@ -295,7 +295,7 @@ class TA:
         return pd.concat([MACD, MACD_signal], axis=1)
     
     @classmethod
-    def VW_MACD(ohlcv, period_fast=12, period_slow=26, signal=9):
+    def VW_MACD(cls, ohlcv, period_fast=12, period_slow=26, signal=9):
         '''"Volume-Weighted MACD" is an indicator that shows how a volume-weighted moving average can be used to calculate moving average convergence/divergence (MACD).
         This technique was first used by Buff Dormeier, CMT, and has been written about since at least 2002.'''
 

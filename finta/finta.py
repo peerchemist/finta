@@ -295,6 +295,25 @@ class TA:
         return pd.concat([MACD, MACD_signal], axis=1)
     
     @classmethod
+    def VW_MACD(ohlcv, period_fast=12, period_slow=26, signal=9):
+        '''"Volume-Weighted MACD" is an indicator that shows how a volume-weighted moving average can be used to calculate moving average convergence/divergence (MACD).
+        This technique was first used by Buff Dormeier, CMT, and has been written about since at least 2002.'''
+
+        vp = ohlcv["volume"] * ohlcv["close"]
+        _fast = pd.Series((vp.ewm(ignore_na=False, min_periods=period_fast-1, span=period_fast).mean()) /
+                           (ohlcv['volume'].ewm(ignore_na=False, min_periods=period_fast-1, span=period_fast).mean()),
+                           name='_fast')
+
+        _slow = pd.Series((vp.ewm(ignore_na=False, min_periods=period_slow-1, span=period_slow).mean()) /
+                           (ohlcv['volume'].ewm(ignore_na=False, min_periods=period_slow-1, span=period_slow).mean()),
+                           name='_slow')
+
+        MACD = pd.Series(_fast - _slow, name="MACD")
+        MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name="macd_signal")
+
+        return pd.concat([MACD, MACD_signal], axis=1)
+
+    @classmethod
     def MOM(cls, ohlc, period=10):
         """Market momentum is measured by continually taking price differences for a fixed time interval. 
         To construct a 10-day momentum line, simply subtract the closing price 10 days ago from the last closing price. 

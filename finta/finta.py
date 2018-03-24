@@ -443,7 +443,7 @@ class TA:
          Bandwidth tells how wide the Bollinger Bands are on a normalized basis.
          """ 
          
-        std = ohlc["close"].std()
+        std = ohlc["close"].rolling(window=period).std()
 
         if not isinstance(MA, pd.core.series.Series):
             middle_band = pd.Series(cls.SMA(ohlc, period), name="middle_bband")

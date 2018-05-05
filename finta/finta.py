@@ -945,11 +945,17 @@ class TA:
         
     @classmethod
     def TMF(cls, ohlcv, period=21):
-        """Indicator by Colin Twiggs which improves upon CMF"""
-        #truhigh = max( ohlc["high"], ohlc["close"].shift(-1))
-        #trulow = max ( ohlc["low"] - ohlc["close"].shift(-1))
+        """Indicator by Colin Twiggs which improves upon CMF.
+        source: https://user42.tuxfamily.org/chart/manual/Twiggs-Money-Flow.html"""
 
-        #TMF = EMA(vol) * (2 * (close - trulow / truhigh - trulow) - 1) / EMA(vol)
+        ohlcv['ll'] = [ min(l, c) for l, c in zip(ohlcv['low'], ohlcv['close'].shift(-1)) ]
+        ohlcv['hh'] = [ max(h, c) for h, c in zip(ohlcv['high'], ohlcv['close'].shift(-1)) ]
+
+        ohlcv['range'] = (2 * ((ohlcv['close'] - ohlcv['ll']) / (ohlcv['hh'] - ohlcv['ll'])) - 1 )
+        ohlcv['rangev'] = None
+
+        # TMF Signal Line = EMA(TMF)
+        # return TMF
         raise NotImplementedError
 
     @classmethod
@@ -1016,3 +1022,25 @@ class TA:
 
         return pd.concat([upper_band, lower_band], axis=1)
 
+    @classmethod
+    def SZO(cls, ohlc, short_period=14, long_period=30, MA=None):
+        '''
+        The Sentiment Zone Oscillator (SZO) was authored by Walid Khalil in the Stocks and Commodities Magazine, May 2012.
+        '''
+
+        if not isinstance(MA, pd.Series):
+            MA = cls.TEMA(ohlc, period)
+
+        change = [0]
+        
+        for row, _row in zip(ohlc.itertuples(), ohlc.shift(-1).itertuples()):
+            if row.close > _row.close:
+                change.append(1)
+            if row.close < _row.close:
+                change.append(-1)
+            if row.close == _row.close:
+                change.append(-1)
+
+        ohlc['r'] = change
+
+        sp = ma(method, index, period, R);

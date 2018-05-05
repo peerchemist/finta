@@ -1,19 +1,9 @@
-from functools import partialmethod, reduce
-from types import FunctionType
 
 import pandas as pd
 
 
 class TA:
 
-
-    # def __new__(cls, *args, **kwargs):
-    #     for fn in cls.__dict__.keys():
-    #         cls.__dict__.update({fn.lower(), reduce(cls.__dict__.get(fn), args)})
-    #     return cls
-    #
-    # def __init__(self):
-    #     pass
 
     @classmethod
     def SMA(cls, ohlc, period=41, column='close'):
@@ -409,7 +399,7 @@ class TA:
 
     @classmethod
     def IFT_RSI(cls, ohlc, rsi_period=14, wma_period=9):
-        """Modified Inverse Fisher Transfor applied on RSI.
+        """Modified Inverse Fisher Transform applied on RSI.
         Suggested method to use any IFT indicator is to buy when the indicator crosses over –0.5 or crosses over +0.5
         if it has not previously crossed over –0.5 and to sell short when the indicators crosses under +0.5 or crosses under –0.5
         if it has not previously crossed under +0.5."""

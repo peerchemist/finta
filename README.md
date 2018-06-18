@@ -1,5 +1,9 @@
 # FinTA (Financial Technical Analysis)
 
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![PyPI](https://img.shields.io/pypi/v/finta.svg?style=flat-square)](https://pypi.python.org/pypi/finta/)
+[![](https://img.shields.io/badge/python-3.4+-blue.svg)](https://www.python.org/download/releases/3.4.0/) 
+
 Common financial technical indicators implemented in Pandas.
 
 **This is work in progress, bugs are expected and results of indicators
@@ -7,7 +11,7 @@ might not be correct.**
 
 > Dependencies:
 
--   python (3+)
+-   python (3.4+)
 -   pandas (0.18+)
 
 TA class is very well documented and there should be no trouble
@@ -62,9 +66,3 @@ Please submit only indicators that belong in public domain and are
 royalty free.
 
 ------------------------------------------------------------------------
-
-Some of the code is based from
-[pandas\_talib](https://github.com/femtotrader/pandas_talib) project but
-it is so radically changed that fork would not be a valid option. I urge
-the authors to merge with my code manually and continue developing on
-it.

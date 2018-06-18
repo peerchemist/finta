@@ -4,7 +4,6 @@ import pandas as pd
 
 class TA:
 
-
     @classmethod
     def SMA(cls, ohlc, period=41, column='close'):
         """
@@ -12,9 +11,9 @@ class TA:
         The simple moving average (SMA) is the most basic of the moving averages used for trading.
         """
 
-        return pd.Series(ohlc[column].rolling(center=False, window=period, min_periods=period - 1).mean(),
+        return pd.Series(ohlc[column].rolling(center=False, window=period,
+                         min_periods=period - 1).mean(),
                          name='{0} period SMA'.format(period))
-
 
     @classmethod
     def SMM(cls, ohlc, period=9, column='close'):
@@ -23,8 +22,9 @@ class TA:
         is susceptible to rare events such as rapid shocks or other anomalies. A more robust estimate of the trend is the simple moving median over n time periods.
         """
 
-        return pd.Series(ohlc[column].rolling(center=False, window=period, min_periods=period - 1).median(), name='SMM')
-
+        return pd.Series(ohlc[column].rolling(center=False, window=period,
+                         min_periods=period - 1).median(),
+                         name='{0} period SMM'.format(period))
 
     @classmethod
     def EMA(cls, ohlc, period=9, column='close'):  ## EWMA
@@ -34,8 +34,10 @@ class TA:
         EMAs are commonly used in conjunction with other indicators to confirm significant market moves and to gauge their validity.
         """
 
-        return pd.Series(ohlc[column].ewm(ignore_na=False, min_periods=period - 1, span=period).mean(), name='EMA')
-
+        return pd.Series(ohlc[column].ewm(ignore_na=False,
+                                          min_periods=period - 1,
+                                          span=period).mean(),
+                                          name='{0} period EMA'.format(period))
 
     @classmethod
     def DEMA(cls, ohlc, period=9, column='close'):
@@ -48,11 +50,11 @@ class TA:
         samples needed by a regular EMA
         """
 
-        DEMA = 2 * cls.EMA(ohlc, period) - cls.EMA(ohlc, period).ewm(ignore_na=False, min_periods=period - 1,
+        DEMA = 2 * cls.EMA(ohlc, period) - cls.EMA(ohlc, period).ewm(ignore_na=False,
+                                                                     min_periods=period - 1,
                                                                      span=period).mean()
 
-        return pd.Series(DEMA, name='DEMA')
-
+        return pd.Series(DEMA, name='{0} period DEMA'.format(period))
 
     @classmethod
     def TEMA(cls, ohlc, period=9):
@@ -67,13 +69,15 @@ class TA:
         """
 
         triple_ema = 3 * cls.EMA(ohlc, period)
-        ema_ema_ema = cls.EMA(ohlc, period).ewm(ignore_na=False, span=period).mean().ewm(ignore_na=False,
+        ema_ema_ema = cls.EMA(ohlc, period).ewm(ignore_na=False,
+                                                span=period).mean().ewm(ignore_na=False,
                                                                                          span=period).mean()
-        TEMA = triple_ema - 3 * cls.EMA(ohlc, period).ewm(ignore_na=False, min_periods=period - 1,
+
+        TEMA = triple_ema - 3 * cls.EMA(ohlc, period).ewm(ignore_na=False,
+                                                          min_periods=period - 1,
                                                           span=period).mean() + ema_ema_ema
 
-        return pd.Series(TEMA, name='TEMA')
-
+        return pd.Series(TEMA, name='{0} period TEMA'.format(period))
 
     @classmethod
     def TRIMA(cls, ohlc, period=18):  ## TMA
@@ -83,9 +87,10 @@ class TA:
         The TRIMA is simply the SMA of the SMA
         """
 
-        SMA = cls.SMA(ohlc, period).rolling(center=False, window=period, min_periods=period - 1).mean()
-        return pd.Series(SMA, name='TRIMA')
-
+        SMA = cls.SMA(ohlc, period).rolling(center=False,
+                                            window=period,
+                                            min_periods=period - 1).mean()
+        return pd.Series(SMA, name='{0} period TRIMA'.format(period))
 
     @classmethod
     def TRIX(cls, ohlc, period=15):
@@ -101,8 +106,7 @@ class TA:
         EMA3 = EMA2.ewm(span=period).mean()
         TRIX = (EMA3 - EMA3.diff()) / EMA3.diff()
 
-        return pd.Series(TRIX, name='TRIX')
-
+        return pd.Series(TRIX, name='{0} period TRIX'.format(period))
 
     @classmethod
     def AMA(cls, ohlc, period=None, column='close'):
@@ -111,14 +115,12 @@ class TA:
         """
         raise NotImplementedError
 
-
     @classmethod
     def LWMA(cls, ohlc, period=None, column='close'):
         """
-        Linear Weighter Moving Average
+        Linear Weighted Moving Average
         """
         raise NotImplementedError
-
 
     @classmethod
     def VAMA(cls, ohlcv, period=8, column='close'):
@@ -132,8 +134,7 @@ class TA:
         cumSum = (volRatio * ohlcv[column]).rolling(window=period).sum()
         cumDiv = volRatio.rolling(window=period).sum()
 
-        return pd.Series(cumSum / cumDiv, name='VAMA')
-
+        return pd.Series(cumSum / cumDiv, name='{0} period VAMA'.format(period))
 
     @classmethod
     def VIDYA(cls, ohlcv, period=9, smoothing_period=12):
@@ -144,7 +145,6 @@ class TA:
 
         raise NotImplementedError
 
-
     @classmethod
     def ER(cls, ohlc, period=10):
         """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
@@ -153,8 +153,7 @@ class TA:
         change = ohlc['close'].diff(period).abs()
         volatility = ohlc['close'].diff().abs().rolling(window=period).sum()
 
-        return pd.Series(change / volatility, name='ER')
-
+        return pd.Series(change / volatility, name='{0} period ER'.format(period))
 
     @classmethod
     def KAMA(cls, ohlc, er=10, ema_fast=2, ema_slow=30, period=20):
@@ -183,7 +182,6 @@ class TA:
                                 name='{0} period KAMA.'.format(period))  ## apply the kama list to existing index
         return sma['KAMA']
 
-
     @classmethod
     def ZLEMA(cls, ohlc, period=26):
         """ZLEMA is an abbreviation of Zero Lag Exponential Moving Average. It was developed by John Ehlers and Rick Way.
@@ -191,8 +189,7 @@ class TA:
         and other trend following indicators. As it follows price closer, it also provides better price averaging and responds better to price swings."""
 
         lag = (period - 1) / 2
-        return pd.Series((ohlc['close'] + (ohlc['close'].diff(lag))), name='ZLEMA')
-
+        return pd.Series((ohlc['close'] + (ohlc['close'].diff(lag))), name='{0} period ZLEMA.'.format(period))
 
     @classmethod
     def WMA(cls, ohlc, period=9, column='close'):
@@ -228,8 +225,7 @@ class TA:
 
         wma.reverse()  ## reverse the wma list to match the Series
         ohlc['WMA'] = pd.Series(wma, index=ohlc.index)  ## apply the wma list to existing index
-        return pd.Series(ohlc['WMA'], name='WMA')
-
+        return pd.Series(ohlc['WMA'], name='{0} period WMA.'.format(period))
 
     @classmethod
     def HMA(cls, ohlc, period=16):
@@ -278,8 +274,7 @@ class TA:
 
         wma.reverse()
         deltawma['_WMA'] = pd.Series(wma, index=ohlc.index)
-        return pd.Series(deltawma['_WMA'], name='HMA')
-
+        return pd.Series(deltawma['_WMA'], name='{0} period HMA.'.format(period))
 
     @classmethod
     def VWAP(cls, ohlcv):
@@ -289,15 +284,14 @@ class TA:
         by the total shares traded for the day.
         """
 
-        return pd.Series(((ohlcv['volume'] * cls.TP(ohlcv)).cumsum()) / ohlcv['volume'].cumsum(), name='VWAP')
-
+        return pd.Series(((ohlcv['volume'] * cls.TP(ohlcv)).cumsum()) / ohlcv['volume'].cumsum(),
+                         name='VWAP.')
 
     @classmethod
     def SMMA(cls, ohlc, period=42, column='close'):
         """The SMMA gives recent prices an equal weighting to historic prices."""
 
         return pd.Series(ohlc[column].ewm(alpha=1 / period).mean(), name='SMMA')
-
 
     @classmethod
     def ALMA(cls, ohlc, period=9, sigma=6, offset=0.85):
@@ -317,18 +311,15 @@ class TA:
 
         raise NotImplementedError
 
-
     @classmethod
     def MAMA(cls, ohlc, period=16):
         """MESA Adaptive Moving Average"""
         raise NotImplementedError
 
-
     @classmethod
     def FRAMA(cls, ohlc, period=16):
         """Fractal Adaptive Moving Average"""
         raise NotImplementedError
-
 
     @classmethod
     def MACD(cls, ohlc, period_fast=12, period_slow=26, signal=9):

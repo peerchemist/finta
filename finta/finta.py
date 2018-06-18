@@ -173,7 +173,7 @@ class TA:
         for s, ma, price in zip(sc.iteritems(), sma.shift().iteritems(), ohlc['close'].iteritems()):
             try:
                 kama.append(kama[-1] + s[1] * (price[1] - kama[-1]))
-            except:
+            except (IndexError, TypeError):
                 if pd.notnull(ma[1]):
                     kama.append(ma[1] + s[1] * (price[1] - ma[1]))
                 else:

@@ -183,3 +183,12 @@ def test_roc():
 
     assert isinstance(roc, series.Series)
     assert roc.values[-1] == -15.98340762838
+
+
+def test_rsi():
+    '''test TA.RSI'''
+
+    rsi = TA.RSI(ohlc)
+
+    assert isinstance(rsi, series.Series)
+    assert -100 < rsi.values[-1] < 100

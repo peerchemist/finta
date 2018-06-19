@@ -174,3 +174,12 @@ def test_mom():
 
     assert isinstance(mom, series.Series)
     assert mom.values[-1] == -1215.5468137099997
+
+
+def test_roc():
+    '''test TA.ROC'''
+
+    roc = TA.ROC(ohlc)
+
+    assert isinstance(roc, series.Series)
+    assert roc.values[-1] == -15.98340762838

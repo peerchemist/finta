@@ -363,3 +363,12 @@ def test_ao():
 
     assert isinstance(ao, series.Series)
     assert ao.values[-1] == -957.63459032713035
+
+
+def test_mi():
+    '''test TA.MI'''
+
+    mi = TA.MI(ohlc)
+
+    assert isinstance(mi, series.Series)
+    assert mi.values[-1] == 23.928086961089647

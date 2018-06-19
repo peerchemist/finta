@@ -584,15 +584,14 @@ class TA:
 
         return pd.concat([up, middle, down], axis=1)
 
-
     @classmethod
     def DO(cls, ohlc, period=20):
         """Donchian Channel, a moving average indicator developed by Richard Donchian.
         It plots the highest high and lowest low over the last period time intervals."""
 
-        upper = pd.Series(ohlc['high'].max(), name='upper_dchannel')
-        lower = pd.Series(ohlc['low'].min(), name='lower_dchannel')
-        middle = pd.Series((upper / lower) / 2, name='middle_dchannel')
+        upper = pd.Series(ohlc['high'].tail(period).max(), name='UPPER')
+        lower = pd.Series(ohlc['low'].tail().min(), name='LOWER')
+        middle = pd.Series((upper + lower) / 2, name='MIDDLE')
 
         return pd.concat([lower, middle, upper], axis=1)
 

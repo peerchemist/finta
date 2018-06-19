@@ -362,7 +362,7 @@ class TA:
                            name='_slow')
 
         MACD = pd.Series(_fast - _slow, name="MACD")
-        MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name="macd_signal")
+        MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name="SIGNAL")
 
         return pd.concat([MACD, MACD_signal], axis=1)
 

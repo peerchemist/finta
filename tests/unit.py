@@ -153,3 +153,15 @@ def test_macd():
 
     assert macd['MACD'].values[-1] == -419.21923359275115
     assert macd['SIGNAL'].values[-1] == -372.39851312056192
+
+
+def test_vw_macd():
+    '''test TA.VW_MACD'''
+
+    macd = TA.VW_MACD(ohlc)
+
+    assert isinstance(macd['MACD'], series.Series)
+    assert isinstance(macd['SIGNAL'], series.Series)
+
+    assert macd['MACD'].values[-1] == -535.21281201397142
+    assert macd['SIGNAL'].values[-1] == -511.64584818187575

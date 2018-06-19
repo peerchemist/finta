@@ -354,3 +354,12 @@ def test_uo():
 
     assert isinstance(uo, series.Series)
     assert 0 < uo.values[-1] < 100
+
+
+def test_ao():
+    '''test TA.AO'''
+
+    ao = TA.AO(ohlc)
+
+    assert isinstance(ao, series.Series)
+    assert ao.values[-1] == -957.63459032713035

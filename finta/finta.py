@@ -460,20 +460,19 @@ class TA:
         Absolute value of the most recent period's high minus the previous close.
         Absolute value of the most recent period's low minus the previous close."""
 
-        TR1 = pd.Series(ohlc['high'].tail(period) - ohlc['low'].tail(period), name='high_low')
-        TR2 = pd.Series(ohlc['high'].tail(period) - ohlc['close'].shift(-1).abs().tail(period),
-                        name='high_previous_close')
-        TR3 = pd.Series(ohlc['close'].shift(-1).tail(period) - ohlc['low'].abs().tail(period),
-                        name='previous_close_low')
-        TR = pd.concat([TR1, TR2, TR3], axis=1)
+        TR1 = pd.Series(ohlc['high'] - ohlc['low']).abs()  # True Range = High less Low
 
-        l = []
-        for row in TR.itertuples():
-            l.append(max(row.high_low, row.high_previous_close, row.previous_close_low))
+        TR2 = pd.Series(ohlc['high'] - ohlc['close'].shift(),
+                        ).abs()  # True Range = High less Previous Close
 
-        TR['TA'] = l
-        return pd.Series(TR['TA'], name='True Range')
+        TR3 = pd.Series(ohlc['close'].shift() - ohlc['low'],
+                        ).abs()  # True Range = Previous Close less Low
 
+        _TR = pd.concat([TR1, TR2, TR3], axis=1)
+
+        _TR['TR'] = _TR.max(axis=1)
+
+        return pd.Series(_TR['TR'], name="{0} period TR".format(period))
 
     @classmethod
     def ATR(cls, ohlc, period=14):

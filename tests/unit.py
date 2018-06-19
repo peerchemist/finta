@@ -260,3 +260,17 @@ def test_percentb():
 
     assert isinstance(bb, series.Series)
     assert bb.values[-1] == 0.18695874195706308
+
+
+def test_kc():
+    '''test TA.KC'''
+
+    kc = TA.KC(ohlc)
+
+    assert isinstance(kc['UPPER'], series.Series)
+    assert isinstance(kc['MIDDLE'], series.Series)
+    assert isinstance(kc['LOWER'], series.Series)
+
+    assert kc['UPPER'].values[-1] == 7844.5697540734927
+    assert kc['MIDDLE'].values[-1] == 7110.5508235434954
+    assert kc['LOWER'].values[-1] == 6376.5318930134981

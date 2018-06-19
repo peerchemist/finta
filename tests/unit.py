@@ -165,3 +165,12 @@ def test_vw_macd():
 
     assert macd['MACD'].values[-1] == -535.21281201397142
     assert macd['SIGNAL'].values[-1] == -511.64584818187575
+
+
+def test_mom():
+    '''test TA.MOM'''
+
+    mom = TA.MOM(ohlc)
+
+    assert isinstance(mom, series.Series)
+    assert mom.values[-1] == -1215.5468137099997

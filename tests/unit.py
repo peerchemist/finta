@@ -210,3 +210,12 @@ def test_tr():
 
     assert isinstance(tr, series.Series)
     assert tr.values[-1] == 113.39999999999964
+
+
+def test_atr():
+    '''test TA.ATR'''
+
+    tr = TA.ATR(ohlc)
+
+    assert isinstance(tr, series.Series)
+    assert tr.values[-1] == 396.09276793357139

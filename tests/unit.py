@@ -345,3 +345,12 @@ def test_williams():
 
     assert isinstance(w, series.Series)
     assert -100 < w.values[-1] < 0
+
+
+def test_uo():
+    '''test TA.UO'''
+
+    uo = TA.UO(ohlc)
+
+    assert isinstance(uo, series.Series)
+    assert 0 < uo.values[-1] < 100

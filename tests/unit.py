@@ -148,8 +148,8 @@ def test_macd():
 
     macd = TA.MACD(ohlc)
 
-    assert isinstance(macd['macd'], series.Series)
-    assert isinstance(macd['macd_signal'], series.Series)
+    assert isinstance(macd['MACD'], series.Series)
+    assert isinstance(macd['SIGNAL'], series.Series)
 
     assert macd['MACD'].values[-1] == -419.21923359275115
     assert macd['SIGNAL'].values[-1] == -372.39851312056192

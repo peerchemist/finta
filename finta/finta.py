@@ -640,8 +640,9 @@ class TA:
         and readings above 40 indicate trend strength. An extremely strong trend is indicated by readings above 50"""
 
         dmi = cls.DMI(ohlc, period)
-        return pd.Series(100 * (abs(dmi['diplus'] - dmi['diminus']) /
-                                (dmi['diplus'] + dmi['diminus'])).ewm(alpha=1 / period).mean(), name='ADX')
+        return pd.Series(100 * (abs(dmi['DI+'] - dmi['DI-']) /
+                                (dmi['DI+'] + dmi['DI-'])).ewm(alpha=1 / period).mean(),
+                                name='{0} period ADX.'.format(period))
 
 
     @classmethod

@@ -300,3 +300,12 @@ def test_dmi():
 
     assert dmi['DI+'].values[-1] == 0.32826999511691435
     assert dmi['DI-'].values[-1] == 10.09866984475557
+
+
+def test_adx():
+    '''test TA.ADX'''
+
+    adx = TA.ADX(ohlc)
+
+    assert isinstance(adx, series.Series)
+    assert adx.values[-1] == 66.589993072391422

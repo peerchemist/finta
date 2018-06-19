@@ -192,3 +192,12 @@ def test_rsi():
 
     assert isinstance(rsi, series.Series)
     assert -100 < rsi.values[-1] < 100
+
+
+def test_ift_rsi():
+    '''test TA.IFT_RSI'''
+
+    rsi = TA.IFT_RSI(ohlc)
+
+    assert isinstance(rsi, series.Series)
+    assert rsi.values[-1] == 2.6918116852046792

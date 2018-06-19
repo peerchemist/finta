@@ -341,8 +341,8 @@ class TA:
                              name='EMA_fast')
         EMA_slow = pd.Series(ohlc['close'].ewm(ignore_na=False, min_periods=period_slow - 1, span=period_slow).mean(),
                              name='EMA_slow')
-        MACD = pd.Series(EMA_fast - EMA_slow, name='macd')
-        MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name='macd_signal')
+        MACD = pd.Series(EMA_fast - EMA_slow, name='MACD')
+        MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name='SIGNAL')
 
         return pd.concat([MACD, MACD_signal], axis=1)
 

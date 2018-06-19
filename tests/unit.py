@@ -151,5 +151,5 @@ def test_macd():
     assert isinstance(macd['macd'], series.Series)
     assert isinstance(macd['macd_signal'], series.Series)
 
-    assert macd['macd'].values[-1] == -419.21923359275115
-    assert macd['macd_signal'].values[-1] == -372.39851312056192
+    assert macd['MACD'].values[-1] == -419.21923359275115
+    assert macd['SIGNAL'].values[-1] == -372.39851312056192

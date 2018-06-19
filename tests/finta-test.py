@@ -141,3 +141,15 @@ def test_smma():
 
     assert isinstance(ma, series.Series)
     assert ma.values[-1] == 8020.2742957005539
+
+
+def test_macd():
+    '''test TA.MACD'''
+
+    macd = TA.MACD(ohlc)
+
+    assert isinstance(macd['macd'], series.Series)
+    assert isinstance(macd['macd_signal'], series.Series)
+
+    assert macd['macd'].values[-1] == -419.21923359275115
+    assert macd['macd_signal'].values[-1] == -372.39851312056192

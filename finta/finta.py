@@ -479,9 +479,8 @@ class TA:
         """Average True Range is moving average of True Range."""
 
         TR = cls.TR(ohlc, period * 2)
-        return pd.Series(TR.rolling(center=False, window=period, min_periods=period - 1).mean(), name='ATR').tail(
-                period)
-
+        return pd.Series(TR.rolling(center=False, window=period, min_periods=period - 1).mean(),
+                         name='{0} period ATR'.format(period))
 
     @classmethod
     def SAR(cls, ohlc, af=0.02, amax=0.2):

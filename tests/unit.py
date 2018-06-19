@@ -218,4 +218,4 @@ def test_atr():
     tr = TA.ATR(ohlc)
 
     assert isinstance(tr, series.Series)
-    assert tr.values[-1] == 396.09276793357139
+    assert tr.values[-1] == 328.56890383071419

@@ -67,3 +67,11 @@ Please submit only indicators that belong in public domain and are
 royalty free.
 
 ------------------------------------------------------------------------
+
+## Donate
+
+Support the development by donating in cryptocurrency:
+
+XBT: 3PTyUNfn4uoSZGQ48tGMnqorca1DW9Xs4M
+
+XBC: PFdR14r9JM2EQSDh9nRZQ6EW5yzHjNJz3E

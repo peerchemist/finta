@@ -446,7 +446,6 @@ class TA:
         fish = pd.Series(((2 * v1['v2']) - 1) ** 2 / ((2 * v1['v2']) + 1) ** 2, name='IFT_RSI')
         return fish
 
-
     @classmethod
     def SWI(cls, ohlc, period=16):
         """Sine Wave indicator"""
@@ -626,10 +625,10 @@ class TA:
 
         diplus = pd.Series(
                 100 * (ohlc['DMp'] / cls.ATR(ohlc, period * 6)).ewm(span=period, min_periods=period - 1).mean(),
-                name='diplus')
+                name='DI+')
         diminus = pd.Series(
                 100 * (ohlc['DMm'] / cls.ATR(ohlc, period * 6)).ewm(span=period, min_periods=period - 1).mean(),
-                name='diminus')
+                name='DI-')
 
         return pd.concat([diplus, diminus], axis=1)
 

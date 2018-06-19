@@ -288,3 +288,15 @@ def test_do():
     assert do['UPPER'].values[-1] == 7770.0
     assert do['MIDDLE'].values[-1] == 7010.0005000000001
     assert do['LOWER'].values[-1] == 6250.0010000000002
+
+
+def test_dmi():
+    '''test TA.DMI'''
+
+    dmi = TA.DMI(ohlc)
+
+    assert isinstance(dmi['DI+'], series.Series)
+    assert isinstance(dmi['DI-'], series.Series)
+
+    assert dmi['DI+'].values[-1] == 0.32826999511691435
+    assert dmi['DI-'].values[-1] == 10.09866984475557

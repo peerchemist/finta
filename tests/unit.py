@@ -336,3 +336,12 @@ def test_stochrsi():
 
     assert isinstance(st, series.Series)
     assert 0 < st.values[-1] < 100
+
+
+def test_williams():
+    '''test TA.WILLIAMS'''
+
+    w = TA.WILLIAMS(ohlc)
+
+    assert isinstance(w, series.Series)
+    assert -100 < w.values[-1] < 0

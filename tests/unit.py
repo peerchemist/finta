@@ -219,3 +219,12 @@ def test_atr():
 
     assert isinstance(tr, series.Series)
     assert tr.values[-1] == 328.56890383071419
+
+
+def test_sar():
+    '''test TA.SAR'''
+
+    sar = TA.SAR(ohlc)
+
+    assert isinstance(sar, series.Series)
+    assert sar.values[-1] == 7127.1508782052497

@@ -309,3 +309,30 @@ def test_adx():
 
     assert isinstance(adx, series.Series)
     assert adx.values[-1] == 66.589993072391422
+
+
+def test_stoch():
+    '''test TA.STOCH'''
+
+    st = TA.STOCH(ohlc)
+
+    assert isinstance(st, series.Series)
+    assert 0 < st.values[-1] < 100
+
+
+def test_stochd():
+    '''test TA.STOCHD'''
+
+    st = TA.STOCHD(ohlc)
+
+    assert isinstance(st, series.Series)
+    assert 0 < st.values[-1] < 100
+
+
+def test_stochrsi():
+    '''test TA.STOCRSI'''
+
+    st = TA.STOCHRSI(ohlc)
+
+    assert isinstance(st, series.Series)
+    assert 0 < st.values[-1] < 100

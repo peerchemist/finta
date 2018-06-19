@@ -676,8 +676,8 @@ class TA:
         STOCH%D is a 3 period simple moving average of %K.
         """
 
-        return pd.Series(cls.STOCHK(ohlc).rolling(center=False, window=period, min_periods=period - 1).mean(),
-                         name='STOCH %D')
+        return pd.Series(cls.STOCH(ohlc).rolling(center=False, window=period, min_periods=period - 1).mean(),
+                         name='{0} perood STOCH %D.'.format(period))
 
 
     @classmethod
@@ -688,7 +688,7 @@ class TA:
 
         rsi = cls.RSI(ohlc, rsi_period)
         return pd.Series(((rsi - rsi.min()) / (rsi.max() - rsi.min())).rolling(window=stoch_period).mean(),
-                         name='Stochastic RSI')
+                         name='{0} period stochastic RSI.'.format(rsi_period))
 
 
     @classmethod

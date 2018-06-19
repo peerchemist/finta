@@ -201,3 +201,12 @@ def test_ift_rsi():
 
     assert isinstance(rsi, series.Series)
     assert rsi.values[-1] == 2.6918116852046792
+
+
+def test_tr():
+    '''test TA.TR'''
+
+    tr = TA.TR(ohlc)
+
+    assert isinstance(tr, series.Series)
+    assert tr.values[-1] == 113.39999999999964

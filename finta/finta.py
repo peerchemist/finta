@@ -346,7 +346,6 @@ class TA:
 
         return pd.concat([MACD, MACD_signal], axis=1)
 
-
     @classmethod
     def VW_MACD(cls, ohlcv, period_fast=12, period_slow=26, signal=9):
         '''"Volume-Weighted MACD" is an indicator that shows how a volume-weighted moving average can be used to calculate moving average convergence/divergence (MACD).
@@ -374,7 +373,6 @@ class TA:
 
         return ohlc['close'].diff(period)
 
-
     @classmethod
     def ROC(cls, ohlc, period=12):
         """The Rate-of-Change (ROC) indicator, which is also referred to as simply Momentum,
@@ -382,7 +380,6 @@ class TA:
         The ROC calculation compares the current price with the price “n” periods ago."""
 
         return pd.Series((ohlc['close'].diff(period) / ohlc['close'][-period]) * 100, name='ROC')
-
 
     @classmethod
     def RSI(cls, ohlc, period=14):
@@ -405,7 +402,6 @@ class TA:
 
         RS = _gain / _loss
         return pd.Series(100 - (100 / (1 + RS)), name='RSI')
-
 
     @classmethod
     def IFT_RSI(cls, ohlc, rsi_period=14, wma_period=9):

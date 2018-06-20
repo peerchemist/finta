@@ -425,3 +425,11 @@ def test_adl():
 
     assert isinstance(adl, series.Series)
     assert adl.values[-1] == 1221072523.7384958
+
+
+def test_chaikin():
+    '''test TA.CHAIKIN'''
+
+    c = TA.CHAIKIN(ohlc)
+
+    assert c.values[-1] == 650594.74888467789

@@ -417,3 +417,11 @@ def test_tp():
 
     assert isinstance(tp, series.Series)
     assert tp.values[-1] == 6429.0177287633342
+
+
+def test_adl():
+
+    adl = TA.ADL(ohlc)
+
+    assert isinstance(adl, series.Series)
+    assert adl.values[-1] == 1221072523.7384958

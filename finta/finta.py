@@ -790,7 +790,7 @@ class TA:
         r4 = cls.ROC(ohlc, r4).rolling(window=15).mean()
 
         k = pd.Series((r1 * 1) + (r2 * 2) + (r3 * 3) + (r4 * 4), name='KST')
-        signal = k.rolling(window=10).mean()
+        signal = pd.Series(k.rolling(window=10).mean(), name="signal")
 
         return pd.concat([k, signal], axis=1)
 

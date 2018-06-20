@@ -384,3 +384,15 @@ def test_vortex():
 
     assert v['VIp'].values[-1] == 37.443158543691659
     assert v['VIm'].values[-1] == -22.605012093615489
+
+
+def test_kst():
+    '''test TA.KST'''
+
+    kst = TA.KST(ohlc)
+
+    assert isinstance(kst['KST'], series.Series)
+    assert isinstance(kst['signal'], series.Series)
+
+    assert kst['KST'].values[-1] == -161.7861811191122
+    assert kst['signal'].values[-1] == -141.29962282675882

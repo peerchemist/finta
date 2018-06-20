@@ -372,3 +372,15 @@ def test_mi():
 
     assert isinstance(mi, series.Series)
     assert mi.values[-1] == 23.928086961089647
+
+
+def test_vortex():
+    '''test TA.VORTEX'''
+
+    v = TA.VORTEX(ohlc)
+
+    assert isinstance(v['VIp'], series.Series)
+    assert isinstance(v['VIm'], series.Series)
+
+    assert v['VIp'].values[-1] == 37.443158543691659
+    assert v['VIm'].values[-1] == -22.605012093615489

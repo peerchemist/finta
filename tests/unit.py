@@ -396,3 +396,15 @@ def test_kst():
 
     assert kst['KST'].values[-1] == -161.7861811191122
     assert kst['signal'].values[-1] == -141.29962282675882
+
+
+def test_tsi():
+    '''test TA.TSI'''
+
+    tsi = TA.TSI(ohlc)
+
+    assert isinstance(tsi['TSI'], series.Series)
+    assert isinstance(tsi['signal'], series.Series)
+
+    assert tsi['TSI'].values[-1] == -32.128372005959058
+    assert tsi['signal'].values[-1] == -26.94173826727873

@@ -811,8 +811,8 @@ class TA:
         _aDEMA13 = pd.Series(_aEMA25.ewm(span=short, min_periods=short - 1).mean(),
                              name='_abs_price_change double smoothed DEMA13')
 
-        TSI = pd.Series((_DEMA13 / _aDEMA13) * 100, name='True Strenght Index')
-        signal = pd.Series(TSI.ewm(span=signal, min_periods=signal - 1).mean(), name='TSI signal')
+        TSI = pd.Series((_DEMA13 / _aDEMA13) * 100, name='TSI')
+        signal = pd.Series(TSI.ewm(span=signal, min_periods=signal - 1).mean(), name='signal')
 
         return pd.concat([TSI, signal], axis=1)
 

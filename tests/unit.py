@@ -408,3 +408,12 @@ def test_tsi():
 
     assert tsi['TSI'].values[-1] == -32.128372005959058
     assert tsi['signal'].values[-1] == -26.94173826727873
+
+
+def test_tp():
+    '''test TA.TP'''
+
+    tp = TA.TP(ohlc)
+
+    assert isinstance(tp, series.Series)
+    assert tp.values[-1] == 6429.0177287633342

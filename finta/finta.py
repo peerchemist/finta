@@ -1083,9 +1083,9 @@ class TA:
         """
 
         l = pd.Series(ohlc['close'].rolling(window=period_2).max() - cls.ATR(ohlc, 22) * k,
-                      name='Chandelier exit - long.')
+                      name='Long.')
         s = pd.Series(ohlc['close'].rolling(window=period_1).min() - cls.ATR(ohlc, 22) * k,
-                      name='Chandelier exit - short.')
+                      name='Short.')
 
         return pd.concat([s, l], axis=1)
 

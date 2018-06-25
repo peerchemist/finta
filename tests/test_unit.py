@@ -549,3 +549,15 @@ def test_cmo():
 
     assert isinstance(cmo, series.Series)
     assert -100 < cmo.values[-1] < 100
+
+
+def test_chandelier():
+    '''test TA.CHANDELIER'''
+
+    chan = TA.CHANDELIER(ohlc)
+
+    assert isinstance(chan['Long.'], series.Series)
+    assert isinstance(chan['Short.'], series.Series)
+
+    assert chan['Long.'].values[-1] == 6723.8927646477259
+    assert chan['Short.'].values[-1] == 5326.4927656377258

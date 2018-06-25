@@ -498,3 +498,12 @@ def test_ebbp():
     assert isinstance(eb['Bull.'], series.Series)
     assert isinstance(eb['Bear.'], series.Series)
     assert eb['Bull.'].values[-1] == -285.40231904032862
+
+
+def test_emv():
+    '''test TA.EMV'''
+
+    emv = TA.EMV(ohlc)
+
+    assert isinstance(emv, series.Series)
+    assert emv.values[-1] == 2407071622.223393

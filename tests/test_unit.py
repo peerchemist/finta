@@ -488,3 +488,13 @@ def test_cfi():
 
     assert isinstance(cfi, series.Series)
     assert cfi.values[-1] == -84856289.556287795
+
+
+def test_ebbp():
+    '''test TA.EBBP'''
+
+    eb = TA.EBBP(ohlc)
+
+    assert isinstance(eb['Bull.'], series.Series)
+    assert isinstance(eb['Bear.'], series.Series)
+    assert eb['Bull.'].values[-1] == -285.40231904032862

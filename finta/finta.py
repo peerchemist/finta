@@ -968,8 +968,8 @@ class TA:
     def EBBP(cls, ohlc):
         """Bull power and bear power by Dr. Alexander Elder show where today’s high and low lie relative to the a 13-day EMA"""
 
-        bull_power = ohlc['high'] - cls.EMA(ohlc, 13)
-        bear_power = ohlc['low'] - cls.EMA(ohlc, 13)
+        bull_power = pd.Series(ohlc['high'] - cls.EMA(ohlc, 13), name="Bull.")
+        bear_power = pd.Series(ohlc['low'] - cls.EMA(ohlc, 13), name="Bear.")
 
         return pd.concat([bull_power, bear_power], axis=1)
 

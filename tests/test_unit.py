@@ -570,3 +570,9 @@ def test_qstick():
 
     assert isinstance(q, series.Series)
     assert q.values[-1] == 0.2466561628571721
+
+
+def test_tmf():
+
+    with pytest.raises(NotImplementedError):
+        tmf = TA.TMF(ohlc)

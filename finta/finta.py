@@ -371,7 +371,7 @@ class TA:
         To construct a 10-day momentum line, simply subtract the closing price 10 days ago from the last closing price.
         This positive or negative value is then plotted around a zero line."""
 
-        return ohlc['close'].diff(period)
+        return pd.Series(ohlc['close'].diff(period), name="MOM".format(period))
 
     @classmethod
     def ROC(cls, ohlc, period=12):

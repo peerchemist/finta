@@ -1091,14 +1091,15 @@ class TA:
 
 
     @classmethod
-    def QSTICK(cls, ohlc, period):
+    def QSTICK(cls, ohlc, period=14):
         """
         QStick indicator shows the dominance of black (down) or white (up) candlesticks, which are red and green in Chart,
         as represented by the average open to close change for each of past N days."""
 
         _close = ohlc['close'].tail(period)
         _open = ohlc['open'].tail(period)
-        return pd.Series((_close - _open) / period, name='QSTICK')
+
+        return pd.Series((_close - _open) / period, name='{0} period QSTICK.'.format(period))
 
 
     @classmethod

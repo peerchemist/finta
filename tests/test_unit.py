@@ -561,3 +561,12 @@ def test_chandelier():
 
     assert chan['Long.'].values[-1] == 6723.8927646477259
     assert chan['Short.'].values[-1] == 5326.4927656377258
+
+
+def test_qstick():
+    '''test TA.QSTICK'''
+
+    q = TA.QSTICK(ohlc)
+
+    assert isinstance(q, series.Series)
+    assert q.values[-1] == 0.2466561628571721

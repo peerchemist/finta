@@ -274,15 +274,16 @@ def test_percentb():
 def test_kc():
     '''test TA.KC'''
 
-    kc = TA.KC(ohlc)
+    ma = TA.ZLEMA(ohlc, 20)
+    kc = TA.KC(ohlc, MA=ma)
 
     assert isinstance(kc['KC_UPPER'], series.Series)
     assert isinstance(kc['KC_MIDDLE'], series.Series)
     assert isinstance(kc['KC_LOWER'], series.Series)
 
-    assert kc['KC_UPPER'].values[-1] == 7844.5697540734927
-    assert kc['KC_MIDDLE'].values[-1] == 7110.5508235434954
-    assert kc['KC_LOWER'].values[-1] == 6376.5318930134981
+    assert kc['KC_UPPER'].values[-1] == 6059.9253031099979
+    assert kc['KC_MIDDLE'].values[-1] == 5325.9063725800006
+    assert kc['KC_LOWER'].values[-1] == 4591.8874420500033
 
 
 def test_do():

@@ -621,3 +621,12 @@ def test_apz():
     assert isinstance(apz['LOWER'], series.Series)
 
     assert apz['UPPER'].values[-1] == 7193.9772579390283
+
+
+def test_vr():
+    '''test TA.VR'''
+
+    with pytest.raises(ValueError):
+
+        vr = TA.VR(ohlc)
+

@@ -1206,13 +1206,15 @@ class TA:
 
 
     @classmethod
-    def VR(cls, ohlc, periods=14):
+    def VR(cls, ohlc, period=14):
         """
         Vector Size Indicator
         :param pd.DataFrame ohlc: 'open, high, low, close' pandas DataFrame
         :return pd.Series: indicator calcs as pandas Series
         """
+
         import numpy as np
+
         vector_size = len(ohlc.close)
         high_low_diff = ohlc.high - ohlc.low
         high_close_diff = np.zeros(vector_size)
@@ -1220,8 +1222,10 @@ class TA:
         low_close_diff = np.zeros(vector_size)
         low_close_diff[1:] = np.abs(ohlc.low[1:] - ohlc.close[0:vector_size - 1])
         vectors_stacked = np.vstack((high_low_diff, high_close_diff, low_close_diff))
+
         tr = np.amax(vectors_stacked, axis=0)
-        vr = tr / cls.EMA(ohlc.close, period=periods)
+        vr = pd.Series(tr / cls.EMA(ohlc.close, period=periods), name="{0} period VR.".format(period))
+
         return vr
 
 

@@ -883,7 +883,7 @@ class TA:
         mfratio = pd.Series(_mf['pos'].rolling(window=period, min_periods=period - 1).sum() /
                             _mf['neg'].rolling(window=period, min_periods=period - 1).sum())
 
-        return pd.Series(100 - (100 / (1 + mfratio)), name='MFI'.format(period))
+        return pd.Series(100 - (100 / (1 + mfratio)), name='{0} period MFI'.format(period))
 
 
     @classmethod

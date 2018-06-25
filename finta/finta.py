@@ -1122,14 +1122,16 @@ class TA:
     def WTO(cls, ohlc, channel_lenght=10, average_lenght=21):
         """
         Wave Trend Oscillator
+        source: http://www.fxcoaching.com/WaveTrend/
         """
 
         ap = cls.TP(ohlc)
         esa = ap.ewm(span=channel_lenght).mean()
-        d = pd.Series((ap - esa).abs().ewm(span=cl).mean(), name='d')
+        d = pd.Series((ap - esa).abs().ewm(span=channel_lenght).mean(), name='d')
         ci = (ap - esa) / (0.015 * d)
-        wt1 = ci.ewm(span=average_lenght).mean()
-        wt2 = wt1.rolling(window=4).mean()
+
+        wt1 = pd.Series(ci.ewm(span=average_lenght).mean(), name="WT1.")
+        wt2 = pd.Series(wt1.rolling(window=4).mean(), name="WT2.")
 
         return pd.concat([wt1, wt2], axis=1)
 

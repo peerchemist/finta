@@ -576,3 +576,15 @@ def test_tmf():
 
     with pytest.raises(NotImplementedError):
         tmf = TA.TMF(ohlc)
+
+
+def test_wto():
+    '''test TA.WTO'''
+
+    wto = TA.WTO(ohlc)
+
+    assert isinstance(wto['WT1.'], series.Series)
+    assert isinstance(wto['WT2.'], series.Series)
+
+    assert wto['WT1.'].values[-1] == -60.290069910634649
+    assert wto['WT2.'].values[-1] == -61.84105024273525

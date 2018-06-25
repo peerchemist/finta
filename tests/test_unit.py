@@ -244,13 +244,13 @@ def test_bbands():
 
     bb = TA.BBANDS(ohlc)
 
-    assert isinstance(bb['UPPER'], series.Series)
-    assert isinstance(bb['MIDDLE'], series.Series)
-    assert isinstance(bb['LOWER'], series.Series)
+    assert isinstance(bb['BB_UPPER'], series.Series)
+    assert isinstance(bb['BB_MIDDLE'], series.Series)
+    assert isinstance(bb['BB_LOWER'], series.Series)
 
-    assert bb['UPPER'].values[-1] == 8212.7979228041968
-    assert bb['MIDDLE'].values[-1] == 7110.5508235434954
-    assert bb['LOWER'].values[-1] == 6008.303724282795
+    assert bb['BB_UPPER'].values[-1] == 8212.7979228041968
+    assert bb['BB_MIDDLE'].values[-1] == 7110.5508235434954
+    assert bb['BB_LOWER'].values[-1] == 6008.303724282795
 
 
 def test_bbwidth():

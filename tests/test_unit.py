@@ -1,10 +1,19 @@
 import pytest
+import os
 import pandas as pd
 from pandas.core import series
 from finta import TA
 
 
-ohlc = pd.read_csv('./data/bittrex:btc-usdt.csv', index_col='date',
+@pytest.fixture
+def rootdir():
+
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+data_file = os.path.join(rootdir(), 'data/bittrex:btc-usdt.csv')
+
+ohlc = pd.read_csv(data_file, index_col='date',
                    parse_dates=True)
 
 

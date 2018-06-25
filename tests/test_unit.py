@@ -540,3 +540,12 @@ def test_baspn():
 
     assert basp['Buy.'].values[-1] == 0.56374213100174275
     assert basp['Sell.'].values[-1] == 0.74103021131003344
+
+
+def test_cmo():
+    '''test TA.CMO'''
+
+    cmo = TA.CMO(ohlc)
+
+    assert isinstance(cmo, series.Series)
+    assert -100 < cmo.values[-1] < 100

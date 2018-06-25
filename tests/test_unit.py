@@ -516,3 +516,27 @@ def test_cci():
 
     assert isinstance(cci, series.Series)
     assert cci.values[-1] == -13.422528354279628
+
+
+def test_basp():
+    '''test TA.BASP'''
+
+    basp = TA.BASP(ohlc)
+
+    assert isinstance(basp['Buy.'], series.Series)
+    assert isinstance(basp['Sell.'], series.Series)
+
+    assert basp['Buy.'].values[-1] == 0.066916805574281202
+    assert basp['Sell.'].values[-1] == 0.091486900946605054
+
+
+def test_baspn():
+    '''test TA.BASPN'''
+
+    basp = TA.BASPN(ohlc)
+
+    assert isinstance(basp['Buy.'], series.Series)
+    assert isinstance(basp['Sell.'], series.Series)
+
+    assert basp['Buy.'].values[-1] == 0.56374213100174275
+    assert basp['Sell.'].values[-1] == 0.74103021131003344

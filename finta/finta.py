@@ -1027,22 +1027,10 @@ class TA:
         varg = ohlc['volume'].ewm(span=period, min_periods=period - 1).mean()
         nv = ohlc['volume'] / varg
 
-        nbfraw = pd.Series(nbp * nv, name='buyPressure')
-        nsfraw = pd.Series(nsp * nv, name='sellPressure')
+        nbfraw = pd.Series(nbp * nv, name='Buy.')
+        nsfraw = pd.Series(nsp * nv, name='Sell.')
 
         return pd.concat([nbfraw, nsfraw], axis=1)
-
-
-    @classmethod
-    def BUYP(cls, ohlc, period=40):
-        """Buy pressure"""
-        return cls.BASPN(ohlc, period).buyPressure
-
-
-    @classmethod
-    def SELLP(cls, ohlc, period=40):
-        """Sell pressure"""
-        return cls.BASPN(ohlc, period).sellPressure
 
 
     @classmethod
@@ -1062,22 +1050,10 @@ class TA:
         varg = ohlc['volume'].ewm(span=period, min_periods=period - 1).mean()
         nv = ohlc['volume'] / varg
 
-        nbf = pd.Series((nbp * nv).ewm(span=20).mean(), name='buyPN')
-        nsf = pd.Series((nsp * nv).ewm(span=20).mean(), name='sellPN')
+        nbf = pd.Series((nbp * nv).ewm(span=20).mean(), name='Buy.')
+        nsf = pd.Series((nsp * nv).ewm(span=20).mean(), name='Sell.')
 
         return pd.concat([nbf, nsf], axis=1)
-
-
-    @classmethod
-    def BUYPN(cls, ohlc, period=40):
-        """Normalized buy pressure """
-        return cls.BASPN(ohlc, period).buyPN
-
-
-    @classmethod
-    def SELLPN(cls, ohlc, period=40):
-        """Normalized sell pressure """
-        return cls.BASPN(ohlc, period).sellPN
 
 
     @classmethod

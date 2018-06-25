@@ -433,3 +433,11 @@ def test_chaikin():
     c = TA.CHAIKIN(ohlc)
 
     assert c.values[-1] == 650594.74888467789
+
+
+def test_mfi():
+    '''test TA.MFI'''
+
+    mfi = TA.MFI(ohlc)
+
+    assert 0 < mfi.values[-1] < 100

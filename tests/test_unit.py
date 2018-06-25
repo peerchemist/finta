@@ -507,3 +507,12 @@ def test_emv():
 
     assert isinstance(emv, series.Series)
     assert emv.values[-1] == 2407071622.223393
+
+
+def test_cci():
+    '''test TA.CCI'''
+
+    cci = TA.CCI(ohlc)
+
+    assert isinstance(cci, series.Series)
+    assert cci.values[-1] == -13.422528354279628

@@ -1229,5 +1229,41 @@ class TA:
         return vr
 
 
+    @classmethod
+    def SQZMI(cls, ohlc, period=20):
+        '''
+        Squeeze Momentum Indicator
+
+        The Squeeze indicator attempts to identify periods of consolidation in a market.
+        In general the market is either in a period of quiet consolidation or vertical price discovery.
+        By identifying these calm periods, we have a better opportunity of getting into trades with the potential for larger moves.
+        Once a market enters into a “squeeze”, we watch the overall market momentum to help forecast the market direction and await a release of market energy.
+
+        :param pd.DataFrame ohlc: 'open, high, low, close' pandas DataFrame
+        :return pd.Series: indicator calcs as pandas Series
+
+        SQZMI['SQZ'] is bool True/False, if True squeeze is on. If false, squeeeze has fired.
+        SQZMI['DIR'] is bool True/False, if True momentum is up. If false, momentum is down.
+        '''
+
+        bb = cls.BBANDS(ohlc, period)
+        kc = cls.KC(ohlc, period)
+        mom = pd.Series(cls.MOM(ohlc), name="MOM")
+
+        comb = pd.concat([bb, kc, mom], axis=1)
+
+        def sqz_on(row):
+            if row['BB_LOWER'] > row['KC_LOWER'] and row['BB_UPPER'] < row['KC_UPPER']:
+                return True
+            else:
+                return False
+
+        direction = lambda d: d > 0
+        comb['SQZ'] = comb.apply(sqz_on, axis=1)
+        comb['DIR'] = comb['MOM'].apply(direction)
+
+        return pd.concat([comb['SQZ'], comb['DIR']], axis=1)
+
+
 if __name__ == '__main__':
     print([k for k in TA.__dict__.keys() if k[0] not in '_'])

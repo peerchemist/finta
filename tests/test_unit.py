@@ -639,3 +639,14 @@ def test_vr():
 
         vr = TA.VR(ohlc)
 
+
+def test_sqzmi():
+    '''test TA.SQZMI'''
+
+    sqz = TA.SQZMI(ohlc)
+
+    assert isinstance(sqz['SQZ'], series.Series)
+    assert isinstance(sqz['DIR'], series.Series)
+
+    assert not sqz['SQZ'].values[-1]
+    assert not sqz['DIR'].values[-1]

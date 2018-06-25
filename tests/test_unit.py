@@ -449,3 +449,11 @@ def test_obv():
     o = TA.OBV(ohlc)
 
     assert o.values[-1] == -277433.76499578007
+
+
+def test_wobv():
+    '''test TA.OBV'''
+
+    o = TA.WOBV(ohlc)
+
+    assert o.values[-1] == -85332065.01331231

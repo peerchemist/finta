@@ -479,3 +479,12 @@ def test_efi():
 
     assert isinstance(efi, series.Series)
     assert efi.values[-1] == 6918216.7131493781
+
+
+def test_cfi():
+    '''test TA.CFI'''
+
+    cfi = TA.CFI(ohlc)
+
+    assert isinstance(cfi, series.Series)
+    assert cfi.values[-1] == -84856289.556287795

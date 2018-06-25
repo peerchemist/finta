@@ -457,3 +457,16 @@ def test_wobv():
     o = TA.WOBV(ohlc)
 
     assert o.values[-1] == -85332065.01331231
+    o = TA.WOBV(ohlc)
+
+    assert isinstance(o, series.Series)
+    assert o.values[-1] == -85332065.01331231
+
+
+def test_vzo():
+    '''test TA.VZO'''
+
+    vzo = TA.MFI(ohlc)
+
+    assert isinstance(vzo, series.Series)
+    assert -100 < vzo.values[-1] < 100

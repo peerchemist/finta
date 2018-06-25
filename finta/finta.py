@@ -577,9 +577,9 @@ class TA:
         Keltner Channels are a trend following indicator used to identify reversals with channel breakouts and channel direction.
         Channels can also be used to identify overbought and oversold levels when the trend is flat."""
 
-        middle = pd.Series(cls.SMA(ohlc, 20), name='MIDDLE')
-        up = pd.Series(middle + (2 * cls.ATR(ohlc, 10)), name='UPPER')
-        down = pd.Series(middle - (2 * cls.ATR(ohlc, 10)), name='LOWER')
+        middle = pd.Series(cls.SMA(ohlc, 20), name='KC_MIDDLE')
+        up = pd.Series(middle + (2 * cls.ATR(ohlc, 10)), name='KC_UPPER')
+        down = pd.Series(middle - (2 * cls.ATR(ohlc, 10)), name='KC_LOWER')
 
         return pd.concat([up, middle, down], axis=1)
 

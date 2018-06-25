@@ -537,12 +537,12 @@ class TA:
         std = ohlc["close"].rolling(window=period).std()
 
         if not isinstance(MA, pd.core.series.Series):
-            middle_band = pd.Series(cls.SMA(ohlc, period), name='MIDDLE')
+            middle_band = pd.Series(cls.SMA(ohlc, period), name='BB_MIDDLE')
         else:
-            middle_band = pd.Series(MA, name='MIDDLE')
+            middle_band = pd.Series(MA, name='BB_MIDDLE')
 
-        upper_bb = pd.Series(middle_band + (2 * std), name='UPPER')
-        lower_bb = pd.Series(middle_band - (2 * std), name='LOWER')
+        upper_bb = pd.Series(middle_band + (2 * std), name='BB_UPPER')
+        lower_bb = pd.Series(middle_band - (2 * std), name='BB_LOWER')
 
         return pd.concat([upper_bb, middle_band, lower_bb], axis=1)
 
@@ -552,7 +552,7 @@ class TA:
 
         BB = TA.BBANDS(ohlc, period, MA, column)
 
-        return pd.Series((BB['UPPER'] - BB['LOWER']) / BB['MIDDLE'],
+        return pd.Series((BB['BB_UPPER'] - BB['BB_LOWER']) / BB['BB_MIDDLE'],
                          name='{0} period BBWITH'.format(period))
 
     @classmethod
@@ -563,7 +563,7 @@ class TA:
         """
 
         BB = TA.BBANDS(ohlc, period, MA, column)
-        percent_b = pd.Series((ohlc['close'] - BB['LOWER']) / (BB['UPPER'] - BB['LOWER']), name='%b')
+        percent_b = pd.Series((ohlc['close'] - BB['BB_LOWER']) / (BB['BB_UPPER'] - BB['BB_LOWER']), name='%b')
 
         return percent_b
 

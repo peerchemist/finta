@@ -432,6 +432,7 @@ def test_chaikin():
 
     c = TA.CHAIKIN(ohlc)
 
+    assert isinstance(c, series.Series)
     assert c.values[-1] == 650594.74888467789
 
 
@@ -440,6 +441,7 @@ def test_mfi():
 
     mfi = TA.MFI(ohlc)
 
+    assert isinstance(mfi, series.Series)
     assert 0 < mfi.values[-1] < 100
 
 
@@ -448,15 +450,13 @@ def test_obv():
 
     o = TA.OBV(ohlc)
 
+    assert isinstance(o, series.Series)
     assert o.values[-1] == -277433.76499578007
 
 
 def test_wobv():
     '''test TA.OBV'''
 
-    o = TA.WOBV(ohlc)
-
-    assert o.values[-1] == -85332065.01331231
     o = TA.WOBV(ohlc)
 
     assert isinstance(o, series.Series)

@@ -470,3 +470,12 @@ def test_vzo():
 
     assert isinstance(vzo, series.Series)
     assert -100 < vzo.values[-1] < 100
+
+
+def test_efi():
+    '''test TA.EFI'''
+
+    efi = TA.EFI(ohlc)
+
+    assert isinstance(efi, series.Series)
+    assert efi.values[-1] == 6918216.7131493781

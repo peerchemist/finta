@@ -441,3 +441,11 @@ def test_mfi():
     mfi = TA.MFI(ohlc)
 
     assert 0 < mfi.values[-1] < 100
+
+
+def test_obv():
+    '''test TA.OBV'''
+
+    o = TA.OBV(ohlc)
+
+    assert o.values[-1] == -277433.76499578007

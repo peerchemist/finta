@@ -1234,7 +1234,7 @@ class TA:
 
 
     @classmethod
-    def SQZMI(cls, ohlc, period=20):
+    def SQZMI(cls, ohlc, period=20, MA=None):
         '''
         Squeeze Momentum Indicator
 
@@ -1244,14 +1244,21 @@ class TA:
         Once a market enters into a “squeeze”, we watch the overall market momentum to help forecast the market direction and await a release of market energy.
 
         :param pd.DataFrame ohlc: 'open, high, low, close' pandas DataFrame
+        :period: int - number of periods to take into consideration
+        :MA pd.Series: override internal calculation which uses SMA with moving average of your choice
         :return pd.Series: indicator calcs as pandas Series
 
         SQZMI['SQZ'] is bool True/False, if True squeeze is on. If false, squeeeze has fired.
         SQZMI['DIR'] is bool True/False, if True momentum is up. If false, momentum is down.
         '''
 
-        bb = cls.BBANDS(ohlc, period)
-        kc = cls.KC(ohlc, period)
+        if not isinstance(MA, pd.core.series.Series):
+            ma = pd.Series(cls.SMA(ohlc, period))
+        else:
+            ma = None
+
+        bb = cls.BBANDS(ohlc, period, ma)
+        kc = cls.KC(ohlc, period, ma)
         mom = pd.Series(cls.MOM(ohlc), name="MOM")
 
         comb = pd.concat([bb, kc, mom], axis=1)

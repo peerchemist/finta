@@ -597,3 +597,16 @@ def test_fish():
 
     assert isinstance(fish, series.Series)
     assert fish.values[-1] == -2.2918315334720125
+
+
+def test_ichimoku():
+    '''test TA.ICHIMOKU'''
+
+    ichi = TA.ICHIMOKU(ohlc)
+
+    assert isinstance(ichi['TENKAN'], series.Series)
+    assert isinstance(ichi['KIJUN'], series.Series)
+    assert isinstance(ichi['SENKOU'], series.Series)
+    assert isinstance(ichi['CHIKOU'], series.Series)
+
+    assert ichi['SENKOU'].values[-1] == 8017.5804297030772

@@ -1168,15 +1168,15 @@ class TA:
         """
 
         tenkan_sen = pd.Series((ohlc['high'].rolling(window=9).mean() + ohlc['low'].rolling(window=9).mean()) / 2,
-                               name='tenkan_sen')  ## conversion line
+                               name='TENKAN')  ## conversion line
         kijun_sen = pd.Series((ohlc['high'].rolling(window=26).mean() + ohlc['low'].rolling(window=26).mean()) / 2,
-                              name='kijun_sen')  ## base line
+                              name='KIJUN')  ## base line
 
         senkou_span_a = pd.Series(((tenkan_sen / kijun_sen) / 2), name='senkou_span_a')  ## Leading span
         senkou_span_b = pd.Series(
                 ((ohlc['high'].rolling(window=52).mean() + ohlc['low'].rolling(window=52).mean()) / 2),
-                name='senkou_span_b')
-        chikou_span = pd.Series(ohlc['close'].shift(-26).rolling(window=26).mean(), name='chikou_span')
+                name='SENKOU')
+        chikou_span = pd.Series(ohlc['close'].shift(-26).rolling(window=26).mean(), name='CHIKOU')
 
         return pd.concat([tenkan_sen, kijun_sen, senkou_span_a, senkou_span_b, chikou_span], axis=1)
 

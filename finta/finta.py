@@ -1154,7 +1154,8 @@ class TA:
         raw = (2 * ((med - ndaylow) / (ndayhigh - ndaylow))) - 1
         smooth = raw.ewm(span=5).mean()
 
-        return pd.Series((np.log((1 + smooth) / (1 - smooth))).ewm(span=3).mean(), name='FISH')
+        return pd.Series((np.log((1 + smooth) / (1 - smooth))).ewm(span=3).mean(),
+                          name='{0} period FISH.'.format(period))
 
 
     @classmethod

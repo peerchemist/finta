@@ -588,3 +588,12 @@ def test_wto():
 
     assert wto['WT1.'].values[-1] == -60.290069910634649
     assert wto['WT2.'].values[-1] == -61.84105024273525
+
+
+def test_fish():
+    '''test TA.FISH'''
+
+    fish = TA.FISH(ohlc)
+
+    assert isinstance(fish, series.Series)
+    assert fish.values[-1] == -2.2918315334720125

@@ -610,3 +610,14 @@ def test_ichimoku():
     assert isinstance(ichi['CHIKOU'], series.Series)
 
     assert ichi['SENKOU'].values[-1] == 8017.5804297030772
+
+
+def test_apz():
+    '''test TA.APZ'''
+
+    apz = TA.APZ(ohlc)
+
+    assert isinstance(apz['UPPER'], series.Series)
+    assert isinstance(apz['LOWER'], series.Series)
+
+    assert apz['UPPER'].values[-1] == 7193.9772579390283

@@ -80,17 +80,18 @@ class TA:
         return pd.Series(TEMA, name='{0} period TEMA'.format(period))
 
     @classmethod
-    def TRIMA(cls, ohlc, period=18):  ## TMA
+    def TRIMA(cls, ohlc, period=18):  # TMA
         """
-        The Triangular Moving Average (TRIMA) [also known as TMA] represents an average of prices, but places weight on the middle prices of the time period.
+        The Triangular Moving Average (TRIMA) [also known as TMA] represents an average of prices,
+        but places weight on the middle prices of the time period.
         The calculations double-smooth the data using a window width that is one-half the length of the series.
-        The TRIMA is simply the SMA of the SMA
+        source: https://www.thebalance.com/triangular-moving-average-tma-description-and-uses-1031203
         """
 
-        SMA = cls.SMA(ohlc, period).rolling(center=False,
-                                            window=period,
-                                            min_periods=period - 1).mean()
-        return pd.Series(SMA, name='{0} period TRIMA'.format(period))
+        SMA = cls.SMA(ohlc, period).rolling(window=period,
+                                            min_periods=period-1).sum()
+
+        return pd.Series(SMA / period, name='{0} period TRIMA'.format(period))
 
     @classmethod
     def TRIX(cls, ohlc, period=15):

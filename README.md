@@ -13,7 +13,7 @@ might not be correct.**
 > Dependencies:
 
 -   python (3.4+)
--   pandas (0.18+)
+-   pandas (0.21.1+)
 
 TA class is very well documented and there should be no trouble
 exploring it and using with your data. Each class method expects proper

@@ -19,15 +19,15 @@ TA class is very well documented and there should be no trouble
 exploring it and using with your data. Each class method expects proper
 `ohlc` data as input.
 
-> How to:
+## Install:
 
-`git clone https://github.com/peerchemist/finta && cd finta`
+`pip install finta`
 
-`sudo python setup.py install` ## to install globally
+or latest development version:
 
-or 
+`pip install git+git://github.com/peerchemist/finta.git`
 
-`pip install --user .` ## to install locally (as user) which is prefered
+### Import
 
 `from finta import TA`
 
@@ -38,11 +38,11 @@ finta expects properly formated `ohlc` DataFrame, with column names in `lowercas
 
 To prepare the DataFrame into `ohlc` format you can do something as following:
 
-`df.columns = ["date", 'close', 'volume']` ## standardize column names of your source
+`df.columns = ["date", 'close', 'volume']`  # standardize column names of your source
 
-`df.set_index('date', inplace=True)` ## set index on the date column, which is requirement to sort it by time periods
+`df.set_index('date', inplace=True)`  # set index on the date column, which is requirement to sort it by time periods
 
-`ohlc = df["close"].resample("24h").ohlc()` ## select only price column, resample by time period and return daily ohlc (you can choose different time period)
+`ohlc = df["close"].resample("24h").ohlc()`  # select only price column, resample by time period and return daily ohlc (you can choose different time period)
 
 `ohlc()` method applied on the Series above will automatically format the dataframe in format expected by the library so resulting `ohlc` Series is ready to use.
 
@@ -57,7 +57,7 @@ moving average for 42 periods
 
 `TA.OBV(ohlc)` ## expects ["volume"] column as input
 
-`TA.BBANDS(ohlc)` ## will return Series with Bollinger Bands columns [upper_bb, SMA, lower_bb, b_bandwith, percent_b]
+`TA.BBANDS(ohlc)` ## will return Series with Bollinger Bands columns [BB_UPPER, BB_LOWER, BB_MIDDLE]
 
 `TA.BBANDS(ohlc, TA.KAMA(ohlc, 20))` ## will return Series with calculated BBANDS values but will use KAMA instead of MA for calculation, other types of Moving Averages are allowed as well.
 
@@ -66,6 +66,15 @@ moving average for 42 periods
 I welcome pull requests with new indicators or fixes for existing ones.
 Please submit only indicators that belong in public domain and are
 royalty free.
+
+## Contributing
+
+1. Fork it (https://github.com/peerchemist/finta/fork)
+2. Study how it's implemented
+3. Create your feature branch (`git checkout -b my-new-feature`)
+4. Commit your changes (`git commit -am 'Add some feature'`)
+5. Push to the branch (`git push origin my-new-feature`)
+6. Create a new Pull Request
 
 ------------------------------------------------------------------------
 

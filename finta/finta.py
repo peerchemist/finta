@@ -1276,6 +1276,24 @@ class TA:
 
         return pd.concat([comb['SQZ'], comb['DIR']], axis=1)
 
+    @classmethod
+    def VPT(cls, ohlc):
+        '''
+        Volume Price Trend
+        The Volume Price Trend uses the difference of price and previous price with volume and feedback to arrive at its final form.
+        If there appears to be a bullish divergence of price and the VPT (upward slope of the VPT and downward slope of the price) a buy opportunity exists.
+        Conversely, a bearish divergence (downward slope of the VPT and upward slope of the price) implies a sell opportunity. 
+        '''
+
+        hilow = ((ohlc['high'] - ohlc['low']) * 100)
+        openclose = ((ohlc['close'] - ohlc['open']) *100)
+        vol = (ohlc['volume'] / hilow)
+        spreadvol = (openclose * vol).cumsum()
+
+        vpt = spreadvol + spreadvol
+
+        return pd.Series(vpt, name="VPT")
+
 
 if __name__ == '__main__':
     print([k for k in TA.__dict__.keys() if k[0] not in '_'])

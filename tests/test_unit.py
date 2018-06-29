@@ -651,3 +651,12 @@ def test_sqzmi():
 
     assert not sqz['SQZ'].values[-1]
     assert not sqz['DIR'].values[-1]
+
+
+def test_vpt():
+    '''test TA.VPT'''
+
+    vpt = TA.VPT(ohlc)
+
+    assert isinstance(vpt, series.Series)
+    assert vpt.values[-1] == 94068.85032709363

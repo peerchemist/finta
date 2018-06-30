@@ -1295,5 +1295,34 @@ class TA:
         return pd.Series(vpt, name="VPT")
 
 
+    @classmethod
+    def FVE(cls, ohlc, period=22, factor=0.3):
+        '''
+        FVE is a money flow indicator, but it has two important innovations: first, the F VE takes into account both intra and
+        interday price action, and second, minimal price changes are taken into account by introducing a price threshold.
+        '''
+
+        hl2 = (ohlc['high'] + ohlc['low']) / 2
+        tp = TA.TP(ohlc)
+        smav = ohlc['volume'].rolling(window=period, min_periods=period-1).mean()
+        mf = pd.Series((ohlc['close'] - hl2 + tp.diff()), name='mf')
+
+        _mf = pd.concat([ohlc['close'], ohlc['volume'], mf], axis=1)
+
+        def vol_shift(row):
+
+            if row['mf'] > factor * row['close'] / 100:
+                return row['volume']
+            elif row['mf'] < -factor * row['close'] / 100:
+                return -row['volume']
+            else:
+                return 0
+
+        _mf['vol_shift'] = _mf.apply(vol_shift, axis=1)
+        _sum = _mf['vol_shift'].rolling(window=period, min_periods=period-1).sum()
+
+        return pd.Series((_sum / smav) / period * 100)
+
+
 if __name__ == '__main__':
     print([k for k in TA.__dict__.keys() if k[0] not in '_'])

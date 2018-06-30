@@ -660,3 +660,12 @@ def test_vpt():
 
     assert isinstance(vpt, series.Series)
     assert vpt.values[-1] == 94068.85032709363
+
+
+def test_fve():
+    '''test TA.FVE'''
+
+    fve = TA.FVE(ohlc)
+
+    assert isinstance(fve, series.Series)
+    assert -100 < fve.values[-1] < 100

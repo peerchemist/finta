@@ -777,8 +777,8 @@ class TA:
         VMPx = VMP.rolling(window=period).sum().tail(period)
         VMMx = VMM.rolling(window=period).sum().tail(period)
 
-        VIp = pd.Series(VMPx / cls.TR(ohlc, period), name='VIp').interpolate(method='index')
-        VIm = pd.Series(VMMx / cls.TR(ohlc, period), name='VIm').interpolate(method='index')
+        VIp = pd.Series(VMPx / cls.TR(ohlc), name='VIp').interpolate(method='index')
+        VIm = pd.Series(VMMx / cls.TR(ohlc), name='VIm').interpolate(method='index')
 
         return pd.concat([VIm, VIp], axis=1)
 

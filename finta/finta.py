@@ -454,7 +454,7 @@ class TA:
 
 
     @classmethod
-    def TR(cls, ohlc, period=14):
+    def TR(cls, ohlc):
         """True Range is the maximum of three price ranges.
         Most recent period's high minus the most recent period's low.
         Absolute value of the most recent period's high minus the previous close.
@@ -472,7 +472,7 @@ class TA:
 
         _TR['TR'] = _TR.max(axis=1)
 
-        return pd.Series(_TR['TR'], name="{0} period TR".format(period))
+        return pd.Series(_TR['TR'], name="TR")
 
     @classmethod
     def ATR(cls, ohlc, period=14):

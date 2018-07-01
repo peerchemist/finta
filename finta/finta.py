@@ -478,7 +478,7 @@ class TA:
     def ATR(cls, ohlc, period=14):
         """Average True Range is moving average of True Range."""
 
-        TR = cls.TR(ohlc, period * 2)
+        TR = cls.TR(ohlc)
         return pd.Series(TR.rolling(center=False, window=period, min_periods=period - 1).mean(),
                          name='{0} period ATR'.format(period))
 

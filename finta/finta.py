@@ -727,9 +727,9 @@ class TA:
             k.append(min(row.low, _row.close))
         bp = pd.Series(ohlc['close'] - k, name='bp')  ## Buying pressure
 
-        Average7 = bp.rolling(window=7).sum() / cls.TR(ohlc, 7).sum()
-        Average14 = bp.rolling(window=14).sum() / cls.TR(ohlc, 14).sum()
-        Average28 = bp.rolling(window=28).sum() / cls.TR(ohlc, 28).sum()
+        Average7 = bp.rolling(window=7).sum() / cls.TR(ohlc).rolling(window=7).sum()
+        Average14 = bp.rolling(window=14).sum() / cls.TR(ohlc).rolling(window=14).sum()
+        Average28 = bp.rolling(window=28).sum() / cls.TR(ohlc).rolling(window=28).sum()
 
         return pd.Series((100 * ((4 * Average7) + (2 * Average14) + Average28)) / (4 + 2 + 1))
 

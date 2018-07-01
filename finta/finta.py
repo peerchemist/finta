@@ -1258,8 +1258,8 @@ class TA:
         else:
             ma = None
 
-        bb = cls.BBANDS(ohlc, period, ma)
-        kc = cls.KC(ohlc, period, ma)
+        bb = cls.BBANDS(ohlc, period=period, MA=ma)
+        kc = cls.KC(ohlc, period=period)
         mom = pd.Series(cls.MOM(ohlc), name="MOM")
 
         comb = pd.concat([bb, kc, mom], axis=1)

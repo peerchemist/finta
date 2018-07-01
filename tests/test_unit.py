@@ -278,11 +278,9 @@ def test_kc():
     kc = TA.KC(ohlc, MA=ma)
 
     assert isinstance(kc['KC_UPPER'], series.Series)
-    assert isinstance(kc['KC_MIDDLE'], series.Series)
     assert isinstance(kc['KC_LOWER'], series.Series)
 
     assert kc['KC_UPPER'].values[-1] == 6059.9253031099979
-    assert kc['KC_MIDDLE'].values[-1] == 5325.9063725800006
     assert kc['KC_LOWER'].values[-1] == 4591.8874420500033
 
 

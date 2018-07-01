@@ -569,7 +569,7 @@ class TA:
         return percent_b
 
     @classmethod
-    def KC(cls, ohlc, period=20, MA=None):
+    def KC(cls, ohlc, period=20, atr_period=10, MA=None):
         """Keltner Channels [KC] are volatility-based envelopes set above and below an exponential moving average.
         This indicator is similar to Bollinger Bands, which use the standard deviation to set the bands.
         Instead of using the standard deviation, Keltner Channels use the Average True Range (ATR) to set channel distance.
@@ -579,14 +579,14 @@ class TA:
         Channels can also be used to identify overbought and oversold levels when the trend is flat."""
 
         if not isinstance(MA, pd.core.series.Series):
-            middle = pd.Series(cls.SMA(ohlc, period), name='KC_MIDDLE')
+            middle = pd.Series(cls.EMA(ohlc, period), name='KC_MIDDLE')
         else:
             middle = pd.Series(MA, name='KC_MIDDLE')
 
-        up = pd.Series(middle + (2 * cls.ATR(ohlc, 10)), name='KC_UPPER')
-        down = pd.Series(middle - (2 * cls.ATR(ohlc, 10)), name='KC_LOWER')
+        up = pd.Series(middle + (2 * cls.ATR(ohlc, atr_period)), name='KC_UPPER')
+        down = pd.Series(middle - (2 * cls.ATR(ohlc, atr_period)), name='KC_LOWER')
 
-        return pd.concat([up, middle, down], axis=1)
+        return pd.concat([up, down], axis=1)
 
     @classmethod
     def DO(cls, ohlc, period=20):

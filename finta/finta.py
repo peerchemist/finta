@@ -1260,9 +1260,7 @@ class TA:
 
         bb = cls.BBANDS(ohlc, period=period, MA=ma)
         kc = cls.KC(ohlc, period=period)
-        mom = pd.Series(cls.MOM(ohlc), name="MOM")
-
-        comb = pd.concat([bb, kc, mom], axis=1)
+        comb = pd.concat([bb, kc], axis=1)
 
         def sqz_on(row):
             if row['BB_LOWER'] > row['KC_LOWER'] and row['BB_UPPER'] < row['KC_UPPER']:
@@ -1270,11 +1268,10 @@ class TA:
             else:
                 return False
 
-        direction = lambda d: d > 0
         comb['SQZ'] = comb.apply(sqz_on, axis=1)
-        comb['DIR'] = comb['MOM'].apply(direction)
 
-        return pd.concat([comb['SQZ'], comb['DIR']], axis=1)
+        return pd.Series(comb['SQZ'], name='{0} period SQZMI'.format(period))
+
 
     @classmethod
     def VPT(cls, ohlc):

@@ -644,11 +644,9 @@ def test_sqzmi():
 
     sqz = TA.SQZMI(ohlc)
 
-    assert isinstance(sqz['SQZ'], series.Series)
-    assert isinstance(sqz['DIR'], series.Series)
+    assert isinstance(sqz, series.Series)
 
-    assert not sqz['SQZ'].values[-1]
-    assert not sqz['DIR'].values[-1]
+    assert not sqz.values[-1]
 
 
 def test_vpt():

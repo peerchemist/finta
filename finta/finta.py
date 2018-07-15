@@ -666,8 +666,8 @@ class TA:
          period or by taking a moving average of the result.
         """
 
-        highest_high = ohlc['high'].rolling(center=False, window=14).max()
-        lowest_low = ohlc['low'].rolling(center=False, window=14).min()
+        highest_high = ohlc['high'].rolling(center=False, window=period).max()
+        lowest_low = ohlc['low'].rolling(center=False, window=period).min()
 
         STOCH = pd.Series((highest_high - ohlc['close']) / (highest_high - lowest_low),
                           name='{0} period STOCH %K'.format(period))

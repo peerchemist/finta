@@ -173,9 +173,9 @@ def test_ppo():
     assert isinstance(ppo['SIGNAL'], series.Series)
     assert isinstance(ppo['HISTO'], series.Series)
 
-    assert  macd['PPO'].values[-1] == -5.85551658018139331574047901085578
-    assert  macd['SIGNAL'].values[-1] == -5.05947256175217674467603501398116
-    assert  macd['HISTO'].values[-1] == -0.79604401842921657106444399687462
+    assert  ppo['PPO'].values[-1] == -5.85551658018139331574047901085578
+    assert  ppo['SIGNAL'].values[-1] == -5.05947256175217674467603501398116
+    assert  ppo['HISTO'].values[-1] == -0.79604401842921657106444399687462
 
 
 def test_vw_macd():

@@ -774,8 +774,8 @@ class TA:
         VMP = pd.Series(ohlc['high'] - ohlc['low'].shift(-1).abs())
         VMM = pd.Series(ohlc['low'] - ohlc['high'].shift(-1).abs())
 
-        VMPx = VMP.rolling(window=period).sum().tail(period)
-        VMMx = VMM.rolling(window=period).sum().tail(period)
+        VMPx = VMP.rolling(window=period).sum()
+        VMMx = VMM.rolling(window=period).sum()
 
         VIp = pd.Series(VMPx / cls.TR(ohlc), name='VIp').interpolate(method='index')
         VIm = pd.Series(VMMx / cls.TR(ohlc), name='VIm').interpolate(method='index')

@@ -164,6 +164,20 @@ def test_macd():
     assert macd['SIGNAL'].values[-1] == -372.39851312056192
 
 
+def test_ppo():
+    '''test TA.PPO'''
+
+    ppo = TA.PPO(ohlc)
+
+    assert isinstance(ppo['PPO'], series.Series)
+    assert isinstance(ppo['SIGNAL'], series.Series)
+    assert isinstance(ppo['HISTO'], series.Series)
+
+    assert  ppo['PPO'].values[-1] == -5.85551658018139331574047901085578
+    assert  ppo['SIGNAL'].values[-1] == -5.05947256175217674467603501398116
+    assert  ppo['HISTO'].values[-1] == -0.79604401842921657106444399687462
+
+
 def test_vw_macd():
     '''test TA.VW_MACD'''
 

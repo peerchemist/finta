@@ -346,6 +346,24 @@ class TA:
         MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name='SIGNAL')
 
         return pd.concat([MACD, MACD_signal], axis=1)
+    
+    @classmethod
+    def PPO(cls, ohlc, period_fast=12, period_slow=26, signal=9):
+        """
+        PPO, PPO Signal and PPO difference.
+        As with MACD, the PPO reflects the convergence and divergence of two moving averages. 
+        While MACD measures the absolute difference between two moving averages, PPO makes this a relative value by dividing the difference by the slower moving average
+        """
+
+        EMA_fast = pd.Series(ohlc['close'].ewm(ignore_na=False, min_periods=period_slow - 1, span=period_fast).mean(),
+                             name='EMA_fast')
+        EMA_slow = pd.Series(ohlc['close'].ewm(ignore_na=False, min_periods=period_slow - 1, span=period_slow).mean(),
+                             name='EMA_slow')
+        PPO = pd.Series(((EMA_fast - EMA_slow)/EMA_slow) * 100, name='PPO')
+        PPO_signal = pd.Series(PPO.ewm(ignore_na=False, span=signal).mean(), name='SIGNAL')
+        PPO_histo = pd.Series(PPO - PPO_signal, name='HISTO')
+
+        return pd.concat([PPO, PPO_signal, PPO_histo], axis=1)
 
     @classmethod
     def VW_MACD(cls, ohlcv, period_fast=12, period_slow=26, signal=9):

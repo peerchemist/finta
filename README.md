@@ -10,6 +10,12 @@ Common financial technical indicators implemented in Pandas.
 **This is work in progress, bugs are expected and results of indicators
 might not be correct.**
 
+> Supported indicators:
+
+```
+['SMA', 'SMM', 'EMA', 'DEMA', 'TEMA', 'TRIMA', 'TRIX', 'AMA', 'LWMA', 'VAMA', 'VIDYA', 'ER', 'KAMA', 'ZLEMA', 'WMA', 'HMA', 'VWAP', 'SMMA', 'ALMA', 'MAMA', 'FRAMA', 'MACD', 'PPO', 'VW_MACD', 'MOM', 'ROC', 'RSI', 'IFT_RSI', 'SWI', 'TR', 'ATR', 'SAR', 'BBANDS', 'BBWIDTH', 'PERCENT_B', 'KC', 'DO', 'DMI', 'ADX', 'PIVOTS', 'STOCH', 'STOCHD', 'STOCHRSI', 'WILLIAMS', 'UO', 'AO', 'MI', 'VORTEX', 'KST', 'TSI', 'TP', 'ADL', 'CHAIKIN', 'MFI', 'OBV', 'WOBV', 'VZO', 'EFI', 'CFI', 'EBBP', 'EMV', 'CCI', 'COPP', 'BASP', 'BASPN', 'CMO', 'CHANDELIER', 'QSTICK', 'TMF', 'WTO', 'FISH', 'ICHIMOKU', 'APZ', 'VR', 'SQZMI', 'VPT', 'FVE']
+```
+
 > Dependencies:
 
 -   python (3.4+)

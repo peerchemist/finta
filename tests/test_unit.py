@@ -679,3 +679,12 @@ def test_fve():
 
     assert isinstance(fve, series.Series)
     assert -100 < fve.values[-1] < 100
+
+
+def test_vfi():
+    '''test TA.VFI'''
+
+    vfi = TA.VFI(ohlc)
+
+    assert isinstance(vfi, series.Series)
+    assert vfi.values[-1] == -6.4915954855911426

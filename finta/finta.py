@@ -1338,6 +1338,74 @@ class TA:
 
         return pd.Series((_sum / smav) / period * 100)
 
+    @classmethod
+    def VFI(cls, ohlc, period=130, smoothing_factor=3, factor=0.2, vfactor=2.5):
+        '''
+        This indicator tracks volume based on the direction of price
+        movement. It is similar to the On Balance Volume Indicator.
+        For more information see "Using Money Flow to Stay with the Trend",
+        and "Volume Flow Indicator Performance" in the June 2004 and 
+        July 2004 editions of Technical Analysis of Stocks and Commodities.
+
+        :period: Specifies the number of Periods used for VFI calculation
+        :factor: Specifies the fixed scaling factor for the VFI calculation
+        :vfactor: Specifies the cutoff for maximum volume in the VFI calculation
+        :smoothing_factor: Specifies the number of periods used in the short moving average
+        '''
+
+        import numpy as np
+
+        typical = TA.TP(ohlc)
+        # historical interday volatility and cutoff
+        inter = typical.apply(np.log).diff()
+        # stdev of linear1
+        vinter = inter.rolling(window=30).std()
+        cutoff = pd.Series(factor * vinter * ohlc['close'],
+                           name='cutoff')
+        price_change = pd.Series(typical.diff(),
+                                 name='pc') # price change
+        mav = pd.Series(ohlc['volume'].rolling(center=False, window=period,
+                         min_periods=period - 1).mean(),
+                         name='mav')
+
+        _va = pd.concat([ohlc['volume'], mav.shift()], axis=1)
+        _mp = pd.concat([price_change, cutoff], axis=1)
+        _mp.fillna(value=0, inplace=True)
+
+        def _vol_added(row):
+            ''' Determine the maximum volume to be added'''
+            
+            if row['volume'] > vfactor * row['mav']:
+                return vfactor * row['mav']
+            else:
+	            return row['volume']
+
+        added_vol = _va.apply(_vol_added, axis=1)
+
+        def _multiplier(row):
+            '''
+            Determine whether the volume is up volume (multiplier +1) or 
+            down volume (multiplier -1). If price change is smaller than cutoff
+            do not count volume (multipler 0).
+            '''
+            if row['pc'] > row['cutoff']: 
+	            return 1
+            elif row['pc'] < 0 - row['cutoff']:
+	            return -1
+            else:
+	            return 0
+
+        multiplier = _mp.apply(_multiplier, axis=1)
+        raw_sum = (multiplier * added_vol).rolling(window=period).sum()
+        raw_value = raw_sum / mav.shift()
+
+        vfi = pd.Series(raw_value.ewm(ignore_na=False,
+                                      min_periods=smoothing_factor - 1,
+                                      span=smoothing_factor).mean(),
+                                      name='VFI')
+
+        return vfi
+
 
 if __name__ == '__main__':
     print([k for k in TA.__dict__.keys() if k[0] not in '_'])

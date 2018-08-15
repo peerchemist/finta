@@ -1176,6 +1176,7 @@ class TA:
         ndayhigh = med.rolling(window=period).max()
         raw = (2 * ((med - ndaylow) / (ndayhigh - ndaylow))) - 1
         smooth = raw.ewm(span=5).mean()
+        smooth.dropna(inplace=True)
 
         return pd.Series((np.log((1 + smooth) / (1 - smooth))).ewm(span=3).mean(),
                           name='{0} period FISH.'.format(period))

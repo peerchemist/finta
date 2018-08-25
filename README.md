@@ -33,39 +33,46 @@ or latest development version:
 
 `pip install git+git://github.com/peerchemist/finta.git`
 
-### Import
+## Import
 
 `from finta import TA`
 
-> Prepare data to use with Finta:
+Prepare data to use with finta:
 
 finta expects properly formated `ohlc` DataFrame, with column names in `lowercase`:
- ["open", "high", "low", close"] and ["volume"] for indicators that expect `ohlcv` input.
+["open", "high", "low", close"] and ["volume"] for indicators that expect `ohlcv` input.
 
 To prepare the DataFrame into `ohlc` format you can do something as following:
 
-`df.columns = ["date", 'close', 'volume']`  # standardize column names of your source
+### standardize column names of your source
+`df.columns = ["date", 'close', 'volume']`
 
-`df.set_index('date', inplace=True)`  # set index on the date column, which is requirement to sort it by time periods
+### set index on the date column, which is requirement to sort it by time periods
+`df.set_index('date', inplace=True)`
 
-`ohlc = df["close"].resample("24h").ohlc()`  # select only price column, resample by time period and return daily ohlc (you can choose different time period)
+### select only price column, resample by time period and return daily ohlc (you can choose different time period)
+`ohlc = df["close"].resample("24h").ohlc()`
+
 
 `ohlc()` method applied on the Series above will automatically format the dataframe in format expected by the library so resulting `ohlc` Series is ready to use.
-
 ____________________________________________________________________________
 
-> Examples:
+## Examples:
 
-`TA.SMA(ohlc, 42)` ## will return Pandas Series object with Simple
-moving average for 42 periods
+### will return Pandas Series object with the Simple moving average for 42 periods
+`TA.SMA(ohlc, 42)`
 
-`TA.AO(ohlc)` ## will return Pandas Series object with "Awesome oscillator" values
+### will return Pandas Series object with "Awesome oscillator" values
+`TA.AO(ohlc)`
 
-`TA.OBV(ohlc)` ## expects ["volume"] column as input
+### expects ["volume"] column as input
+`TA.OBV(ohlc)`
 
-`TA.BBANDS(ohlc)` ## will return Series with Bollinger Bands columns [BB_UPPER, BB_LOWER, BB_MIDDLE]
+### will return Series with Bollinger Bands columns [BB_UPPER, BB_LOWER]
+`TA.BBANDS(ohlc)`
 
-`TA.BBANDS(ohlc, TA.KAMA(ohlc, 20))` ## will return Series with calculated BBANDS values but will use KAMA instead of MA for calculation, other types of Moving Averages are allowed as well.
+### will return Series with calculated BBANDS values but will use KAMA instead of MA for calculation, other types of Moving Averages are allowed as well.
+`TA.BBANDS(ohlc, TA.KAMA(ohlc, 20))`
 
 ------------------------------------------------------------------------
 

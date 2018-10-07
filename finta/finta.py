@@ -1196,7 +1196,7 @@ class TA:
         kijun_sen = pd.Series((ohlc['high'].rolling(window=26).mean() + ohlc['low'].rolling(window=26).mean()) / 2,
                               name='KIJUN')  ## base line
 
-        senkou_span_a = pd.Series(((tenkan_sen / kijun_sen) / 2), name='senkou_span_a')  ## Leading span
+        senkou_span_a = pd.Series(((tenkan_sen + kijun_sen) / 2), name='senkou_span_a') ## Leading span
         senkou_span_b = pd.Series(
                 ((ohlc['high'].rolling(window=52).mean() + ohlc['low'].rolling(window=52).mean()) / 2),
                 name='SENKOU')

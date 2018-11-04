@@ -129,7 +129,7 @@ class TA:
         Volume Adjusted Moving Average
         """
 
-        vp = ohlcv['volume'] * ohlcv['close']
+        vp = ohlcv['volume'] * ohlcv[column]
         volsum = ohlcv['volume'].rolling(window=period).mean()
         volRatio = pd.Series(vp / volsum, name='VAMA')
         cumSum = (volRatio * ohlcv[column]).rolling(window=period).sum()

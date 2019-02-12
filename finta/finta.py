@@ -346,7 +346,7 @@ class TA:
         MACD_signal = pd.Series(MACD.ewm(ignore_na=False, span=signal).mean(), name='SIGNAL')
 
         return pd.concat([MACD, MACD_signal], axis=1)
-    
+
     @classmethod
     def PPO(cls, ohlc, period_fast=12, period_slow=26, signal=9):
         """
@@ -551,8 +551,8 @@ class TA:
 
          This method allows input of some other form of moving average like EMA or KAMA around which BBAND will be formed.
          Pass desired moving average as <MA> argument. For example BBANDS(MA=TA.KAMA(20)).
-         """ 
-         
+         """
+
         std = ohlc["close"].rolling(window=period).std()
 
         if not isinstance(MA, pd.core.series.Series):
@@ -723,8 +723,8 @@ class TA:
          The oscillator is on a negative scale, from −100 (lowest) up to 0 (highest).
         """
 
-        highest_high = ohlc['high'].rolling(center=False, window=14).max()
-        lowest_low = ohlc['low'].rolling(center=False, window=14).min()
+        highest_high = ohlc['high'].rolling(center=False, window=period).max()
+        lowest_low = ohlc['low'].rolling(center=False, window=period).min()
 
         WR = pd.Series((highest_high - ohlc['close']) / (highest_high - lowest_low),
                        name='{0} Williams %R'.format(period))
@@ -1298,7 +1298,7 @@ class TA:
         Volume Price Trend
         The Volume Price Trend uses the difference of price and previous price with volume and feedback to arrive at its final form.
         If there appears to be a bullish divergence of price and the VPT (upward slope of the VPT and downward slope of the price) a buy opportunity exists.
-        Conversely, a bearish divergence (downward slope of the VPT and upward slope of the price) implies a sell opportunity. 
+        Conversely, a bearish divergence (downward slope of the VPT and upward slope of the price) implies a sell opportunity.
         '''
 
         hilow = ((ohlc['high'] - ohlc['low']) * 100)
@@ -1345,7 +1345,7 @@ class TA:
         This indicator tracks volume based on the direction of price
         movement. It is similar to the On Balance Volume Indicator.
         For more information see "Using Money Flow to Stay with the Trend",
-        and "Volume Flow Indicator Performance" in the June 2004 and 
+        and "Volume Flow Indicator Performance" in the June 2004 and
         July 2004 editions of Technical Analysis of Stocks and Commodities.
 
         :period: Specifies the number of Periods used for VFI calculation
@@ -1375,7 +1375,7 @@ class TA:
 
         def _vol_added(row):
             ''' Determine the maximum volume to be added'''
-            
+
             if row['volume'] > vfactor * row['mav']:
                 return vfactor * row['mav']
             else:
@@ -1385,11 +1385,11 @@ class TA:
 
         def _multiplier(row):
             '''
-            Determine whether the volume is up volume (multiplier +1) or 
+            Determine whether the volume is up volume (multiplier +1) or
             down volume (multiplier -1). If price change is smaller than cutoff
             do not count volume (multipler 0).
             '''
-            if row['pc'] > row['cutoff']: 
+            if row['pc'] > row['cutoff']:
 	            return 1
             elif row['pc'] < 0 - row['cutoff']:
 	            return -1

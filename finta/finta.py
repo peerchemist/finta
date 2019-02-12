@@ -408,7 +408,7 @@ class TA:
         RSI can also be used to identify the general trend."""
 
         ## get the price diff
-        delta = ohlc['close'].diff()[1:]
+        delta = ohlc['close'].diff()
 
         ## positive gains (up) and negative gains (down) Series
         up, down = delta.copy(), delta.copy()

@@ -694,12 +694,13 @@ class TA:
 
 
     @classmethod
-    def STOCHD(cls, ohlc, period=3):
+    def STOCHD(cls, ohlc, period=3, stoch_period=14):
         """Stochastic oscillator %D
         STOCH%D is a 3 period simple moving average of %K.
         """
 
-        return pd.Series(cls.STOCH(ohlc).rolling(center=False, window=period, min_periods=period - 1).mean(),
+        return pd.Series(cls.STOCH(ohlc, stoch_period).rolling(
+                         center=False, window=period, min_periods=period - 1).mean(),
                          name='{0} perood STOCH %D.'.format(period))
 
 

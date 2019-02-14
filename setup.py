@@ -16,7 +16,7 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 setup(name='finta',
-      version='0.3.3',
+      version='0.3.4',
       description=' Common financial technical indicators implemented in Pandas.',
       long_description=long_description,
       long_description_content_type='text/markdown',

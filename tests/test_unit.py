@@ -688,3 +688,24 @@ def test_vfi():
 
     assert isinstance(vfi, series.Series)
     assert vfi.values[-1] == -6.4915954855911426
+
+
+def test_pivot():
+    '''test TA.PIVOT'''
+
+    pivot = TA.PIVOT(ohlc)
+    assert isinstance(pivot['pivot'], series.Series)
+    assert isinstance(pivot['support_1'], series.Series)
+    assert isinstance(pivot['support_2'], series.Series)
+    assert isinstance(pivot['support_3'], series.Series)
+    assert isinstance(pivot['res_1'], series.Series)
+    assert isinstance(pivot['res_2'], series.Series)
+    assert isinstance(pivot['res_3'], series.Series)
+
+    assert pivot['pivot'].values[-1] == 6467.4062976066671
+    assert pivot['support_1'].values[-1] == 6364.0047023933339
+    assert pivot['support_2'].values[-1] == 6311.0094047866669
+    assert pivot['support_3'].values[-1] == 6207.6078095733337
+    assert pivot['res_1'].values[-1] == 6520.4015952133341
+    assert pivot['res_2'].values[-1] == 6623.8031904266672
+    assert pivot['res_3'].values[-1] == 6676.7984880333343

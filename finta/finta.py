@@ -750,10 +750,33 @@ class TA:
                                 name='{0} period ADX.'.format(period))
 
     @classmethod
-    def PIVOTS(cls, ohlc: DataFrame) -> Series:
-        """Pivots"""
-        # http://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:pivot_points
-        raise NotImplementedError
+    def PIVOT(cls, ohlc: DataFrame) -> Series:
+        """
+        Pivot Points are significant support and resistance levels that can be used to determine potential trades.
+        The pivot points come as a technical analysis indicator calculated using a financial instrument’s high, low, and close value.
+        The pivot point’s parameters are usually taken from the previous day’s trading range.
+        This means you’ll have to use the previous day’s range for today’s pivot points.
+        Or, last week’s range if you want to calculate weekly pivot points or, last month’s range for monthly pivot points and so on.
+        """
+
+        df = ohlc.shift()  # pivot is calculated of the previous trading session
+
+        pivot = pd.Series(cls.TP(df), name="pivot")  # pivot is basically a lagging TP
+
+        support_1 = (pivot * 2) - df['high']
+        support_2 = pivot - (df['high'] - df['low'])
+        support_3 = df['low'] - (2 * (df['high'] - pivot))
+
+        res_1 = (pivot * 2) - df['low']
+        res_2 = pivot + (df['high'] - df['low'])
+        res_3 = df['high'] + (2 * (pivot - df['low']))
+
+        return pd.concat(
+                        [pivot, pd.Series(support_1, name="support_1"), pd.Series(support_2, name="support_2"),
+                        pd.Series(support_3, name="support_3"), pd.Series(res_1, name="res_1"),
+                        pd.Series(res_2, name="res_2"), pd.Series(res_3, name="res_3")
+                        ]
+                        , axis=1)
 
     @classmethod
     def STOCH(cls, ohlc: DataFrame, period: int=14

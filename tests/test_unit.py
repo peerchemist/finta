@@ -11,14 +11,13 @@ def rootdir():
     return os.path.dirname(os.path.abspath(__file__))
 
 
-data_file = os.path.join(rootdir(), 'data/bittrex:btc-usdt.csv')
+data_file = os.path.join(rootdir(), "data/bittrex:btc-usdt.csv")
 
-ohlc = pd.read_csv(data_file, index_col='date',
-                   parse_dates=True)
+ohlc = pd.read_csv(data_file, index_col="date", parse_dates=True)
 
 
 def test_sma():
-    '''test TA.ma'''
+    """test TA.ma"""
 
     ma = TA.SMA(ohlc, 14)
 
@@ -27,7 +26,7 @@ def test_sma():
 
 
 def test_smm():
-    '''test TA.SMM'''
+    """test TA.SMM"""
 
     ma = TA.SMM(ohlc)
 
@@ -36,7 +35,7 @@ def test_smm():
 
 
 def test_ema():
-    '''test TA.EMA'''
+    """test TA.EMA"""
 
     ma = TA.EMA(ohlc, 50)
 
@@ -45,7 +44,7 @@ def test_ema():
 
 
 def test_dema():
-    '''test TA.DEMA'''
+    """test TA.DEMA"""
 
     ma = TA.DEMA(ohlc)
 
@@ -54,7 +53,7 @@ def test_dema():
 
 
 def test_tema():
-    '''test TA.TEMA'''
+    """test TA.TEMA"""
 
     ma = TA.TEMA(ohlc)
 
@@ -63,7 +62,7 @@ def test_tema():
 
 
 def test_trima():
-    '''test TA.TRIMA'''
+    """test TA.TRIMA"""
 
     ma = TA.TRIMA(ohlc)
 
@@ -72,7 +71,7 @@ def test_trima():
 
 
 def test_trix():
-    '''test TA.TRIX'''
+    """test TA.TRIX"""
 
     ma = TA.TRIX(ohlc)
 
@@ -81,7 +80,7 @@ def test_trix():
 
 
 def test_vama():
-    '''test TA.VAMA'''
+    """test TA.VAMA"""
 
     ma = TA.VAMA(ohlc, 20)
 
@@ -90,7 +89,7 @@ def test_vama():
 
 
 def test_er():
-    '''test TA.ER'''
+    """test TA.ER"""
 
     er = TA.ER(ohlc)
 
@@ -99,7 +98,7 @@ def test_er():
 
 
 def test_kama():
-    '''test TA.KAMA'''
+    """test TA.KAMA"""
 
     ma = TA.KAMA(ohlc)
 
@@ -108,7 +107,7 @@ def test_kama():
 
 
 def test_zlema():
-    '''test TA.ZLEMA'''
+    """test TA.ZLEMA"""
 
     ma = TA.ZLEMA(ohlc)
 
@@ -117,7 +116,7 @@ def test_zlema():
 
 
 def test_wma():
-    '''test TA.WMA'''
+    """test TA.WMA"""
 
     ma = TA.WMA(ohlc)
 
@@ -126,7 +125,7 @@ def test_wma():
 
 
 def test_hma():
-    '''test TA.WMA'''
+    """test TA.WMA"""
 
     ma = TA.HMA(ohlc)
 
@@ -135,7 +134,7 @@ def test_hma():
 
 
 def test_vwap():
-    '''test TA.VWAP'''
+    """test TA.VWAP"""
 
     ma = TA.VWAP(ohlc)
 
@@ -144,7 +143,7 @@ def test_vwap():
 
 
 def test_smma():
-    '''test TA.SMMA'''
+    """test TA.SMMA"""
 
     ma = TA.SMMA(ohlc)
 
@@ -153,45 +152,45 @@ def test_smma():
 
 
 def test_macd():
-    '''test TA.MACD'''
+    """test TA.MACD"""
 
     macd = TA.MACD(ohlc)
 
-    assert isinstance(macd['MACD'], series.Series)
-    assert isinstance(macd['SIGNAL'], series.Series)
+    assert isinstance(macd["MACD"], series.Series)
+    assert isinstance(macd["SIGNAL"], series.Series)
 
-    assert macd['MACD'].values[-1] == -419.21923359275115
-    assert macd['SIGNAL'].values[-1] == -372.39851312056192
+    assert macd["MACD"].values[-1] == -419.21923359275115
+    assert macd["SIGNAL"].values[-1] == -372.39851312056192
 
 
 def test_ppo():
-    '''test TA.PPO'''
+    """test TA.PPO"""
 
     ppo = TA.PPO(ohlc)
 
-    assert isinstance(ppo['PPO'], series.Series)
-    assert isinstance(ppo['SIGNAL'], series.Series)
-    assert isinstance(ppo['HISTO'], series.Series)
+    assert isinstance(ppo["PPO"], series.Series)
+    assert isinstance(ppo["SIGNAL"], series.Series)
+    assert isinstance(ppo["HISTO"], series.Series)
 
-    assert  ppo['PPO'].values[-1] == -5.85551658018139331574047901085578
-    assert  ppo['SIGNAL'].values[-1] == -5.05947256175217674467603501398116
-    assert  ppo['HISTO'].values[-1] == -0.79604401842921657106444399687462
+    assert ppo["PPO"].values[-1] == -5.85551658018139331574047901085578
+    assert ppo["SIGNAL"].values[-1] == -5.05947256175217674467603501398116
+    assert ppo["HISTO"].values[-1] == -0.79604401842921657106444399687462
 
 
 def test_vw_macd():
-    '''test TA.VW_MACD'''
+    """test TA.VW_MACD"""
 
     macd = TA.VW_MACD(ohlc)
 
-    assert isinstance(macd['MACD'], series.Series)
-    assert isinstance(macd['SIGNAL'], series.Series)
+    assert isinstance(macd["MACD"], series.Series)
+    assert isinstance(macd["SIGNAL"], series.Series)
 
-    assert macd['MACD'].values[-1] == -535.21281201397142
-    assert macd['SIGNAL'].values[-1] == -511.64584818187575
+    assert macd["MACD"].values[-1] == -535.21281201397142
+    assert macd["SIGNAL"].values[-1] == -511.64584818187575
 
 
 def test_mom():
-    '''test TA.MOM'''
+    """test TA.MOM"""
 
     mom = TA.MOM(ohlc)
 
@@ -200,7 +199,7 @@ def test_mom():
 
 
 def test_roc():
-    '''test TA.ROC'''
+    """test TA.ROC"""
 
     roc = TA.ROC(ohlc)
 
@@ -209,7 +208,7 @@ def test_roc():
 
 
 def test_rsi():
-    '''test TA.RSI'''
+    """test TA.RSI"""
 
     rsi = TA.RSI(ohlc)
 
@@ -218,7 +217,7 @@ def test_rsi():
 
 
 def test_ift_rsi():
-    '''test TA.IFT_RSI'''
+    """test TA.IFT_RSI"""
 
     rsi = TA.IFT_RSI(ohlc)
 
@@ -227,7 +226,7 @@ def test_ift_rsi():
 
 
 def test_tr():
-    '''test TA.TR'''
+    """test TA.TR"""
 
     tr = TA.TR(ohlc)
 
@@ -236,7 +235,7 @@ def test_tr():
 
 
 def test_atr():
-    '''test TA.ATR'''
+    """test TA.ATR"""
 
     tr = TA.ATR(ohlc)
 
@@ -245,7 +244,7 @@ def test_atr():
 
 
 def test_sar():
-    '''test TA.SAR'''
+    """test TA.SAR"""
 
     sar = TA.SAR(ohlc)
 
@@ -254,21 +253,21 @@ def test_sar():
 
 
 def test_bbands():
-    '''test TA.BBANDS'''
+    """test TA.BBANDS"""
 
     bb = TA.BBANDS(ohlc)
 
-    assert isinstance(bb['BB_UPPER'], series.Series)
-    assert isinstance(bb['BB_MIDDLE'], series.Series)
-    assert isinstance(bb['BB_LOWER'], series.Series)
+    assert isinstance(bb["BB_UPPER"], series.Series)
+    assert isinstance(bb["BB_MIDDLE"], series.Series)
+    assert isinstance(bb["BB_LOWER"], series.Series)
 
-    assert bb['BB_UPPER'].values[-1] == 8212.7979228041968
-    assert bb['BB_MIDDLE'].values[-1] == 7110.5508235434954
-    assert bb['BB_LOWER'].values[-1] == 6008.303724282795
+    assert bb["BB_UPPER"].values[-1] == 8212.7979228041968
+    assert bb["BB_MIDDLE"].values[-1] == 7110.5508235434954
+    assert bb["BB_LOWER"].values[-1] == 6008.303724282795
 
 
 def test_bbwidth():
-    '''test TA.BBWIDTH'''
+    """test TA.BBWIDTH"""
 
     bb = TA.BBWIDTH(ohlc)
 
@@ -277,7 +276,7 @@ def test_bbwidth():
 
 
 def test_percentb():
-    '''test TA.PERCENT_B'''
+    """test TA.PERCENT_B"""
 
     bb = TA.PERCENT_B(ohlc)
 
@@ -286,46 +285,46 @@ def test_percentb():
 
 
 def test_kc():
-    '''test TA.KC'''
+    """test TA.KC"""
 
     ma = TA.ZLEMA(ohlc, 20)
     kc = TA.KC(ohlc, MA=ma)
 
-    assert isinstance(kc['KC_UPPER'], series.Series)
-    assert isinstance(kc['KC_LOWER'], series.Series)
+    assert isinstance(kc["KC_UPPER"], series.Series)
+    assert isinstance(kc["KC_LOWER"], series.Series)
 
-    assert kc['KC_UPPER'].values[-1] == 6059.9253031099979
-    assert kc['KC_LOWER'].values[-1] == 4591.8874420500033
+    assert kc["KC_UPPER"].values[-1] == 6059.9253031099979
+    assert kc["KC_LOWER"].values[-1] == 4591.8874420500033
 
 
 def test_do():
-    '''test TA.DO'''
+    """test TA.DO"""
 
     do = TA.DO(ohlc)
 
-    assert isinstance(do['UPPER'], series.Series)
-    assert isinstance(do['MIDDLE'], series.Series)
-    assert isinstance(do['LOWER'], series.Series)
+    assert isinstance(do["UPPER"], series.Series)
+    assert isinstance(do["MIDDLE"], series.Series)
+    assert isinstance(do["LOWER"], series.Series)
 
-    assert do['UPPER'].values[-1] == 7770.0
-    assert do['MIDDLE'].values[-1] == 7010.0005000000001
-    assert do['LOWER'].values[-1] == 6250.0010000000002
+    assert do["UPPER"].values[-1] == 7770.0
+    assert do["MIDDLE"].values[-1] == 7010.0005000000001
+    assert do["LOWER"].values[-1] == 6250.0010000000002
 
 
 def test_dmi():
-    '''test TA.DMI'''
+    """test TA.DMI"""
 
     dmi = TA.DMI(ohlc)
 
-    assert isinstance(dmi['DI+'], series.Series)
-    assert isinstance(dmi['DI-'], series.Series)
+    assert isinstance(dmi["DI+"], series.Series)
+    assert isinstance(dmi["DI-"], series.Series)
 
-    assert dmi['DI+'].values[-1] == 0.32826999511691435
-    assert dmi['DI-'].values[-1] == 10.09866984475557
+    assert dmi["DI+"].values[-1] == 0.32826999511691435
+    assert dmi["DI-"].values[-1] == 10.09866984475557
 
 
 def test_adx():
-    '''test TA.ADX'''
+    """test TA.ADX"""
 
     adx = TA.ADX(ohlc)
 
@@ -334,7 +333,7 @@ def test_adx():
 
 
 def test_stoch():
-    '''test TA.STOCH'''
+    """test TA.STOCH"""
 
     st = TA.STOCH(ohlc)
 
@@ -343,7 +342,7 @@ def test_stoch():
 
 
 def test_stochd():
-    '''test TA.STOCHD'''
+    """test TA.STOCHD"""
 
     st = TA.STOCHD(ohlc)
 
@@ -352,7 +351,7 @@ def test_stochd():
 
 
 def test_stochrsi():
-    '''test TA.STOCRSI'''
+    """test TA.STOCRSI"""
 
     st = TA.STOCHRSI(ohlc)
 
@@ -361,7 +360,7 @@ def test_stochrsi():
 
 
 def test_williams():
-    '''test TA.WILLIAMS'''
+    """test TA.WILLIAMS"""
 
     w = TA.WILLIAMS(ohlc)
 
@@ -370,7 +369,7 @@ def test_williams():
 
 
 def test_uo():
-    '''test TA.UO'''
+    """test TA.UO"""
 
     uo = TA.UO(ohlc)
 
@@ -379,7 +378,7 @@ def test_uo():
 
 
 def test_ao():
-    '''test TA.AO'''
+    """test TA.AO"""
 
     ao = TA.AO(ohlc)
 
@@ -388,7 +387,7 @@ def test_ao():
 
 
 def test_mi():
-    '''test TA.MI'''
+    """test TA.MI"""
 
     mi = TA.MI(ohlc)
 
@@ -397,43 +396,43 @@ def test_mi():
 
 
 def test_vortex():
-    '''test TA.VORTEX'''
+    """test TA.VORTEX"""
 
     v = TA.VORTEX(ohlc)
 
-    assert isinstance(v['VIp'], series.Series)
-    assert isinstance(v['VIm'], series.Series)
+    assert isinstance(v["VIp"], series.Series)
+    assert isinstance(v["VIm"], series.Series)
 
-    assert v['VIp'].values[-1] == 37.443158543691659
-    assert v['VIm'].values[-1] == -22.605012093615489
+    assert v["VIp"].values[-1] == 37.443158543691659
+    assert v["VIm"].values[-1] == -22.605012093615489
 
 
 def test_kst():
-    '''test TA.KST'''
+    """test TA.KST"""
 
     kst = TA.KST(ohlc)
 
-    assert isinstance(kst['KST'], series.Series)
-    assert isinstance(kst['signal'], series.Series)
+    assert isinstance(kst["KST"], series.Series)
+    assert isinstance(kst["signal"], series.Series)
 
-    assert kst['KST'].values[-1] == -161.7861811191122
-    assert kst['signal'].values[-1] == -141.29962282675882
+    assert kst["KST"].values[-1] == -161.7861811191122
+    assert kst["signal"].values[-1] == -141.29962282675882
 
 
 def test_tsi():
-    '''test TA.TSI'''
+    """test TA.TSI"""
 
     tsi = TA.TSI(ohlc)
 
-    assert isinstance(tsi['TSI'], series.Series)
-    assert isinstance(tsi['signal'], series.Series)
+    assert isinstance(tsi["TSI"], series.Series)
+    assert isinstance(tsi["signal"], series.Series)
 
-    assert tsi['TSI'].values[-1] == -32.128372005959058
-    assert tsi['signal'].values[-1] == -26.94173826727873
+    assert tsi["TSI"].values[-1] == -32.128372005959058
+    assert tsi["signal"].values[-1] == -26.94173826727873
 
 
 def test_tp():
-    '''test TA.TP'''
+    """test TA.TP"""
 
     tp = TA.TP(ohlc)
 
@@ -450,7 +449,7 @@ def test_adl():
 
 
 def test_chaikin():
-    '''test TA.CHAIKIN'''
+    """test TA.CHAIKIN"""
 
     c = TA.CHAIKIN(ohlc)
 
@@ -459,7 +458,7 @@ def test_chaikin():
 
 
 def test_mfi():
-    '''test TA.MFI'''
+    """test TA.MFI"""
 
     mfi = TA.MFI(ohlc)
 
@@ -468,7 +467,7 @@ def test_mfi():
 
 
 def test_obv():
-    '''test TA.OBV'''
+    """test TA.OBV"""
 
     o = TA.OBV(ohlc)
 
@@ -477,7 +476,7 @@ def test_obv():
 
 
 def test_wobv():
-    '''test TA.OBV'''
+    """test TA.OBV"""
 
     o = TA.WOBV(ohlc)
 
@@ -486,7 +485,7 @@ def test_wobv():
 
 
 def test_vzo():
-    '''test TA.VZO'''
+    """test TA.VZO"""
 
     vzo = TA.MFI(ohlc)
 
@@ -495,7 +494,7 @@ def test_vzo():
 
 
 def test_efi():
-    '''test TA.EFI'''
+    """test TA.EFI"""
 
     efi = TA.EFI(ohlc)
 
@@ -504,7 +503,7 @@ def test_efi():
 
 
 def test_cfi():
-    '''test TA.CFI'''
+    """test TA.CFI"""
 
     cfi = TA.CFI(ohlc)
 
@@ -513,17 +512,17 @@ def test_cfi():
 
 
 def test_ebbp():
-    '''test TA.EBBP'''
+    """test TA.EBBP"""
 
     eb = TA.EBBP(ohlc)
 
-    assert isinstance(eb['Bull.'], series.Series)
-    assert isinstance(eb['Bear.'], series.Series)
-    assert eb['Bull.'].values[-1] == -285.40231904032862
+    assert isinstance(eb["Bull."], series.Series)
+    assert isinstance(eb["Bear."], series.Series)
+    assert eb["Bull."].values[-1] == -285.40231904032862
 
 
 def test_emv():
-    '''test TA.EMV'''
+    """test TA.EMV"""
 
     emv = TA.EMV(ohlc)
 
@@ -532,7 +531,7 @@ def test_emv():
 
 
 def test_cci():
-    '''test TA.CCI'''
+    """test TA.CCI"""
 
     cci = TA.CCI(ohlc)
 
@@ -541,31 +540,31 @@ def test_cci():
 
 
 def test_basp():
-    '''test TA.BASP'''
+    """test TA.BASP"""
 
     basp = TA.BASP(ohlc)
 
-    assert isinstance(basp['Buy.'], series.Series)
-    assert isinstance(basp['Sell.'], series.Series)
+    assert isinstance(basp["Buy."], series.Series)
+    assert isinstance(basp["Sell."], series.Series)
 
-    assert basp['Buy.'].values[-1] == 0.066916805574281202
-    assert basp['Sell.'].values[-1] == 0.091486900946605054
+    assert basp["Buy."].values[-1] == 0.066916805574281202
+    assert basp["Sell."].values[-1] == 0.091486900946605054
 
 
 def test_baspn():
-    '''test TA.BASPN'''
+    """test TA.BASPN"""
 
     basp = TA.BASPN(ohlc)
 
-    assert isinstance(basp['Buy.'], series.Series)
-    assert isinstance(basp['Sell.'], series.Series)
+    assert isinstance(basp["Buy."], series.Series)
+    assert isinstance(basp["Sell."], series.Series)
 
-    assert basp['Buy.'].values[-1] == 0.56374213100174275
-    assert basp['Sell.'].values[-1] == 0.74103021131003344
+    assert basp["Buy."].values[-1] == 0.56374213100174275
+    assert basp["Sell."].values[-1] == 0.74103021131003344
 
 
 def test_cmo():
-    '''test TA.CMO'''
+    """test TA.CMO"""
 
     cmo = TA.CMO(ohlc)
 
@@ -574,19 +573,19 @@ def test_cmo():
 
 
 def test_chandelier():
-    '''test TA.CHANDELIER'''
+    """test TA.CHANDELIER"""
 
     chan = TA.CHANDELIER(ohlc)
 
-    assert isinstance(chan['Long.'], series.Series)
-    assert isinstance(chan['Short.'], series.Series)
+    assert isinstance(chan["Long."], series.Series)
+    assert isinstance(chan["Short."], series.Series)
 
-    assert chan['Long.'].values[-1] == 6723.8927646477259
-    assert chan['Short.'].values[-1] == 5326.4927656377258
+    assert chan["Long."].values[-1] == 6723.8927646477259
+    assert chan["Short."].values[-1] == 5326.4927656377258
 
 
 def test_qstick():
-    '''test TA.QSTICK'''
+    """test TA.QSTICK"""
 
     q = TA.QSTICK(ohlc)
 
@@ -601,19 +600,19 @@ def test_tmf():
 
 
 def test_wto():
-    '''test TA.WTO'''
+    """test TA.WTO"""
 
     wto = TA.WTO(ohlc)
 
-    assert isinstance(wto['WT1.'], series.Series)
-    assert isinstance(wto['WT2.'], series.Series)
+    assert isinstance(wto["WT1."], series.Series)
+    assert isinstance(wto["WT2."], series.Series)
 
-    assert wto['WT1.'].values[-1] == -60.290069910634649
-    assert wto['WT2.'].values[-1] == -61.84105024273525
+    assert wto["WT1."].values[-1] == -60.290069910634649
+    assert wto["WT2."].values[-1] == -61.84105024273525
 
 
 def test_fish():
-    '''test TA.FISH'''
+    """test TA.FISH"""
 
     fish = TA.FISH(ohlc)
 
@@ -622,31 +621,31 @@ def test_fish():
 
 
 def test_ichimoku():
-    '''test TA.ICHIMOKU'''
+    """test TA.ICHIMOKU"""
 
     ichi = TA.ICHIMOKU(ohlc)
 
-    assert isinstance(ichi['TENKAN'], series.Series)
-    assert isinstance(ichi['KIJUN'], series.Series)
-    assert isinstance(ichi['SENKOU'], series.Series)
-    assert isinstance(ichi['CHIKOU'], series.Series)
+    assert isinstance(ichi["TENKAN"], series.Series)
+    assert isinstance(ichi["KIJUN"], series.Series)
+    assert isinstance(ichi["SENKOU"], series.Series)
+    assert isinstance(ichi["CHIKOU"], series.Series)
 
-    assert ichi['SENKOU'].values[-1] == 8017.5804297030772
+    assert ichi["SENKOU"].values[-1] == 8017.5804297030772
 
 
 def test_apz():
-    '''test TA.APZ'''
+    """test TA.APZ"""
 
     apz = TA.APZ(ohlc)
 
-    assert isinstance(apz['UPPER'], series.Series)
-    assert isinstance(apz['LOWER'], series.Series)
+    assert isinstance(apz["UPPER"], series.Series)
+    assert isinstance(apz["LOWER"], series.Series)
 
-    assert apz['UPPER'].values[-1] == 7193.9772579390283
+    assert apz["UPPER"].values[-1] == 7193.9772579390283
 
 
 def test_vr():
-    '''test TA.VR'''
+    """test TA.VR"""
 
     with pytest.raises(ValueError):
 
@@ -654,7 +653,7 @@ def test_vr():
 
 
 def test_sqzmi():
-    '''test TA.SQZMI'''
+    """test TA.SQZMI"""
 
     sqz = TA.SQZMI(ohlc)
 
@@ -664,7 +663,7 @@ def test_sqzmi():
 
 
 def test_vpt():
-    '''test TA.VPT'''
+    """test TA.VPT"""
 
     vpt = TA.VPT(ohlc)
 
@@ -673,7 +672,7 @@ def test_vpt():
 
 
 def test_fve():
-    '''test TA.FVE'''
+    """test TA.FVE"""
 
     fve = TA.FVE(ohlc)
 
@@ -682,7 +681,7 @@ def test_fve():
 
 
 def test_vfi():
-    '''test TA.VFI'''
+    """test TA.VFI"""
 
     vfi = TA.VFI(ohlc)
 
@@ -691,21 +690,21 @@ def test_vfi():
 
 
 def test_pivot():
-    '''test TA.PIVOT'''
+    """test TA.PIVOT"""
 
     pivot = TA.PIVOT(ohlc)
-    assert isinstance(pivot['pivot'], series.Series)
-    assert isinstance(pivot['support_1'], series.Series)
-    assert isinstance(pivot['support_2'], series.Series)
-    assert isinstance(pivot['support_3'], series.Series)
-    assert isinstance(pivot['res_1'], series.Series)
-    assert isinstance(pivot['res_2'], series.Series)
-    assert isinstance(pivot['res_3'], series.Series)
+    assert isinstance(pivot["pivot"], series.Series)
+    assert isinstance(pivot["support_1"], series.Series)
+    assert isinstance(pivot["support_2"], series.Series)
+    assert isinstance(pivot["support_3"], series.Series)
+    assert isinstance(pivot["res_1"], series.Series)
+    assert isinstance(pivot["res_2"], series.Series)
+    assert isinstance(pivot["res_3"], series.Series)
 
-    assert pivot['pivot'].values[-1] == 6467.4062976066671
-    assert pivot['support_1'].values[-1] == 6364.0047023933339
-    assert pivot['support_2'].values[-1] == 6311.0094047866669
-    assert pivot['support_3'].values[-1] == 6207.6078095733337
-    assert pivot['res_1'].values[-1] == 6520.4015952133341
-    assert pivot['res_2'].values[-1] == 6623.8031904266672
-    assert pivot['res_3'].values[-1] == 6676.7984880333343
+    assert pivot["pivot"].values[-1] == 6467.4062976066671
+    assert pivot["support_1"].values[-1] == 6364.0047023933339
+    assert pivot["support_2"].values[-1] == 6311.0094047866669
+    assert pivot["support_3"].values[-1] == 6207.6078095733337
+    assert pivot["res_1"].values[-1] == 6520.4015952133341
+    assert pivot["res_2"].values[-1] == 6623.8031904266672
+    assert pivot["res_3"].values[-1] == 6676.7984880333343

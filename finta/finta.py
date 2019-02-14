@@ -190,7 +190,7 @@ class TA:
                        name='smoothing_constant')  ## smoothing constant
 
         sma = pd.Series(ohlc['close'].rolling(period).mean(), name='SMA')  ## first KAMA is SMA
-        kama: list = []
+        kama = []
         # Current KAMA = Prior KAMA + smoothing_constant * (Price - Prior KAMA)
         for s, ma, price in zip(sc.iteritems(), sma.shift().iteritems(), ohlc['close'].iteritems()):
             try:

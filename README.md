@@ -83,18 +83,18 @@ royalty free.
 ## Contributing
 
 1. Fork it (https://github.com/peerchemist/finta/fork)
-2. Study how it's implemented
-3. Create your feature branch (`git checkout -b my-new-feature`)
-4. Commit your changes (`git commit -am 'Add some feature'`)
-5. Push to the branch (`git push origin my-new-feature`)
-6. Create a new Pull Request
+2. Study how it's implemented.
+3. Create your feature branch (`git checkout -b my-new-feature`).
+4. Commit your changes (`git commit -am 'Add some feature'`).
+5. Push to the branch (`git push origin my-new-feature`).
+6. Create a new Pull Request.
 
 ------------------------------------------------------------------------
 
 ## Donate
 
-Support the development by donating in cryptocurrency:
+Buy me a beer 🍺:
 
-XBT: 3PTyUNfn4uoSZGQ48tGMnqorca1DW9Xs4M
+Bitcoin: 39PdX8jhXvUpzpkDibwMAVHVs6ZtoHCjnm
 
-XPC: PFdR14r9JM2EQSDh9nRZQ6EW5yzHjNJz3E
+Peercoin: PRn448Km1ZJ2BhdPQfiSS3q4Af2vkjwwvH

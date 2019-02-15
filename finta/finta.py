@@ -779,6 +779,32 @@ class TA:
                         , axis=1)
 
     @classmethod
+    def PIVOT_FIB(cls, ohlc: DataFrame) -> Series:
+        """
+        Fibonacci pivot point levels are determined by first calculating the classic pivot point,
+        then multiply the previous day’s range with its corresponding Fibonacci level.
+        Most traders use the 38.2%, 61.8% and 100% retracements in their calculations.
+        """
+
+        df = ohlc.shift()
+        pp = pd.Series(cls.TP(df), name="pivot")  # classic pivot
+
+        r3 = pp + ((df['high'] - df['low']) * 1)
+        r2 = pp + ((df['high'] - df['low']) * 0.618)
+        r1 = pp + ((df['high'] - df['low']) * 0.382)
+
+        s1 = pp - ((df['high'] - df['low']) * 0.382)
+        s2 = pp - ((df['high'] - df['low']) * 0.618)
+        s3 = pp - ((df['high'] - df['low']) * 1)
+
+        return pd.concat(
+                        [pp, pd.Series(s1, name="support_1"), pd.Series(s2, name="support_2"),
+                        pd.Series(s3, name="support_3"), pd.Series(r1, name="res_1"),
+                        pd.Series(r2, name="res_2"), pd.Series(r3, name="res_3")
+                        ]
+                        , axis=1)
+
+    @classmethod
     def STOCH(cls, ohlc: DataFrame, period: int=14
               ) -> Series:
         """Stochastic oscillator %K
@@ -866,7 +892,7 @@ class TA:
     def AO(cls, ohlc: DataFrame,
            slow_period: int=34, fast_period: int=5
            ) -> Series:
-        """
+        """'EMA', 
         Awesome Oscillator is an indicator used to measure market momentum. AO calculates the difference of a 34 Period and 5 Period Simple Moving Averages.
         The Simple Moving Averages that are used are not calculated using closing price but rather each bar's midpoints.
         AO is generally used to affirm trends or to anticipate possible reversals. """

@@ -708,3 +708,24 @@ def test_pivot():
     assert pivot["res_1"].values[-1] == 6520.4015952133341
     assert pivot["res_2"].values[-1] == 6623.8031904266672
     assert pivot["res_3"].values[-1] == 6676.7984880333343
+
+
+def test_pivot_fib():
+    """test TA.PIVOT_FIB"""
+
+    pivot = TA.PIVOT_FIB(ohlc)
+    assert isinstance(pivot["pivot"], series.Series)
+    assert isinstance(pivot["support_1"], series.Series)
+    assert isinstance(pivot["support_2"], series.Series)
+    assert isinstance(pivot["support_3"], series.Series)
+    assert isinstance(pivot["res_1"], series.Series)
+    assert isinstance(pivot["res_2"], series.Series)
+    assert isinstance(pivot["res_3"], series.Series)
+
+    assert pivot["pivot"].values[-1] == 6467.4062976066671
+    assert pivot["support_1"].values[-1] == 6407.6626845494266
+    assert pivot["support_2"].values[-1] == 6370.7530178439074
+    assert pivot["support_3"].values[-1] == 6311.0094047866669
+    assert pivot["res_1"].values[-1] == 6527.1499106639076
+    assert pivot["res_2"].values[-1] == 6564.0595773694267
+    assert pivot["res_3"].values[-1] == 6623.8031904266672

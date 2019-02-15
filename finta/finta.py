@@ -314,7 +314,7 @@ class TA:
              period: int=42,
              column: str='close'
              ) -> Series:
-        """The SMMA gives recent prices an equal weighting to historic prices."""
+        """The SMMA (Smoothed Moving Average) gives recent prices an equal weighting to historic prices."""
 
         return pd.Series(ohlc[column].ewm(alpha=1 / period).mean(), name='SMMA')
 
@@ -395,6 +395,7 @@ class TA:
             signal: int=9
             ) -> Series:
         """
+        Percentage Price Oscillator
         PPO, PPO Signal and PPO difference.
         As with MACD, the PPO reflects the convergence and divergence of two moving averages.
         While MACD measures the absolute difference between two moving averages, PPO makes this a relative value by dividing the difference by the slower moving average

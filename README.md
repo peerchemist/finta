@@ -8,23 +8,95 @@
 
 Common financial technical indicators implemented in Pandas.
 
-**This is work in progress, bugs are expected and results of indicators
-might not be correct.**
+*This is work in progress, bugs are expected and results of some indicators
+may not be accurate.*
 
-> Supported indicators:
+## Supported indicators:
+
+Finta supports 71 trading indicators:
 
 ```
-['SMA', 'SMM', 'EMA', 'DEMA', 'TEMA', 'TRIMA', 'TRIX', 'AMA', 'LWMA', 'VAMA', 'VIDYA', 'ER', 'KAMA', 'ZLEMA', 'WMA', 'HMA', 'VWAP', 'SMMA', 'ALMA', 'MAMA', 'FRAMA', 'MACD', 'PPO', 'VW_MACD', 'MOM', 'ROC', 'RSI', 'IFT_RSI', 'SWI', 'TR', 'ATR', 'SAR', 'BBANDS', 'BBWIDTH', 'PERCENT_B', 'KC', 'DO', 'DMI', 'ADX', 'PIVOTS', 'STOCH', 'STOCHD', 'STOCHRSI', 'WILLIAMS', 'UO', 'AO', 'MI', 'VORTEX', 'KST', 'TSI', 'TP', 'ADL', 'CHAIKIN', 'MFI', 'OBV', 'WOBV', 'VZO', 'EFI', 'CFI', 'EBBP', 'EMV', 'CCI', 'COPP', 'BASP', 'BASPN', 'CMO', 'CHANDELIER', 'QSTICK', 'TMF', 'WTO', 'FISH', 'ICHIMOKU', 'APZ', 'VR', 'SQZMI', 'VPT', 'FVE', 'VFI']
+* Simple Moving Average 'SMA'
+* Simple Moving Median 'SMM'
+* Exponential Moving Average 'EMA'
+* Double Exponential Moving Average 'DEMA'
+* Triple Exponential Moving Average 'TEMA'
+* Triangular Moving Average 'TRIMA'
+* Triple Exponential Moving Average Oscillator 'TRIX'
+* Volume Adjusted Moving Average 'VAMA'
+* Kaufman Efficiency Indicator 'ER'
+* Kaufman's Adaptive Moving Average 'KAMA'
+* Zero Lag Exponential Moving Average 'ZLEMA'
+* Weighted Moving Average 'WMA'
+* Hull Moving Average 'HMA'
+* Volume Weighted Average Price 'VWAP'
+* Smoothed Moving Average 'SMMA'
+* Moving Average Convergence Divergence 'MACD'
+* Percentage Price Oscillator 'PPO'
+* Volume-Weighted MACD 'VW_MACD'
+* Market Momentum 'MOM'
+* Rate-of-Change 'ROC'
+* Relative Strenght Index 'RSI'
+* Inverse Fisher Transform RSI 'IFT_RSI'
+* True Range 'TR'
+* Average True Range 'ATR'
+* Stop-and-Reverse 'SAR'
+* Bollinger Bands 'BBANDS'
+* Bollinger Bands Width 'BBWIDTH'
+* Percent B 'PERCENT_B'
+* Keltner Channels 'KC'
+* Donchian Channel 'DO'
+* Directional Movement Indicator 'DMI'
+* Average Directional Index 'ADX'
+* Pivot Points 'PIVOT'
+* Fibonacci Pivot Points 'PIVOT_FIB'
+* Stochastic Oscillator %K 'STOCH'
+* Stochastic oscillator %D 'STOCHD'
+* Stochastic RSI 'STOCHRSI'
+* Williams %R 'WILLIAMS'
+* Ultimate Oscillator 'UO'
+* Awesome Oscillator 'AO'
+* Mass Index 'MI'
+* Vortex Indicator 'VORTEX'
+* Know Sure Thing 'KST'
+* True Strength Index 'TSI'
+* Typical Price 'TP'
+* Accumulation-Distribution Line 'ADL'
+* Chaikin Oscillator 'CHAIKIN'
+* Money Flow Index 'MFI'
+* On Balance Volume 'OBV'
+* Weighter OBV 'WOBV'
+* Volume Zone Oscillator 'VZO'
+* Elder's Force Index 'EFI'
+* Cummulative Force Index 'CFI'
+* Bull power and Bear Power 'EBBP'
+* Ease of Movement 'EMV'
+* Commodity Channel Index 'CCI'
+* Coppock Curve 'COPP'
+* Buy and Sell Pressure 'BASP'
+* Normalized BASP 'BASPN'
+* Chande Momentum Oscillator 'CMO'
+* Chandelier Exit 'CHANDELIER'
+* Qstick 'QSTICK'
+* Twiggs Money Index 'TMF'
+* Wave Trend Oscillator 'WTO'
+* Fisher Transform 'FISH'
+* Ichimoku Cloud 'ICHIMOKU'
+* Adaptive Price Zone 'APZ'
+* Vector Size Indicator 'VR'
+* Squeeze Momentum Indicator 'SQZMI'
+* Volume Price Trend 'VPT'
+* Finite Volume Element 'FVE'
+* Volume Flow Indicator 'VFI'
 ```
 
-> Dependencies:
+## Dependencies:
 
 -   python (3.4+)
 -   pandas (0.21.1+)
 
 TA class is very well documented and there should be no trouble
-exploring it and using with your data. Each class method expects proper
-`ohlc` data as input.
+exploring it and using with your data. Each class method expects proper `ohlc` DataFrame as input.
 
 ## Install:
 
@@ -86,9 +158,10 @@ royalty free.
 1. Fork it (https://github.com/peerchemist/finta/fork)
 2. Study how it's implemented.
 3. Create your feature branch (`git checkout -b my-new-feature`).
-4. Commit your changes (`git commit -am 'Add some feature'`).
-5. Push to the branch (`git push origin my-new-feature`).
-6. Create a new Pull Request.
+4. Run [black](https://github.com/ambv/black) code formatter on the finta.py to ensure uniform code style.
+5. Commit your changes (`git commit -am 'Add some feature'`).
+6. Push to the branch (`git push origin my-new-feature`).
+7. Create a new Pull Request.
 
 ------------------------------------------------------------------------
 

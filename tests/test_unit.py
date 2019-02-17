@@ -203,7 +203,7 @@ def test_roc():
     roc = TA.ROC(ohlc)
 
     assert isinstance(roc, series.Series)
-    assert roc.values[-1] == -15.98340762838
+    assert roc.values[-1] == -16.049187698674462
 
 
 def test_rsi():
@@ -414,8 +414,8 @@ def test_kst():
     assert isinstance(kst["KST"], series.Series)
     assert isinstance(kst["signal"], series.Series)
 
-    assert kst["KST"].values[-1] == -161.7861811191122
-    assert kst["signal"].values[-1] == -141.29962282675882
+    assert kst["KST"].values[-1] == -157.42229442239886
+    assert kst["signal"].values[-1] == -132.10367593252022
 
 
 def test_tsi():

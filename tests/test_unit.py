@@ -728,3 +728,12 @@ def test_pivot_fib():
     assert pivot["res_1"].values[-1] == 6527.1499106639076
     assert pivot["res_2"].values[-1] == 6564.0595773694267
     assert pivot["res_3"].values[-1] == 6623.8031904266672
+
+
+def test_msd():
+    """test TA.MSD"""
+
+    msd = TA.MSD(ohlc)
+
+    assert isinstance(msd, series.Series)
+    assert msd.values[-1] == 542.25201592159419

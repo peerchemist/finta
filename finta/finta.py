@@ -1668,6 +1668,23 @@ class TA:
 
         return vfi
 
+    @classmethod
+    def MSD(cls, ohlc: DataFrame, period: int = 21, ddof: int=1) -> Series:
+        """
+        Standard deviation is a statistical term that measures the amount of variability or dispersion around an average.
+        Standard deviation is also a measure of volatility. Generally speaking, dispersion is the difference between the actual value and the average value.
+        The larger this dispersion or variability is, the higher the standard deviation.
+        Standard Deviation values rise significantly when the analyzed contract of indicator change in value dramatically.
+        When markets are stable, low Standard Deviation readings are normal.
+        Low Standard Deviation readings typically tend to come before significant upward changes in price.
+        Analysts generally agree that high volatility is part of major tops, while low volatility accompanies major bottoms.
+
+        :period: Specifies the number of Periods used for MSD calculation
+        :ddof: Delta Degrees of Freedom. The divisor used in calculations is N - ddof, where N represents the number of elements.
+        """
+
+        return  pd.Series(ohlc['close'].rolling(period).std(), name="MSD")
+
 
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

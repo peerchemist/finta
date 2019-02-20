@@ -931,7 +931,7 @@ class TA:
         time frames into the basic formula."""
 
         k = []  # current low or past close
-        for row, _row in zip(ohlc.itertuples(), ohlc.shift(-1).itertuples()):
+        for row, _row in zip(ohlc.itertuples(), ohlc.shift(1).itertuples()):
             k.append(min(row.low, _row.close))
         bp = pd.Series(ohlc["close"] - k, name="bp")  # Buying pressure
 
@@ -984,8 +984,8 @@ class TA:
          Strongly positive or negative trend movements will show a longer length between the two numbers while
          weaker positive or negative trend movement will show a shorter length."""
 
-        VMP = pd.Series(ohlc["high"] - ohlc["low"].shift(-1).abs())
-        VMM = pd.Series(ohlc["low"] - ohlc["high"].shift(-1).abs())
+        VMP = pd.Series(ohlc["high"] - ohlc["low"].shift(1).abs())
+        VMM = pd.Series(ohlc["low"] - ohlc["high"].shift(1).abs())
 
         VMPx = VMP.rolling(window=period).sum()
         VMMx = VMM.rolling(window=period).sum()
@@ -1128,7 +1128,7 @@ class TA:
 
         obv = [0]
 
-        for row, _row in zip(ohlcv.itertuples(), ohlcv.shift(-1).itertuples()):
+        for row, _row in zip(ohlcv.itertuples(), ohlcv.shift(1).itertuples()):
             if row.close > _row.close:
                 obv.append(obv[-1] + row.volume)
             if row.close < _row.close:
@@ -1347,10 +1347,10 @@ class TA:
         source: https://user42.tuxfamily.org/chart/manual/Twiggs-Money-Flow.html"""
 
         ohlcv["ll"] = [
-            min(l, c) for l, c in zip(ohlcv["low"], ohlcv["close"].shift(-1))
+            min(l, c) for l, c in zip(ohlcv["low"], ohlcv["close"].shift(1))
         ]
         ohlcv["hh"] = [
-            max(h, c) for h, c in zip(ohlcv["high"], ohlcv["close"].shift(-1))
+            max(h, c) for h, c in zip(ohlcv["high"], ohlcv["close"].shift(1))
         ]
 
         ohlcv["range"] = (

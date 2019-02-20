@@ -402,8 +402,8 @@ def test_vortex():
     assert isinstance(v["VIp"], series.Series)
     assert isinstance(v["VIm"], series.Series)
 
-    assert v["VIp"].values[-1] == 37.443158543691659
-    assert v["VIm"].values[-1] == -22.605012093615489
+    assert v["VIp"].values[-1] == 31.175958144620818
+    assert v["VIm"].values[-1] == -51.640155675485332
 
 
 def test_kst():
@@ -471,7 +471,7 @@ def test_obv():
     o = TA.OBV(ohlc)
 
     assert isinstance(o, series.Series)
-    assert o.values[-1] == -277433.76499578007
+    assert o.values[-1] == -6731.5450514400363
 
 
 def test_wobv():

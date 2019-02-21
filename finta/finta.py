@@ -1391,17 +1391,17 @@ class TA:
         A signal line which is a previous value of itself is also calculated.
         """
 
-        import numpy as np
+        from numpy import log
 
         med = (ohlc["high"] + ohlc["low"]) / 2
         ndaylow = med.rolling(window=period).min()
         ndayhigh = med.rolling(window=period).max()
         raw = (2 * ((med - ndaylow) / (ndayhigh - ndaylow))) - 1
         smooth = raw.ewm(span=5).mean()
-        smooth.dropna(inplace=True)
+        _smooth = smooth.fillna(0)
 
         return pd.Series(
-            (np.log((1 + smooth) / (1 - smooth))).ewm(span=3).mean(),
+            (log((1 + _smooth) / (1 - _smooth))).ewm(span=3).mean(),
             name="{0} period FISH.".format(period),
         )
 

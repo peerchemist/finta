@@ -304,6 +304,36 @@ class TA:
         return pd.Series(deltawma["_WMA"], name="{0} period HMA.".format(period))
 
     @classmethod
+    def EVWMA(cls, ohlcv: DataFrame, period: int = 20) -> Series:
+        """
+        The eVWMA can be looked at as an approximation to the
+        average price paid per share in the last n periods.
+
+        :period: Specifies the number of Periods used for eVWMA calculation
+        """
+
+        vol_sum = (
+            ohlcv["volume"].rolling(window=period).sum()
+        )  # floating shares in last N periods
+
+        x = (vol_sum - ohlcv["volume"]) / vol_sum
+        y = (ohlcv["volume"] * ohlcv["close"]) / vol_sum
+
+        evwma = [0]
+
+        #  evwma = (evma[-1] * (vol_sum - volume)/vol_sum) + (volume * price / vol_sum)
+        for x, y in zip(x.fillna(0).iteritems(), y.iteritems()):
+            if x[1] == 0 or y[1] == 0:
+                evwma.append(0)
+            else:
+                evwma.append(evwma[-1] * x[1] + y[1])
+
+        return pd.Series(
+            Series(evwma[1:], index=ohlcv.index),
+            name="{0} period EVWMA.".format(period),
+        )
+
+    @classmethod
     def VWAP(cls, ohlcv: DataFrame) -> Series:
         """
         The volume weighted average price (VWAP) is a trading benchmark used especially in pension plans.
@@ -1346,9 +1376,7 @@ class TA:
         """Indicator by Colin Twiggs which improves upon CMF.
         source: https://user42.tuxfamily.org/chart/manual/Twiggs-Money-Flow.html"""
 
-        ohlcv["ll"] = [
-            min(l, c) for l, c in zip(ohlcv["low"], ohlcv["close"].shift(1))
-        ]
+        ohlcv["ll"] = [min(l, c) for l, c in zip(ohlcv["low"], ohlcv["close"].shift(1))]
         ohlcv["hh"] = [
             max(h, c) for h, c in zip(ohlcv["high"], ohlcv["close"].shift(1))
         ]
@@ -1669,7 +1697,7 @@ class TA:
         return vfi
 
     @classmethod
-    def MSD(cls, ohlc: DataFrame, period: int = 21, ddof: int=1) -> Series:
+    def MSD(cls, ohlc: DataFrame, period: int = 21, ddof: int = 1) -> Series:
         """
         Standard deviation is a statistical term that measures the amount of variability or dispersion around an average.
         Standard deviation is also a measure of volatility. Generally speaking, dispersion is the difference between the actual value and the average value.
@@ -1683,7 +1711,7 @@ class TA:
         :ddof: Delta Degrees of Freedom. The divisor used in calculations is N - ddof, where N represents the number of elements.
         """
 
-        return  pd.Series(ohlc['close'].rolling(period).std(), name="MSD")
+        return pd.Series(ohlc["close"].rolling(period).std(), name="MSD")
 
 
 if __name__ == "__main__":

@@ -132,6 +132,15 @@ def test_hma():
     assert ma.values[-1] == 6186.937271459321
 
 
+def test_evwma():
+    """test TA.EVWMA"""
+
+    evwma = TA.EVWMA(ohlc)
+
+    assert isinstance(evwma, series.Series)
+    assert evwma.values[-1] == 7445.4608406223015
+
+
 def test_vwap():
     """test TA.VWAP"""
 

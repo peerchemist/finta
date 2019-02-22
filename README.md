@@ -13,7 +13,7 @@ may not be accurate.*
 
 ## Supported indicators:
 
-Finta supports 71 trading indicators:
+Finta supports 74 trading indicators:
 
 ```
 * Simple Moving Average 'SMA'
@@ -29,11 +29,13 @@ Finta supports 71 trading indicators:
 * Zero Lag Exponential Moving Average 'ZLEMA'
 * Weighted Moving Average 'WMA'
 * Hull Moving Average 'HMA'
+* Elastic Volume Moving Average 'EVWMA'
 * Volume Weighted Average Price 'VWAP'
 * Smoothed Moving Average 'SMMA'
 * Moving Average Convergence Divergence 'MACD'
 * Percentage Price Oscillator 'PPO'
 * Volume-Weighted MACD 'VW_MACD'
+* Elastic-Volume weighted MACD 'EV_MACD'
 * Market Momentum 'MOM'
 * Rate-of-Change 'ROC'
 * Relative Strenght Index 'RSI'
@@ -88,6 +90,7 @@ Finta supports 71 trading indicators:
 * Volume Price Trend 'VPT'
 * Finite Volume Element 'FVE'
 * Volume Flow Indicator 'VFI'
+* Moving Standard deviation 'MSD'
 ```
 
 ## Dependencies:

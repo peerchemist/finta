@@ -506,6 +506,34 @@ class TA:
         return pd.concat([MACD, MACD_signal], axis=1)
 
     @classmethod
+    def EV_MACD(
+        cls,
+        ohlcv: DataFrame,
+        period_fast: int = 20,
+        period_slow: int = 40,
+        signal: int = 9,
+    ) -> Series:
+        """
+        Elastic Volume Weighted MACD is a variation of standard MACD,
+        calculated using two EVWMA's.
+
+        :period_slow: Specifies the number of Periods used for the slow EVWMA calculation
+        :period_fast: Specifies the number of Periods used for the fast EVWMA calculation
+        :signal: Specifies the number of Periods used for the signal calculation
+        """
+
+        evwma_slow = cls.EVWMA(ohlcv, period_slow)
+
+        evwma_fast = cls.EVWMA(ohlcv, period_fast)
+
+        MACD = pd.Series(evwma_fast - evwma_slow, name="MACD")
+        MACD_signal = pd.Series(
+            MACD.ewm(ignore_na=False, span=signal).mean(), name="SIGNAL"
+        )
+
+        return pd.concat([MACD, MACD_signal], axis=1)
+
+    @classmethod
     def MOM(cls, ohlc: DataFrame, period: int = 10) -> Series:
         """Market momentum is measured by continually taking price differences for a fixed time interval.
         To construct a 10-day momentum line, simply subtract the closing price 10 days ago from the last closing price.

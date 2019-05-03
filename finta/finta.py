@@ -12,7 +12,7 @@ class TA:
 
         return pd.Series(
             ohlc[column]
-            .rolling(center=False, window=period, min_periods=period - 1)
+            .rolling(window=period)
             .mean(),
             name="{0} period SMA".format(period),
         )
@@ -26,7 +26,7 @@ class TA:
 
         return pd.Series(
             ohlc[column]
-            .rolling(center=False, window=period, min_periods=period - 1)
+            .rolling(window=period)
             .median(),
             name="{0} period SMM".format(period),
         )
@@ -41,7 +41,7 @@ class TA:
 
         return pd.Series(
             ohlc[column]
-            .ewm(ignore_na=False, min_periods=period - 1, span=period)
+            .ewm(span=period)
             .mean(),
             name="{0} period EMA".format(period),
         )
@@ -60,7 +60,7 @@ class TA:
         DEMA = (
             2 * cls.EMA(ohlc, period)
             - cls.EMA(ohlc, period)
-            .ewm(ignore_na=False, min_periods=period - 1, span=period)
+            .ewm(span=period)
             .mean()
         )
 
@@ -91,7 +91,7 @@ class TA:
             triple_ema
             - 3
             * cls.EMA(ohlc, period)
-            .ewm(ignore_na=False, min_periods=period - 1, span=period)
+            .ewm(span=period)
             .mean()
             + ema_ema_ema
         )
@@ -107,7 +107,7 @@ class TA:
         source: https://www.thebalance.com/triangular-moving-average-tma-description-and-uses-1031203
         """
 
-        SMA = cls.SMA(ohlc, period).rolling(window=period, min_periods=period - 1).sum()
+        SMA = cls.SMA(ohlc, period).rolling(window=period).sum()
 
         return pd.Series(SMA / period, name="{0} period TRIMA".format(period))
 
@@ -406,13 +406,13 @@ class TA:
 
         EMA_fast = pd.Series(
             ohlc["close"]
-            .ewm(ignore_na=False, min_periods=period_slow - 1, span=period_fast)
+            .ewm(ignore_na=False, span=period_fast)
             .mean(),
             name="EMA_fast",
         )
         EMA_slow = pd.Series(
             ohlc["close"]
-            .ewm(ignore_na=False, min_periods=period_slow - 1, span=period_slow)
+            .ewm(ignore_na=False, span=period_slow)
             .mean(),
             name="EMA_slow",
         )
@@ -440,13 +440,13 @@ class TA:
 
         EMA_fast = pd.Series(
             ohlc["close"]
-            .ewm(ignore_na=False, min_periods=period_slow - 1, span=period_fast)
+            .ewm(ignore_na=False, span=period_fast)
             .mean(),
             name="EMA_fast",
         )
         EMA_slow = pd.Series(
             ohlc["close"]
-            .ewm(ignore_na=False, min_periods=period_slow - 1, span=period_slow)
+            .ewm(ignore_na=False, span=period_slow)
             .mean(),
             name="EMA_slow",
         )
@@ -473,12 +473,12 @@ class TA:
         _fast = pd.Series(
             (
                 vp.ewm(
-                    ignore_na=False, min_periods=period_fast - 1, span=period_fast
+                    ignore_na=False, span=period_fast
                 ).mean()
             )
             / (
                 ohlcv["volume"]
-                .ewm(ignore_na=False, min_periods=period_fast - 1, span=period_fast)
+                .ewm(ignore_na=False, span=period_fast)
                 .mean()
             ),
             name="_fast",
@@ -487,12 +487,12 @@ class TA:
         _slow = pd.Series(
             (
                 vp.ewm(
-                    ignore_na=False, min_periods=period_slow - 1, span=period_slow
+                    ignore_na=False, span=period_slow
                 ).mean()
             )
             / (
                 ohlcv["volume"]
-                .ewm(ignore_na=False, min_periods=period_slow - 1, span=period_slow)
+                .ewm(ignore_na=False, span=period_slow)
                 .mean()
             ),
             name="_slow",
@@ -567,8 +567,8 @@ class TA:
         down[down > 0] = 0
 
         # EMAs of ups and downs
-        _gain = up.ewm(span=period, min_periods=period - 1).mean()
-        _loss = down.abs().ewm(span=period, min_periods=period - 1).mean()
+        _gain = up.ewm(span=period).mean()
+        _loss = down.abs().ewm(span=period).mean()
 
         RS = _gain / _loss
         return pd.Series(100 - (100 / (1 + RS)), name="RSI")
@@ -651,7 +651,7 @@ class TA:
 
         TR = cls.TR(ohlc)
         return pd.Series(
-            TR.rolling(center=False, window=period, min_periods=period - 1).mean(),
+            TR.rolling(center=False, window=period).mean(),
             name="{0} period ATR".format(period),
         )
 
@@ -817,14 +817,14 @@ class TA:
         diplus = pd.Series(
             100
             * (ohlc["DMp"] / cls.ATR(ohlc, period * 6))
-            .ewm(span=period, min_periods=period - 1)
+            .ewm(span=period)
             .mean(),
             name="DI+",
         )
         diminus = pd.Series(
             100
             * (ohlc["DMm"] / cls.ATR(ohlc, period * 6))
-            .ewm(span=period, min_periods=period - 1)
+            .ewm(span=period)
             .mean(),
             name="DI-",
         )
@@ -940,7 +940,7 @@ class TA:
 
         return pd.Series(
             cls.STOCH(ohlc, stoch_period)
-            .rolling(center=False, window=period, min_periods=period - 1)
+            .rolling(center=False, window=period)
             .mean(),
             name="{0} perood STOCH %D.".format(period),
         )
@@ -1168,8 +1168,8 @@ class TA:
         _mf["pos"] = _mf.apply(pos, axis=1)
 
         mfratio = pd.Series(
-            _mf["pos"].rolling(window=period, min_periods=period - 1).sum()
-            / _mf["neg"].rolling(window=period, min_periods=period - 1).sum()
+            _mf["pos"].rolling(window=period).sum()
+            / _mf["neg"].rolling(window=period).sum()
         )
 
         return pd.Series(
@@ -1233,7 +1233,7 @@ class TA:
 
         fi = pd.Series((ohlcv["close"] - ohlcv["close"].diff()) * ohlcv["volume"])
         return pd.Series(
-            fi.ewm(ignore_na=False, min_periods=period - 1, span=period).mean(),
+            fi.ewm(ignore_na=False, span=period).mean(),
             name="{0} period Force Index".format(period),
         )
 
@@ -1312,13 +1312,13 @@ class TA:
 
         sp = ohlc["high"] - ohlc["close"]
         bp = ohlc["close"] - ohlc["low"]
-        spavg = sp.ewm(span=period, min_periods=period - 1).mean()
-        bpavg = bp.ewm(span=period, min_periods=period - 1).mean()
+        spavg = sp.ewm(span=period).mean()
+        bpavg = bp.ewm(span=period).mean()
 
         nbp = bp / bpavg
         nsp = sp / spavg
 
-        varg = ohlc["volume"].ewm(span=period, min_periods=period - 1).mean()
+        varg = ohlc["volume"].ewm(span=period).mean()
         nv = ohlc["volume"] / varg
 
         nbfraw = pd.Series(nbp * nv, name="Buy.")
@@ -1334,13 +1334,13 @@ class TA:
 
         sp = ohlc["high"] - ohlc["close"]
         bp = ohlc["close"] - ohlc["low"]
-        spavg = sp.ewm(span=period, min_periods=period - 1).mean()
-        bpavg = bp.ewm(span=period, min_periods=period - 1).mean()
+        spavg = sp.ewm(span=period).mean()
+        bpavg = bp.ewm(span=period).mean()
 
         nbp = bp / bpavg
         nsp = sp / spavg
 
-        varg = ohlc["volume"].ewm(span=period, min_periods=period - 1).mean()
+        varg = ohlc["volume"].ewm(span=period).mean()
         nv = ohlc["volume"] / varg
 
         nbf = pd.Series((nbp * nv).ewm(span=20).mean(), name="Buy.")
@@ -1525,10 +1525,10 @@ class TA:
         if not isinstance(MA, pd.Series):
             MA = cls.DEMA(ohlc, period)
         price_range = pd.Series(
-            (ohlc["high"] - ohlc["low"]).ewm(span=period, min_periods=period - 1).mean()
+            (ohlc["high"] - ohlc["low"]).ewm(span=period).mean()
         )
         volatility_value = pd.Series(
-            price_range.ewm(span=period, min_periods=period - 1).mean(), name="vol_val"
+            price_range.ewm(span=period).mean(), name="vol_val"
         )
 
         # upper_band = dev_factor * volatility_value + dema
@@ -1627,7 +1627,7 @@ class TA:
 
         hl2 = (ohlc["high"] + ohlc["low"]) / 2
         tp = TA.TP(ohlc)
-        smav = ohlc["volume"].rolling(window=period, min_periods=period - 1).mean()
+        smav = ohlc["volume"].rolling(window=period).mean()
         mf = pd.Series((ohlc["close"] - hl2 + tp.diff()), name="mf")
 
         _mf = pd.concat([ohlc["close"], ohlc["volume"], mf], axis=1)
@@ -1642,7 +1642,7 @@ class TA:
                 return 0
 
         _mf["vol_shift"] = _mf.apply(vol_shift, axis=1)
-        _sum = _mf["vol_shift"].rolling(window=period, min_periods=period - 1).sum()
+        _sum = _mf["vol_shift"].rolling(window=period).sum()
 
         return pd.Series((_sum / smav) / period * 100)
 
@@ -1679,7 +1679,7 @@ class TA:
         price_change = pd.Series(typical.diff(), name="pc")  # price change
         mav = pd.Series(
             ohlc["volume"]
-            .rolling(center=False, window=period, min_periods=period - 1)
+            .rolling(center=False, window=period)
             .mean(),
             name="mav",
         )

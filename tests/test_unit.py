@@ -513,6 +513,15 @@ def test_vzo():
     assert -85 < vzo.values[-1] < 85
 
 
+def test_pzo():
+    """test TA.PZO"""
+
+    pzo = TA.PZO(ohlc)
+
+    assert isinstance(pzo, series.Series)
+    assert -85 < pzo.values[-1] < 85
+
+
 def test_efi():
     """test TA.EFI"""
 

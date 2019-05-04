@@ -1227,6 +1227,23 @@ class TA:
         return pd.Series(100 * (dvma / vma), name="VZO")
 
     @classmethod
+    def PZO(cls, ohlc: DataFrame, period: int = 14) -> Series:
+        """
+        The formula for PZO depends on only one condition: if today's closing price is higher than yesterday's closing price,
+        then the closing price will have a positive value (bullish); otherwise it will have a negative value (bearish).
+        source: http://traders.com/Documentation/FEEDbk_docs/2011/06/Khalil.html
+
+        :period: Specifies the number of Periods used for eVWMA calculation
+        """
+
+        sign = lambda a: (a > 0) - (a < 0)
+        r = ohlc["close"].diff().apply(sign) * ohlc["close"]
+        cp = pd.Series(r.ewm(span=period).mean())
+        tc = cls.EMA(ohlc, period)
+
+        return pd.Series(100 * (cp / tc), name="{} period PZO".format(period))
+
+    @classmethod
     def EFI(cls, ohlcv: DataFrame, period: int = 13) -> Series:
         """Elder's Force Index is an indicator that uses price and volume to assess the power
          behind a move or identify possible turning points."""

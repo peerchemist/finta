@@ -69,6 +69,7 @@ Finta supports 74 trading indicators:
 * On Balance Volume 'OBV'
 * Weighter OBV 'WOBV'
 * Volume Zone Oscillator 'VZO'
+* Price Zone Oscillator 'PZO'
 * Elder's Force Index 'EFI'
 * Cummulative Force Index 'CFI'
 * Bull power and Bear Power 'EBBP'

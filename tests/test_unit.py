@@ -507,10 +507,10 @@ def test_wobv():
 def test_vzo():
     """test TA.VZO"""
 
-    vzo = TA.MFI(ohlc)
+    vzo = TA.VZO(ohlc)
 
     assert isinstance(vzo, series.Series)
-    assert -100 < vzo.values[-1] < 100
+    assert -85 < vzo.values[-1] < 85
 
 
 def test_efi():

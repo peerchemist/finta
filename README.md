@@ -13,11 +13,12 @@ may not be accurate.*
 
 ## Supported indicators:
 
-Finta supports 74 trading indicators:
+Finta supports 75 trading indicators:
 
 ```
 * Simple Moving Average 'SMA'
 * Simple Moving Median 'SMM'
+* Smoothed Simple Moving Average 'SSMA'
 * Exponential Moving Average 'EMA'
 * Double Exponential Moving Average 'DEMA'
 * Triple Exponential Moving Average 'TEMA'

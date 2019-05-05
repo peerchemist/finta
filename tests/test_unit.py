@@ -33,6 +33,15 @@ def test_smm():
     assert ma.values[-1] == 6490.0
 
 
+def test_ssma():
+    """test TA.SSMA"""
+
+    ma = TA.SSMA(ohlc)
+
+    assert isinstance(ma, series.Series)
+    assert ma.values[-1] == 6907.5375981671723
+
+
 def test_ema():
     """test TA.EMA"""
 

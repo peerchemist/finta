@@ -32,6 +32,24 @@ class TA:
         )
 
     @classmethod
+    def SSMA(cls, ohlc: DataFrame, period: int = 9, column: str = "close") -> Series:
+        """
+        Smoothed simple moving average.
+
+        :param ohlc: data
+        :param period: range
+        :param column: open/close/high/low column of the DataFrame
+        :return: result Series
+        """
+
+        return pd.Series(
+            ohlc[column]
+            .ewm(ignore_na=False, alpha=1.0 / period, min_periods=0, adjust=True)
+            .mean(),
+            name="{0} period SSMA".format(period),
+        )
+
+    @classmethod
     def EMA(cls, ohlc: DataFrame, period: int = 9, column: str = "close") -> Series:
         """
         Exponential Weighted Moving Average - Like all moving average indicators, they are much better suited for trending markets.

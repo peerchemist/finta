@@ -25,5 +25,5 @@ setup(name='finta',
       author_email='peerchemist@protonmail.ch',
       license='LGPLv3+',
       packages=['finta'],
-      install_requires=['pandas']
+      install_requires=['pandas', 'numpy']
       )

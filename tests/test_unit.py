@@ -348,8 +348,8 @@ def test_dmi():
     assert isinstance(dmi["DI+"], series.Series)
     assert isinstance(dmi["DI-"], series.Series)
 
-    assert dmi["DI+"].values[-1] == 0.32826999511691435
-    assert dmi["DI-"].values[-1] == 10.09866984475557
+    assert dmi["DI+"].values[-1] == 4.2514733223789332
+    assert dmi["DI-"].values[-1] == 20.093318043215021
 
 
 def test_adx():
@@ -358,7 +358,7 @@ def test_adx():
     adx = TA.ADX(ohlc)
 
     assert isinstance(adx, series.Series)
-    assert adx.values[-1] == 66.589993072391422
+    assert adx.values[-1] == 54.781005617031234
 
 
 def test_stoch():

@@ -810,10 +810,13 @@ class TA:
          relative strength index. DMI tells you when to be long or short.
          It is especially useful for trend trading strategies because it differentiates between strong and weak trends,
          allowing the trader to enter only the strongest trends.
+        source https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/dmi
+
+        :period: Specifies the number of Periods used for DMI calculation
         """
 
         ohlc["up_move"] = ohlc["high"].diff()
-        ohlc["down_move"] = ohlc["low"].diff()
+        ohlc["down_move"] = -ohlc["low"].diff()
 
         DMp = []
         DMm = []

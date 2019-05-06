@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from pandas import DataFrame, Series
 
 
@@ -242,38 +243,26 @@ class TA:
 
     @classmethod
     def WMA(cls, ohlc: DataFrame, period: int = 9, column: str = "close") -> Series:
-        """WMA stands for weighted moving average. It helps to smooth the price curve for better trend identification.
-        It places even greater importance on recent data than the EMA does."""
+        """
+        WMA stands for weighted moving average. It helps to smooth the price curve for better trend identification.
+        It places even greater importance on recent data than the EMA does.
+
+        :period: Specifies the number of Periods used for WMA calculation
+        """
 
         d = (period * (period + 1)) / 2  # denominator
-        rev = ohlc[column].iloc[::-1]  # reverse the series
-        wma = []
+        _weights = pd.Series(np.arange(1, period + 1))
+        weights = _weights.iloc[::-1]  # reverse the series
 
-        def _chunks(series, period):  # split into chunks of n elements
-            for i in enumerate(series):
-                c = rev.iloc[i[0] : i[0] + period]
-                if len(c) != period:
-                    yield None
-                else:
-                    yield c
+        def linear(w):
+            def _compute(x):
+                return (w * x).sum() / d
+            return _compute
 
-        def _wma(chunk, period):  # calculate wma for each chunk
-            w = []
-            for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
-                w.append(price[1] * i / d)
-            return sum(w)
+        close_ = ohlc["close"].rolling(period, min_periods=period)
+        wma = close_.apply(linear(weights))
 
-        for i in _chunks(rev, period):
-            try:
-                wma.append(_wma(i, period))
-            except:
-                wma.append(None)
-
-        wma.reverse()  # reverse the wma list to match the Series
-        ohlc["WMA"] = pd.Series(
-            wma, index=ohlc.index
-        )  # apply the wma list to existing index
-        return pd.Series(ohlc["WMA"], name="{0} period WMA.".format(period))
+        return pd.Series(wma, name="{0} period WMA.".format(period))
 
     @classmethod
     def HMA(cls, ohlc: DataFrame, period: int = 16) -> Series:
@@ -283,43 +272,20 @@ class TA:
         Unlike SMA (simple moving average) the curve of Hull moving average is considerably smoother.
         Moreover, because its aim is to minimize the lag between HMA and price it does follow the price activity much closer.
         It is used especially for middle-term and long-term trading.
+        :period: Specifies the number of Periods used for WMA calculation
         """
 
         import math
 
-        wma_a = cls.WMA(ohlc, int(period / 2)) * 2
-        wma_b = cls.WMA(ohlc, period)
-        deltawma = wma_a - wma_b
+        half_length = int(period / 2)
+        sqrt_length = int(math.sqrt(period))
 
-        # now calculate WMA of deltawma for sqrt(period)
-        p = round(math.sqrt(period))  # period
-        d = (p * (p + 1)) / 2
-        rev = deltawma.iloc[::-1]  # reverse the series
-        wma = []
+        wmaf = cls.WMA(ohlc, period=half_length)
+        wmas = cls.WMA(ohlc, period=period)
+        ohlc['deltawma'] = 2 * wmaf - wmas
+        hma = cls.WMA(ohlc, column="deltawma", period=sqrt_length)
 
-        def _chunks(series, period):  # split into chunks of n elements
-            for i in enumerate(series):
-                c = rev.iloc[i[0] : i[0] + period]
-                if len(c) != period:
-                    yield None
-                else:
-                    yield c
-
-        def _wma(chunk, period):  # calculate wma for each chunk
-            w = []
-            for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
-                w.append(price[1] * i / d)
-            return sum(w)
-
-        for i in _chunks(rev, p):
-            try:
-                wma.append(_wma(i, p))
-            except:
-                wma.append(None)
-
-        wma.reverse()
-        deltawma["_WMA"] = pd.Series(wma, index=ohlc.index)
-        return pd.Series(deltawma["_WMA"], name="{0} period HMA.".format(period))
+        return pd.Series(hma, name="{0} period HMA.".format(period))
 
     @classmethod
     def EVWMA(cls, ohlcv: DataFrame, period: int = 20) -> Series:

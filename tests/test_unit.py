@@ -732,20 +732,24 @@ def test_pivot():
 
     pivot = TA.PIVOT(ohlc)
     assert isinstance(pivot["pivot"], series.Series)
-    assert isinstance(pivot["support_1"], series.Series)
-    assert isinstance(pivot["support_2"], series.Series)
-    assert isinstance(pivot["support_3"], series.Series)
-    assert isinstance(pivot["res_1"], series.Series)
-    assert isinstance(pivot["res_2"], series.Series)
-    assert isinstance(pivot["res_3"], series.Series)
+    assert isinstance(pivot["s1"], series.Series)
+    assert isinstance(pivot["s2"], series.Series)
+    assert isinstance(pivot["s3"], series.Series)
+    assert isinstance(pivot["r1"], series.Series)
+    assert isinstance(pivot["r2"], series.Series)
+    assert isinstance(pivot["r3"], series.Series)
 
     assert pivot["pivot"].values[-1] == 6467.4062976066671
-    assert pivot["support_1"].values[-1] == 6364.0047023933339
-    assert pivot["support_2"].values[-1] == 6311.0094047866669
-    assert pivot["support_3"].values[-1] == 6207.6078095733337
-    assert pivot["res_1"].values[-1] == 6520.4015952133341
-    assert pivot["res_2"].values[-1] == 6623.8031904266672
-    assert pivot["res_3"].values[-1] == 6676.7984880333343
+
+    assert pivot["s1"].values[-1] == 6364.0047023933339
+    assert pivot["s2"].values[-1] == 6311.0094047866669
+    assert pivot["s3"].values[-1] == 6207.6078095733337
+    assert pivot["s4"].values[-1] == 6104.2062143600006
+
+    assert pivot["r1"].values[-1] == 6520.4015952133341
+    assert pivot["r2"].values[-1] == 6623.8031904266672
+    assert pivot["r3"].values[-1] == 6676.7984880333343
+    assert pivot["r4"].values[-1] == 6729.7937856400013
 
 
 def test_pivot_fib():
@@ -753,20 +757,24 @@ def test_pivot_fib():
 
     pivot = TA.PIVOT_FIB(ohlc)
     assert isinstance(pivot["pivot"], series.Series)
-    assert isinstance(pivot["support_1"], series.Series)
-    assert isinstance(pivot["support_2"], series.Series)
-    assert isinstance(pivot["support_3"], series.Series)
-    assert isinstance(pivot["res_1"], series.Series)
-    assert isinstance(pivot["res_2"], series.Series)
-    assert isinstance(pivot["res_3"], series.Series)
+    assert isinstance(pivot["s1"], series.Series)
+    assert isinstance(pivot["s2"], series.Series)
+    assert isinstance(pivot["s3"], series.Series)
+    assert isinstance(pivot["r1"], series.Series)
+    assert isinstance(pivot["r2"], series.Series)
+    assert isinstance(pivot["r3"], series.Series)
 
     assert pivot["pivot"].values[-1] == 6467.4062976066671
-    assert pivot["support_1"].values[-1] == 6407.6626845494266
-    assert pivot["support_2"].values[-1] == 6370.7530178439074
-    assert pivot["support_3"].values[-1] == 6311.0094047866669
-    assert pivot["res_1"].values[-1] == 6527.1499106639076
-    assert pivot["res_2"].values[-1] == 6564.0595773694267
-    assert pivot["res_3"].values[-1] == 6623.8031904266672
+
+    assert pivot["s1"].values[-1] == 6407.6626845494266
+    assert pivot["s2"].values[-1] == 6370.7530178439074
+    assert pivot["s3"].values[-1] == 6311.0094047866669
+    assert pivot["s4"].values[-1] == 6251.2657917294273
+
+    assert pivot["r1"].values[-1] == 6527.1499106639076
+    assert pivot["r2"].values[-1] == 6564.0595773694267
+    assert pivot["r3"].values[-1] == 6623.8031904266672
+    assert pivot["r4"].values[-1] == 6683.5468034839068
 
 
 def test_msd():

@@ -847,23 +847,27 @@ class TA:
 
         pivot = pd.Series(cls.TP(df), name="pivot")  # pivot is basically a lagging TP
 
-        support_1 = (pivot * 2) - df["high"]
-        support_2 = pivot - (df["high"] - df["low"])
-        support_3 = df["low"] - (2 * (df["high"] - pivot))
+        s1 = (pivot * 2) - df["high"]
+        s2 = pivot - (df["high"] - df["low"])
+        s3 = df["low"] - (2 * (df["high"] - pivot))
+        s4 = df["low"] - (3 * (df["high"] - pivot))
 
-        res_1 = (pivot * 2) - df["low"]
-        res_2 = pivot + (df["high"] - df["low"])
-        res_3 = df["high"] + (2 * (pivot - df["low"]))
+        r1 = (pivot * 2) - df["low"]
+        r2 = pivot + (df["high"] - df["low"])
+        r3 = df["high"] + (2 * (pivot - df["low"]))
+        r4 = df["high"] + (3 * (pivot - df["low"]))
 
         return pd.concat(
             [
                 pivot,
-                pd.Series(support_1, name="support_1"),
-                pd.Series(support_2, name="support_2"),
-                pd.Series(support_3, name="support_3"),
-                pd.Series(res_1, name="res_1"),
-                pd.Series(res_2, name="res_2"),
-                pd.Series(res_3, name="res_3"),
+                pd.Series(s1, name="s1"),
+                pd.Series(s2, name="s2"),
+                pd.Series(s3, name="s3"),
+                pd.Series(s4, name="s4"),
+                pd.Series(r1, name="r1"),
+                pd.Series(r2, name="r2"),
+                pd.Series(r3, name="r3"),
+                pd.Series(r4, name="r4"),
             ],
             axis=1,
         )
@@ -879,6 +883,7 @@ class TA:
         df = ohlc.shift()
         pp = pd.Series(cls.TP(df), name="pivot")  # classic pivot
 
+        r4 = pp + ((df["high"] - df["low"]) * 1.382)
         r3 = pp + ((df["high"] - df["low"]) * 1)
         r2 = pp + ((df["high"] - df["low"]) * 0.618)
         r1 = pp + ((df["high"] - df["low"]) * 0.382)
@@ -886,16 +891,19 @@ class TA:
         s1 = pp - ((df["high"] - df["low"]) * 0.382)
         s2 = pp - ((df["high"] - df["low"]) * 0.618)
         s3 = pp - ((df["high"] - df["low"]) * 1)
+        s4 = pp - ((df["high"] - df["low"]) * 1.382)
 
         return pd.concat(
             [
                 pp,
-                pd.Series(s1, name="support_1"),
-                pd.Series(s2, name="support_2"),
-                pd.Series(s3, name="support_3"),
-                pd.Series(r1, name="res_1"),
-                pd.Series(r2, name="res_2"),
-                pd.Series(r3, name="res_3"),
+                pd.Series(s1, name="s1"),
+                pd.Series(s2, name="s2"),
+                pd.Series(s3, name="s3"),
+                pd.Series(s4, name="s4"),
+                pd.Series(r1, name="r1"),
+                pd.Series(r2, name="r2"),
+                pd.Series(r3, name="r3"),
+                pd.Series(r4, name="r4")
             ],
             axis=1,
         )

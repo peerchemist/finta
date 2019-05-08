@@ -19,6 +19,19 @@ def resample(df: pd.DataFrame, interval: str) -> pd.DataFrame:
     return df.resample(interval).agg(d)
 
 
+def resample_calendar(df: pd.DataFrame, offset: str) -> pd.DataFrame:
+    """Resample the DataFrame by calendar offset.
+    See http://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#anchored-offsets for compatible offsets.
+    :param df: data
+    :param offset: calendar offset
+    :return: result DataFrame
+    """
+
+    d = {"open": "first", "high": "max", "low": "min", "close": "last", "volume": "sum"}
+
+    return df.resample(offset).agg(d)
+
+
 def trending_up(df: pd.Series, period: int) -> pd.Series:
     """returns boolean Series if the inputs Series is trending up over last n periods.
     :param df: data

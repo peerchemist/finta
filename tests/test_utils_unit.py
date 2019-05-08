@@ -33,6 +33,16 @@ def test_resample():
     ]
 
 
+def test_resample_calendar():
+
+    df = to_dataframe(data)
+    assert isinstance(resample(df, "W-Mon"), DataFrame)
+    assert list(resample(df, "W-Mon").index.values[-2:]) == [
+        numpy.datetime64("2019-05-06T00:00:00.000000000"),
+        numpy.datetime64("2019-05-13T00:00:00.000000000"),
+    ]
+
+
 def test_trending_up():
 
     df = to_dataframe(data)

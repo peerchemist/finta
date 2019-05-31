@@ -1187,13 +1187,13 @@ class TA:
 
         ohlcv['OBV'] = np.nan
 
-        pos_change = ohlcv["close"] < ohlcv["close"].shift(1)
-        neg_change = ohlcv["close"] > ohlcv["close"].shift(1)
+        neg_change = ohlcv["close"] < ohlcv["close"].shift(1)
+        pos_change = ohlcv["close"] > ohlcv["close"].shift(1)
 
         if pos_change.any():
-            ohlcv.loc[pos_change, 'OBV'] = -ohlcv["volume"]
+            ohlcv.loc[pos_change, 'OBV'] = ohlcv["volume"]
         if neg_change.any():
-            ohlcv.loc[neg_change, 'OBV'] = ohlcv["volume"]
+            ohlcv.loc[neg_change, 'OBV'] = -ohlcv["volume"]
 
         return pd.Series(ohlcv['OBV'].cumsum(), name="OBV")
 

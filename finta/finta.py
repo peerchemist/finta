@@ -1571,8 +1571,6 @@ class TA:
         :return pd.Series: indicator calcs as pandas Series
         """
 
-        import numpy as np
-
         vector_size = len(ohlc.close)
         high_low_diff = ohlc.high - ohlc.low
         high_close_diff = np.zeros(vector_size)
@@ -1693,8 +1691,6 @@ class TA:
         :vfactor: Specifies the cutoff for maximum volume in the VFI calculation
         :smoothing_factor: Specifies the number of periods used in the short moving average
         """
-
-        import numpy as np
 
         typical = TA.TP(ohlc)
         # historical interday volatility and cutoff

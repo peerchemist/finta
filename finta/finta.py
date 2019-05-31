@@ -1294,17 +1294,26 @@ class TA:
         )
 
     @classmethod
-    def CCI(cls, ohlc: DataFrame, period: int = 20) -> Series:
+    def CCI(cls, ohlc: DataFrame, period: int = 20, constant: float = 0.015) -> Series:
         """Commodity Channel Index (CCI) is a versatile indicator that can be used to identify a new trend or warn of extreme conditions.
         CCI measures the current price level relative to an average price level over a given period of time.
         The CCI typically oscillates above and below a zero line. Normal oscillations will occur within the range of +100 and −100.
         Readings above +100 imply an overbought condition, while readings below −100 imply an oversold condition.
-        As with other overbought/oversold indicators, this means that there is a large probability that the price will correct to more representative levels."""
+        As with other overbought/oversold indicators, this means that there is a large probability that the price will correct to more representative levels.
+
+        source: https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:commodity_channel_index_cci
+
+        :param pd.DataFrame ohlc: 'open, high, low, close' pandas DataFrame
+        :period: int - number of periods to take into consideration
+        :factor float: the constant at .015 to ensure that approximately 70 to 80 percent of CCI values would fall between -100 and +100.
+        :return pd.Series: result is pandas.Series
+        """
 
         tp = cls.TP(ohlc)
+        tp_rolling = tp.rolling(window=period, min_periods=0) 
         return pd.Series(
-            (tp - tp.rolling(window=period).mean()) / (0.015 * tp.mad()),
-            name="{0} period CCI".format(period),
+            (tp - tp_rolling.mean()) / (constant * tp_rolling.std()
+            ), name="{0} period CCI".format(period),
         )
 
     @classmethod

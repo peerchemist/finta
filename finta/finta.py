@@ -738,7 +738,7 @@ class TA:
 
     @classmethod
     def KC(
-        cls, ohlc: DataFrame, period: int = 20, atr_period: int = 10, MA: Series = None
+        cls, ohlc: DataFrame, period: int = 20, atr_period: int = 10, MA: Series = None, kc_mult: float = 2
     ) -> Series:
         """Keltner Channels [KC] are volatility-based envelopes set above and below an exponential moving average.
         This indicator is similar to Bollinger Bands, which use the standard deviation to set the bands.
@@ -753,8 +753,8 @@ class TA:
         else:
             middle = pd.Series(MA, name="KC_MIDDLE")
 
-        up = pd.Series(middle + (2 * cls.ATR(ohlc, atr_period)), name="KC_UPPER")
-        down = pd.Series(middle - (2 * cls.ATR(ohlc, atr_period)), name="KC_LOWER")
+        up = pd.Series(middle + (kc_mult * cls.ATR(ohlc, atr_period)), name="KC_UPPER")
+        down = pd.Series(middle - (kc_mult * cls.ATR(ohlc, atr_period)), name="KC_LOWER")
 
         return pd.concat([up, down], axis=1)
 
@@ -1611,7 +1611,7 @@ class TA:
             ma = None
 
         bb = cls.BBANDS(ohlc, period=period, MA=ma)
-        kc = cls.KC(ohlc, period=period)
+        kc = cls.KC(ohlc, period=period, kc_mult=1.5)
         comb = pd.concat([bb, kc], axis=1)
 
         def sqz_on(row):

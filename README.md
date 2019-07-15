@@ -1,6 +1,6 @@
 # FinTA (Financial Technical Analysis)
 
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![Financial Contributors on Open Collective](https://opencollective.com/finta/all/badge.svg?label=financial+contributors)](https://opencollective.com/finta) [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![PyPI](https://img.shields.io/pypi/v/finta.svg?style=flat-square)](https://pypi.python.org/pypi/finta/)
 [![](https://img.shields.io/badge/python-3.4+-blue.svg)](https://www.python.org/download/releases/3.4.0/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
@@ -177,3 +177,33 @@ Buy me a beer 🍺:
 Bitcoin: 39PdX8jhXvUpzpkDibwMAVHVs6ZtoHCjnm
 
 Peercoin: PRn448Km1ZJ2BhdPQfiSS3q4Af2vkjwwvH
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/peerchemist/finta/graphs/contributors"><img src="https://opencollective.com/finta/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/finta/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/finta"><img src="https://opencollective.com/finta/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/finta/contribute)]
+
+<a href="https://opencollective.com/finta/organization/0/website"><img src="https://opencollective.com/finta/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/1/website"><img src="https://opencollective.com/finta/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/2/website"><img src="https://opencollective.com/finta/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/3/website"><img src="https://opencollective.com/finta/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/4/website"><img src="https://opencollective.com/finta/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/5/website"><img src="https://opencollective.com/finta/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/6/website"><img src="https://opencollective.com/finta/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/7/website"><img src="https://opencollective.com/finta/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/8/website"><img src="https://opencollective.com/finta/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/finta/organization/9/website"><img src="https://opencollective.com/finta/organization/9/avatar.svg"></a>

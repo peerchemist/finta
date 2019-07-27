@@ -12,7 +12,9 @@ class TA:
         """
 
         return pd.Series(
-            ohlc[column].rolling(window=period).mean(),
+            ohlc[column]
+            .rolling(window=period)
+            .mean(),
             name="{0} period SMA".format(period),
         )
 
@@ -24,7 +26,9 @@ class TA:
         """
 
         return pd.Series(
-            ohlc[column].rolling(window=period).median(),
+            ohlc[column]
+            .rolling(window=period)
+            .median(),
             name="{0} period SMM".format(period),
         )
 
@@ -55,7 +59,10 @@ class TA:
         """
 
         return pd.Series(
-            ohlc[column].ewm(span=period).mean(), name="{0} period EMA".format(period)
+            ohlc[column]
+            .ewm(span=period)
+            .mean(),
+            name="{0} period EMA".format(period),
         )
 
     @classmethod
@@ -69,7 +76,12 @@ class TA:
         samples needed by a regular EMA
         """
 
-        DEMA = 2 * cls.EMA(ohlc, period) - cls.EMA(ohlc, period).ewm(span=period).mean()
+        DEMA = (
+            2 * cls.EMA(ohlc, period)
+            - cls.EMA(ohlc, period)
+            .ewm(span=period)
+            .mean()
+        )
 
         return pd.Series(DEMA, name="{0} period DEMA".format(period))
 
@@ -95,7 +107,12 @@ class TA:
         )
 
         TEMA = (
-            triple_ema - 3 * cls.EMA(ohlc, period).ewm(span=period).mean() + ema_ema_ema
+            triple_ema
+            - 3
+            * cls.EMA(ohlc, period)
+            .ewm(span=period)
+            .mean()
+            + ema_ema_ema
         )
 
         return pd.Series(TEMA, name="{0} period TEMA".format(period))
@@ -240,7 +257,6 @@ class TA:
         def linear(w):
             def _compute(x):
                 return (w * x).sum() / d
-
             return _compute
 
         close_ = ohlc["close"].rolling(period, min_periods=period)
@@ -266,7 +282,7 @@ class TA:
 
         wmaf = cls.WMA(ohlc, period=half_length)
         wmas = cls.WMA(ohlc, period=period)
-        ohlc["deltawma"] = 2 * wmaf - wmas
+        ohlc['deltawma'] = 2 * wmaf - wmas
         hma = cls.WMA(ohlc, column="deltawma", period=sqrt_length)
 
         return pd.Series(hma, name="{0} period HMA.".format(period))
@@ -373,10 +389,16 @@ class TA:
         """
 
         EMA_fast = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_fast).mean(), name="EMA_fast"
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_fast)
+            .mean(),
+            name="EMA_fast",
         )
         EMA_slow = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_slow).mean(), name="EMA_slow"
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_slow)
+            .mean(),
+            name="EMA_slow",
         )
         MACD = pd.Series(EMA_fast - EMA_slow, name="MACD")
         MACD_signal = pd.Series(
@@ -401,10 +423,16 @@ class TA:
         """
 
         EMA_fast = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_fast).mean(), name="EMA_fast"
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_fast)
+            .mean(),
+            name="EMA_fast",
         )
         EMA_slow = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_slow).mean(), name="EMA_slow"
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_slow)
+            .mean(),
+            name="EMA_slow",
         )
         PPO = pd.Series(((EMA_fast - EMA_slow) / EMA_slow) * 100, name="PPO")
         PPO_signal = pd.Series(
@@ -427,14 +455,30 @@ class TA:
 
         vp = ohlcv["volume"] * ohlcv["close"]
         _fast = pd.Series(
-            (vp.ewm(ignore_na=False, span=period_fast).mean())
-            / (ohlcv["volume"].ewm(ignore_na=False, span=period_fast).mean()),
+            (
+                vp.ewm(
+                    ignore_na=False, span=period_fast
+                ).mean()
+            )
+            / (
+                ohlcv["volume"]
+                .ewm(ignore_na=False, span=period_fast)
+                .mean()
+            ),
             name="_fast",
         )
 
         _slow = pd.Series(
-            (vp.ewm(ignore_na=False, span=period_slow).mean())
-            / (ohlcv["volume"].ewm(ignore_na=False, span=period_slow).mean()),
+            (
+                vp.ewm(
+                    ignore_na=False, span=period_slow
+                ).mean()
+            )
+            / (
+                ohlcv["volume"]
+                .ewm(ignore_na=False, span=period_slow)
+                .mean()
+            ),
             name="_slow",
         )
 
@@ -694,12 +738,7 @@ class TA:
 
     @classmethod
     def KC(
-        cls,
-        ohlc: DataFrame,
-        period: int = 20,
-        atr_period: int = 10,
-        MA: Series = None,
-        kc_mult: float = 2,
+        cls, ohlc: DataFrame, period: int = 20, atr_period: int = 10, MA: Series = None, kc_mult: float = 2
     ) -> Series:
         """Keltner Channels [KC] are volatility-based envelopes set above and below an exponential moving average.
         This indicator is similar to Bollinger Bands, which use the standard deviation to set the bands.
@@ -715,9 +754,7 @@ class TA:
             middle = pd.Series(MA, name="KC_MIDDLE")
 
         up = pd.Series(middle + (kc_mult * cls.ATR(ohlc, atr_period)), name="KC_UPPER")
-        down = pd.Series(
-            middle - (kc_mult * cls.ATR(ohlc, atr_period)), name="KC_LOWER"
-        )
+        down = pd.Series(middle - (kc_mult * cls.ATR(ohlc, atr_period)), name="KC_LOWER")
 
         return pd.concat([up, down], axis=1)
 
@@ -765,11 +802,17 @@ class TA:
         ohlc["DMm"] = DMm
 
         diplus = pd.Series(
-            100 * (ohlc["DMp"] / cls.ATR(ohlc, period * 6)).ewm(span=period).mean(),
+            100
+            * (ohlc["DMp"] / cls.ATR(ohlc, period * 6))
+            .ewm(span=period)
+            .mean(),
             name="DI+",
         )
         diminus = pd.Series(
-            100 * (ohlc["DMm"] / cls.ATR(ohlc, period * 6)).ewm(span=period).mean(),
+            100
+            * (ohlc["DMm"] / cls.ATR(ohlc, period * 6))
+            .ewm(span=period)
+            .mean(),
             name="DI-",
         )
 
@@ -860,7 +903,7 @@ class TA:
                 pd.Series(r1, name="r1"),
                 pd.Series(r2, name="r2"),
                 pd.Series(r3, name="r3"),
-                pd.Series(r4, name="r4"),
+                pd.Series(r4, name="r4")
             ],
             axis=1,
         )
@@ -891,7 +934,9 @@ class TA:
         """
 
         return pd.Series(
-            cls.STOCH(ohlc, stoch_period).rolling(center=False, window=period).mean(),
+            cls.STOCH(ohlc, stoch_period)
+            .rolling(center=False, window=period)
+            .mean(),
             name="{0} perood STOCH %D.".format(period),
         )
 
@@ -1140,17 +1185,17 @@ class TA:
         :return pd.Series: result is pandas.Series
         """
 
-        ohlcv["OBV"] = np.nan
+        ohlcv['OBV'] = np.nan
 
         neg_change = ohlcv["close"] < ohlcv["close"].shift(1)
         pos_change = ohlcv["close"] > ohlcv["close"].shift(1)
 
         if pos_change.any():
-            ohlcv.loc[pos_change, "OBV"] = ohlcv["volume"]
+            ohlcv.loc[pos_change, 'OBV'] = ohlcv["volume"]
         if neg_change.any():
-            ohlcv.loc[neg_change, "OBV"] = -ohlcv["volume"]
+            ohlcv.loc[neg_change, 'OBV'] = -ohlcv["volume"]
 
-        return pd.Series(ohlcv["OBV"].cumsum(), name="OBV")
+        return pd.Series(ohlcv['OBV'].cumsum(), name="OBV")
 
     @classmethod
     def WOBV(cls, ohlcv: DataFrame) -> Series:
@@ -1270,10 +1315,10 @@ class TA:
         """
 
         tp = cls.TP(ohlc)
-        tp_rolling = tp.rolling(window=period, min_periods=0)
+        tp_rolling = tp.rolling(window=period, min_periods=0) 
         return pd.Series(
-            (tp - tp_rolling.mean()) / (constant * tp_rolling.std()),
-            name="{0} period CCI".format(period),
+            (tp - tp_rolling.mean()) / (constant * tp_rolling.std()
+            ), name="{0} period CCI".format(period),
         )
 
     @classmethod
@@ -1505,7 +1550,9 @@ class TA:
 
         if not isinstance(MA, pd.Series):
             MA = cls.DEMA(ohlc, period)
-        price_range = pd.Series((ohlc["high"] - ohlc["low"]).ewm(span=period).mean())
+        price_range = pd.Series(
+            (ohlc["high"] - ohlc["low"]).ewm(span=period).mean()
+        )
         volatility_value = pd.Series(
             price_range.ewm(span=period).mean(), name="vol_val"
         )
@@ -1653,7 +1700,10 @@ class TA:
         cutoff = pd.Series(factor * vinter * ohlc["close"], name="cutoff")
         price_change = pd.Series(typical.diff(), name="pc")  # price change
         mav = pd.Series(
-            ohlc["volume"].rolling(center=False, window=period).mean(), name="mav"
+            ohlc["volume"]
+            .rolling(center=False, window=period)
+            .mean(),
+            name="mav",
         )
 
         _va = pd.concat([ohlc["volume"], mav.shift()], axis=1)
@@ -1715,11 +1765,11 @@ class TA:
 
     @classmethod
     def STC(
-        cls,
-        ohlc: DataFrame,
+        cls, 
+        ohlc: DataFrame, 
         period_fast: int = 23,
         period_slow: int = 50,
-        period: int = 10,
+        period: int = 10
     ) -> Series:
         """
         Schaff Trend Cycle - Three input values are used with the STC:
@@ -1741,23 +1791,27 @@ class TA:
         is up, while the price tends to stabilize or follow the cycle to the upside.
         """
         EMA_fast = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_fast).mean(), name="EMA_fast"
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_fast)
+            .mean(),
+            name="EMA_fast",
         )
 
         EMA_slow = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_slow).mean(), name="EMA_slow"
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_slow)
+            .mean(),
+            name="EMA_slow",
         )
 
         MACD = pd.Series((EMA_fast - EMA_slow), name="MACD")
-        STOK = (
-            (MACD - MACD.rolling(window=period).min())
-            / (MACD.rolling(window=period).max() - MACD.rolling(window=period).min())
-        ) * 100
+        STOK = ((MACD - MACD.rolling(window=period).min()) / (
+                MACD.rolling(window=period).max() - MACD.rolling(window=period).min())) * 100
         STOD = STOK.rolling(window=period).mean()
 
         return pd.Series(
             100 * (MACD - (STOK * MACD)) / ((STOD * MACD) - (STOK * MACD)),
-            name="{0} period STC.".format(period),
+            name="{0} period STC.".format(period)
         )
 
 

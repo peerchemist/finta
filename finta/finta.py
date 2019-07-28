@@ -1763,6 +1763,57 @@ class TA:
 
         return pd.Series(ohlc["close"].rolling(period).std(), name="MSD")
 
+    @classmethod
+    def STC(
+        cls, 
+        ohlc: DataFrame, 
+        period_fast: int = 23,
+        period_slow: int = 50,
+        period: int = 10
+    ) -> Series:
+        """
+        Schaff Trend Cycle - Three input values are used with the STC:
+        – Sh: shorter-term Exponential Moving Average with a default period of 23
+        – Lg: longer-term Exponential Moving Average with a default period of 50
+        – Cycle, set at half the cycle length with a default value of 10.
+        The STC is calculated in the following order:
+        First, the 23-period and the 50-period EMA and the MACD values are calculated:
+        EMA1 = EMA (Close, Short Length);
+        EMA2 = EMA (Close, Long Length);
+        MACD = EMA1 – EMA2.
+        Second, the 10-period Stochastic from the MACD values is calculated:
+        %K (MACD) = %KV (MACD, 10);
+        %D (MACD) = %DV (MACD, 10);
+        Schaff = 100 x (MACD – %K (MACD)) / (%D (MACD) – %K (MACD)).
+        In case the STC indicator is decreasing, this indicates that the trend cycle 
+        is falling, while the price tends to stabilize or follow the cycle to the downside.
+        In case the STC indicator is increasing, this indicates that the trend cycle 
+        is up, while the price tends to stabilize or follow the cycle to the upside.
+        """
+        EMA_fast = pd.Series(
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_fast)
+            .mean(),
+            name="EMA_fast",
+        )
+
+        EMA_slow = pd.Series(
+            ohlc["close"]
+            .ewm(ignore_na=False, span=period_slow)
+            .mean(),
+            name="EMA_slow",
+        )
+
+        MACD = pd.Series((EMA_fast - EMA_slow), name="MACD")
+        STOK = ((MACD - MACD.rolling(window=period).min()) / (
+                MACD.rolling(window=period).max() - MACD.rolling(window=period).min())) * 100
+        STOD = STOK.rolling(window=period).mean()
+
+        return pd.Series(
+            100 * (MACD - (STOK * MACD)) / ((STOD * MACD) - (STOK * MACD)),
+            name="{0} period STC.".format(period)
+        )
+
 
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

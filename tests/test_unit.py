@@ -784,3 +784,11 @@ def test_msd():
 
     assert isinstance(msd, series.Series)
     assert msd.values[-1] == 542.25201592159419
+
+def test_stc():
+    """test TA.STC"""
+
+    stc = TA.STC(ohlc)
+
+    assert isinstance(stc, series.Series)
+    assert stc.values[-1] == 10.000000000000165

@@ -1248,7 +1248,8 @@ class TA:
         """Elder's Force Index is an indicator that uses price and volume to assess the power
          behind a move or identify possible turning points."""
 
-        fi = pd.Series((ohlcv["close"] - ohlcv["close"].diff()) * ohlcv["volume"])
+        # https://tradingsim.com/blog/elders-force-index/
+        fi = pd.Series(ohlcv["close"].diff() * ohlcv["volume"])
         return pd.Series(
             fi.ewm(ignore_na=False, span=period).mean(),
             name="{0} period Force Index".format(period),

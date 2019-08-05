@@ -537,7 +537,11 @@ def test_efi():
     efi = TA.EFI(ohlc)
 
     assert isinstance(efi, series.Series)
-    assert efi.values[-1] == 6918216.7131493781
+    assert efi.values[1] > 0
+    assert efi.values[2] > 0
+
+    assert efi.values[-2] < 0
+    assert efi.values[-1] < 0
 
 
 def test_cfi():

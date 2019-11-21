@@ -537,7 +537,11 @@ def test_efi():
     efi = TA.EFI(ohlc)
 
     assert isinstance(efi, series.Series)
-    assert efi.values[-1] == 6918216.7131493781
+    assert efi.values[1] > 0
+    assert efi.values[2] > 0
+
+    assert efi.values[-2] < 0
+    assert efi.values[-1] < 0
 
 
 def test_cfi():
@@ -784,3 +788,11 @@ def test_msd():
 
     assert isinstance(msd, series.Series)
     assert msd.values[-1] == 542.25201592159419
+
+def test_stc():
+    """test TA.STC"""
+
+    stc = TA.STC(ohlc)
+
+    assert isinstance(stc, series.Series)
+    assert stc.values[-1] == 10.000000000000165

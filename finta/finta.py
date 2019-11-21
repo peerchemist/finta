@@ -1025,7 +1025,7 @@ class TA:
         DEMA9 = EMA9.ewm(span=period, ignore_na=False).mean()
         mass = EMA9 / DEMA9
 
-        return pd.Series(mass.rolling(window=25).sum(), name="Mass Index").tail(period)
+        return pd.Series(mass.rolling(window=25).sum(), name="Mass Index")
 
     @classmethod
     def VORTEX(cls, ohlc: DataFrame, period: int = 14) -> Series:

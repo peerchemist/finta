@@ -120,19 +120,15 @@ Prepare data to use with finta:
 finta expects properly formated `ohlc` DataFrame, with column names in `lowercase`:
 ["open", "high", "low", close"] and ["volume"] for indicators that expect `ohlcv` input.
 
-To prepare the DataFrame into `ohlc` format you can do something as following:
+### to resample by time period (you can choose different time period)
+`ohlc = resample(df, "24h")`
 
-### standardize column names of your source
-`df.columns = ["date", 'close', 'volume']`
+### You can also load a ohlc DataFrame from .cvs file
 
-### set index on the date column, which is requirement to sort it by time periods
-`df.set_index('date', inplace=True)`
+`data_file = ("data/bittrex:btc-usdt.csv")`
 
-### select only price column, resample by time period and return daily ohlc (you can choose different time period)
-`ohlc = df["close"].resample("24h").ohlc()`
+`ohlc = pd.read_csv(data_file, index_col="date", parse_dates=True)`
 
-
-`ohlc()` method applied on the Series above will automatically format the dataframe in format expected by the library so resulting `ohlc` Series is ready to use.
 ____________________________________________________________________________
 
 ## Examples:

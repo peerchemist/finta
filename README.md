@@ -118,7 +118,7 @@ or latest development version:
 Prepare data to use with finta:
 
 finta expects properly formated `ohlc` DataFrame, with column names in `lowercase`:
-["open", "high", "low", close"] and ["volume"] for indicators that expect `ohlcv` input.
+["open", "high", "low", "close"] and ["volume"] for indicators that expect `ohlcv` input.
 
 ### to resample by time period (you can choose different time period)
 `ohlc = resample(df, "24h")`

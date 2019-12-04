@@ -1489,7 +1489,14 @@ class TA:
         )
 
     @classmethod
-    def ICHIMOKU(cls, ohlc: DataFrame) -> Series:
+    def ICHIMOKU(
+        cls,
+        ohlc: DataFrame,
+        tenkan_period: int = 9,
+        kijun_period: int = 26,
+        senkou_period: int = 52,
+        chikou_period: int = 26,
+    ) -> Series:
         """
         The Ichimoku Cloud, also known as Ichimoku Kinko Hyo, is a versatile indicator that defines support and resistance,
         identifies trend direction, gauges momentum and provides trading signals.
@@ -1499,16 +1506,17 @@ class TA:
 
         tenkan_sen = pd.Series(
             (
-                ohlc["high"].rolling(window=9).mean()
-                + ohlc["low"].rolling(window=9).mean()
+                ohlc["high"].rolling(window=tenkan_period).mean()
+                + ohlc["low"].rolling(window=tenkan_period).mean()
             )
             / 2,
             name="TENKAN",
         )  ## conversion line
+
         kijun_sen = pd.Series(
             (
-                ohlc["high"].rolling(window=26).mean()
-                + ohlc["low"].rolling(window=26).mean()
+                ohlc["high"].rolling(window=kijun_period).mean()
+                + ohlc["low"].rolling(window=kijun_period).mean()
             )
             / 2,
             name="KIJUN",
@@ -1520,15 +1528,16 @@ class TA:
         senkou_span_b = pd.Series(
             (
                 (
-                    ohlc["high"].rolling(window=52).mean()
-                    + ohlc["low"].rolling(window=52).mean()
+                    ohlc["high"].rolling(window=senkou_period).mean()
+                    + ohlc["low"].rolling(window=senkou_period).mean()
                 )
                 / 2
             ),
             name="SENKOU",
         )
+
         chikou_span = pd.Series(
-            ohlc["close"].shift(-26).rolling(window=26).mean(), name="CHIKOU"
+            ohlc["close"].shift(chikou_period).rolling(window=chikou_period).mean(), name="CHIKOU"
         )
 
         return pd.concat(

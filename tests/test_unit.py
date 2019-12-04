@@ -665,7 +665,7 @@ def test_fish():
 def test_ichimoku():
     """test TA.ICHIMOKU"""
 
-    ichi = TA.ICHIMOKU(ohlc)
+    ichi = TA.ICHIMOKU(ohlc, 10, 25)
 
     assert isinstance(ichi["TENKAN"], series.Series)
     assert isinstance(ichi["KIJUN"], series.Series)

@@ -373,7 +373,7 @@ class TA:
         period_fast: int = 12,
         period_slow: int = 26,
         signal: int = 9,
-    ) -> Series:
+    ) -> DataFrame:
         """
         MACD, MACD Signal and MACD difference.
         The MACD Line oscillates above and below the zero line, which is also known as the centerline.
@@ -414,7 +414,7 @@ class TA:
         period_fast: int = 12,
         period_slow: int = 26,
         signal: int = 9,
-    ) -> Series:
+    ) -> DataFrame:
         """
         Percentage Price Oscillator
         PPO, PPO Signal and PPO difference.
@@ -449,7 +449,7 @@ class TA:
         period_fast: int = 12,
         period_slow: int = 26,
         signal: int = 9,
-    ) -> Series:
+    ) -> DataFrame:
         """"Volume-Weighted MACD" is an indicator that shows how a volume-weighted moving average can be used to calculate moving average convergence/divergence (MACD).
         This technique was first used by Buff Dormeier, CMT, and has been written about since at least 2002."""
 
@@ -496,7 +496,7 @@ class TA:
         period_fast: int = 20,
         period_slow: int = 40,
         signal: int = 9,
-    ) -> Series:
+    ) -> DataFrame:
         """
         Elastic Volume Weighted MACD is a variation of standard MACD,
         calculated using two EVWMA's.
@@ -684,7 +684,7 @@ class TA:
     @classmethod
     def BBANDS(
         cls, ohlc: DataFrame, period: int = 20, MA: Series = None, column: str = "close"
-    ) -> Series:
+    ) -> DataFrame:
         """
          Developed by John Bollinger, Bollinger Bands® are volatility bands placed above and below a moving average.
          Volatility is based on the standard deviation, which changes as volatility increases and decreases.
@@ -739,7 +739,7 @@ class TA:
     @classmethod
     def KC(
         cls, ohlc: DataFrame, period: int = 20, atr_period: int = 10, MA: Series = None, kc_mult: float = 2
-    ) -> Series:
+    ) -> DataFrame:
         """Keltner Channels [KC] are volatility-based envelopes set above and below an exponential moving average.
         This indicator is similar to Bollinger Bands, which use the standard deviation to set the bands.
         Instead of using the standard deviation, Keltner Channels use the Average True Range (ATR) to set channel distance.
@@ -759,7 +759,7 @@ class TA:
         return pd.concat([up, down], axis=1)
 
     @classmethod
-    def DO(cls, ohlc: DataFrame, period: int = 20) -> Series:
+    def DO(cls, ohlc: DataFrame, period: int = 20) -> DataFrame:
         """Donchian Channel, a moving average indicator developed by Richard Donchian.
         It plots the highest high and lowest low over the last period time intervals."""
 
@@ -770,7 +770,7 @@ class TA:
         return pd.concat([lower, middle, upper], axis=1)
 
     @classmethod
-    def DMI(cls, ohlc: DataFrame, period: int = 14) -> Series:
+    def DMI(cls, ohlc: DataFrame, period: int = 14) -> DataFrame:
         """The directional movement indicator (also known as the directional movement index - DMI) is a valuable tool
          for assessing price direction and strength. This indicator was created in 1978 by J. Welles Wilder, who also created the popular
          relative strength index. DMI tells you when to be long or short.
@@ -834,7 +834,7 @@ class TA:
         )
 
     @classmethod
-    def PIVOT(cls, ohlc: DataFrame) -> Series:
+    def PIVOT(cls, ohlc: DataFrame) -> DataFrame:
         """
         Pivot Points are significant support and resistance levels that can be used to determine potential trades.
         The pivot points come as a technical analysis indicator calculated using a financial instrument’s high, low, and close value.
@@ -873,7 +873,7 @@ class TA:
         )
 
     @classmethod
-    def PIVOT_FIB(cls, ohlc: DataFrame) -> Series:
+    def PIVOT_FIB(cls, ohlc: DataFrame) -> DataFrame:
         """
         Fibonacci pivot point levels are determined by first calculating the classic pivot point,
         then multiply the previous day’s range with its corresponding Fibonacci level.
@@ -1028,7 +1028,7 @@ class TA:
         return pd.Series(mass.rolling(window=25).sum(), name="Mass Index")
 
     @classmethod
-    def VORTEX(cls, ohlc: DataFrame, period: int = 14) -> Series:
+    def VORTEX(cls, ohlc: DataFrame, period: int = 14) -> DataFrame:
         """The Vortex indicator plots two oscillating lines, one to identify positive trend movement and the other
          to identify negative price movement.
          Indicator construction revolves around the highs and lows of the last two days or periods.
@@ -1051,7 +1051,7 @@ class TA:
     @classmethod
     def KST(
         cls, ohlc: DataFrame, r1: int = 10, r2: int = 15, r3: int = 20, r4: int = 30
-    ) -> Series:
+    ) -> DataFrame:
         """Know Sure Thing (KST) is a momentum oscillator based on the smoothed rate-of-change for four different time frames.
         KST measures price momentum for four different price cycles. It can be used just like any momentum oscillator.
         Chartists can look for divergences, overbought/oversold readings, signal line crossovers and centerline crossovers."""
@@ -1069,7 +1069,7 @@ class TA:
     @classmethod
     def TSI(
         cls, ohlc: DataFrame, long: int = 25, short: int = 13, signal: int = 13
-    ) -> Series:
+    ) -> DataFrame:
         """True Strength Index (TSI) is a momentum oscillator based on a double smoothing of price changes."""
 
         ## Double smoother price change
@@ -1270,7 +1270,7 @@ class TA:
         return cfi.cumsum()
 
     @classmethod
-    def EBBP(cls, ohlc: DataFrame) -> Series:
+    def EBBP(cls, ohlc: DataFrame) -> DataFrame:
         """Bull power and bear power by Dr. Alexander Elder show where today’s high and low lie relative to the a 13-day EMA"""
 
         bull_power = pd.Series(ohlc["high"] - cls.EMA(ohlc, 13), name="Bull.")
@@ -1334,7 +1334,7 @@ class TA:
         )
 
     @classmethod
-    def BASP(cls, ohlc: DataFrame, period: int = 40) -> Series:
+    def BASP(cls, ohlc: DataFrame, period: int = 40) -> DataFrame:
         """BASP indicator serves to identify buying and selling pressure."""
 
         sp = ohlc["high"] - ohlc["close"]
@@ -1354,7 +1354,7 @@ class TA:
         return pd.concat([nbfraw, nsfraw], axis=1)
 
     @classmethod
-    def BASPN(cls, ohlc: DataFrame, period: int = 40) -> Series:
+    def BASPN(cls, ohlc: DataFrame, period: int = 40) -> DataFrame:
         """
         Normalized BASP indicator
         """
@@ -1393,7 +1393,7 @@ class TA:
     @classmethod
     def CHANDELIER(
         cls, ohlc: DataFrame, period_1: int = 14, period_2: int = 22, k: int = 3
-    ) -> Series:
+    ) -> DataFrame:
         """
         Chandelier Exit sets a trailing stop-loss based on the Average True Range (ATR).
 
@@ -1448,7 +1448,7 @@ class TA:
     @classmethod
     def WTO(
         cls, ohlc: DataFrame, channel_lenght: int = 10, average_lenght: int = 21
-    ) -> Series:
+    ) -> DataFrame:
         """
         Wave Trend Oscillator
         source: http://www.fxcoaching.com/WaveTrend/
@@ -1496,7 +1496,7 @@ class TA:
         kijun_period: int = 26,
         senkou_period: int = 52,
         chikou_period: int = 26,
-    ) -> Series:
+    ) -> DataFrame:
         """
         The Ichimoku Cloud, also known as Ichimoku Kinko Hyo, is a versatile indicator that defines support and resistance,
         identifies trend direction, gauges momentum and provides trading signals.
@@ -1547,7 +1547,7 @@ class TA:
     @classmethod
     def APZ(
         cls, ohlc: DataFrame, period: int = 21, dev_factor: int = 2, MA: Series = None
-    ) -> Series:
+    ) -> DataFrame:
         """
         The adaptive price zone (APZ) is a technical indicator developed by Lee Leibfarth.
 
@@ -1598,7 +1598,7 @@ class TA:
         return vr
 
     @classmethod
-    def SQZMI(cls, ohlc: DataFrame, period: int = 20, MA: Series = None) -> Series:
+    def SQZMI(cls, ohlc: DataFrame, period: int = 20, MA: Series = None) -> DataFrame:
         """
         Squeeze Momentum Indicator
 

@@ -13,7 +13,7 @@ may not be accurate.*
 
 ## Supported indicators:
 
-Finta supports 75 trading indicators:
+Finta supports 76 trading indicators:
 
 ```
 * Simple Moving Average 'SMA'
@@ -93,6 +93,7 @@ Finta supports 75 trading indicators:
 * Finite Volume Element 'FVE'
 * Volume Flow Indicator 'VFI'
 * Moving Standard deviation 'MSD'
+* Schaff Trend Cycle 'STC'
 ```
 
 ## Dependencies:
@@ -170,6 +171,6 @@ royalty free.
 
 Buy me a beer 🍺:
 
-Bitcoin: 39PdX8jhXvUpzpkDibwMAVHVs6ZtoHCjnm
+Bitcoin: 3NibjuvQPzcfuLaefhUEEFBcmHpXgKgs4m
 
-Peercoin: PRn448Km1ZJ2BhdPQfiSS3q4Af2vkjwwvH
+Peercoin: P9dAfWoxT7kksKAStubDQR6RhdXk5z12rV

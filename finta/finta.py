@@ -1591,7 +1591,7 @@ class TA:
 
         tr = np.amax(vectors_stacked, axis=0)
         vr = pd.Series(
-            tr / cls.EMA(ohlc.close, period=periods),
+            tr / cls.EMA(ohlc.close, period=period),
             name="{0} period VR.".format(period),
         )
 

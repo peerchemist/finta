@@ -763,12 +763,12 @@ class TA:
         return pd.concat([up, down], axis=1)
 
     @classmethod
-    def DO(cls, ohlc: DataFrame, period: int = 20) -> DataFrame:
+    def DO(cls, ohlc: DataFrame, upper_period: int = 20, lower_period: int = 5) -> DataFrame:
         """Donchian Channel, a moving average indicator developed by Richard Donchian.
         It plots the highest high and lowest low over the last period time intervals."""
 
-        upper = pd.Series(ohlc["high"].rolling(center=False, window=period).max(), name="UPPER")
-        lower = pd.Series(ohlc["low"].rolling(center=False, window=period).min(), name="LOWER")
+        upper = pd.Series(ohlc["high"].rolling(center=False, window=upper_period).max(), name="UPPER")
+        lower = pd.Series(ohlc["low"].rolling(center=False, window=lower_period).min(), name="LOWER")
         middle = pd.Series((upper + lower) / 2, name="MIDDLE")
 
         return pd.concat([lower, middle, upper], axis=1)

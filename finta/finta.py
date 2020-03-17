@@ -780,7 +780,7 @@ class TA:
          relative strength index. DMI tells you when to be long or short.
          It is especially useful for trend trading strategies because it differentiates between strong and weak trends,
          allowing the trader to enter only the strongest trends.
-        source https://www.fidelity.com/learning-center/trading-investing/technical-analysis/technical-indicator-guide/dmi
+        source: https://www.tradingview.com/wiki/Directional_Movement_(DMI)#CALCULATION
 
         :period: Specifies the number of Periods used for DMI calculation
         """
@@ -788,33 +788,33 @@ class TA:
         ohlc["up_move"] = ohlc["high"].diff()
         ohlc["down_move"] = -ohlc["low"].diff()
 
-        DMp = []
-        DMm = []
-
-        for row in ohlc.itertuples():
-            if row.up_move > row.down_move and row.up_move > 0:
-                DMp.append(row.up_move)
+        # positive Dmi
+        def _dmp(row):
+            if row["up_move"] > row["down_move"] and row["up_move"] > 0:
+                return row["up_move"]
             else:
-                DMp.append(0)
+                return 0
 
-            if row.down_move > row.up_move and row.down_move > 0:
-                DMm.append(row.down_move)
+        # negative Dmi
+        def _dmn(row):
+            if row["down_move"] > row["up_move"] and row["down_move"] > 0:
+                return row["down_move"]
             else:
-                DMm.append(0)
+                return 0
 
-        ohlc["DMp"] = DMp
-        ohlc["DMm"] = DMm
+        ohlc["plus"] = ohlc.apply(_dmp, axis=1)
+        ohlc["minus"] = ohlc.apply(_dmn, axis=1)
 
         diplus = pd.Series(
             100
-            * (ohlc["DMp"] / cls.ATR(ohlc, period * 6))
+            * (ohlc["plus"] / cls.ATR(ohlc, period))
             .ewm(span=period, adjust=adjust)
             .mean(),
             name="DI+",
         )
         diminus = pd.Series(
             100
-            * (ohlc["DMm"] / cls.ATR(ohlc, period * 6))
+            * (ohlc["minus"] / cls.ATR(ohlc, period))
             .ewm(span=period, adjust=adjust)
             .mean(),
             name="DI-",

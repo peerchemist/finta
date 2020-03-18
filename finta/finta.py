@@ -230,16 +230,26 @@ class TA:
         return sma["KAMA"]
 
     @classmethod
-    def ZLEMA(cls, ohlc: DataFrame, period: int = 26) -> Series:
+    def ZLEMA(cls, ohlc: DataFrame, period: int = 26, adjust: bool = True) -> Series:
         """ZLEMA is an abbreviation of Zero Lag Exponential Moving Average. It was developed by John Ehlers and Rick Way.
         ZLEMA is a kind of Exponential moving average but its main idea is to eliminate the lag arising from the very nature of the moving averages
         and other trend following indicators. As it follows price closer, it also provides better price averaging and responds better to price swings."""
 
         lag = (period - 1) / 2
-        return pd.Series(
+
+        ema = pd.Series(
             (ohlc["close"] + (ohlc["close"].diff(lag))),
             name="{0} period ZLEMA.".format(period),
         )
+
+        zlema = pd.Series(
+            ema
+            .ewm(span=period, adjust=adjust)
+            .mean(),
+            name="{0} period ZLEMA".format(period),
+        )
+
+        return zlema
 
     @classmethod
     def WMA(cls, ohlc: DataFrame, period: int = 9, column: str = "close") -> Series:

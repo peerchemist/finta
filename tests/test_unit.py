@@ -120,7 +120,7 @@ def test_zlema():
     ma = TA.ZLEMA(ohlc)
 
     assert isinstance(ma, series.Series)
-    assert ma.values[-1] == 5193.0313725800006
+    assert ma.values[-1] == 6462.46183364893
 
 
 def test_wma():

@@ -326,7 +326,7 @@ class TA:
                 evwma.append(evwma[-1] * x[1] + y[1])
 
         return pd.Series(
-            Series(evwma[1:], index=ohlcv.index),
+            evwma[1:], index=ohlcv.index,
             name="{0} period EVWMA.".format(period),
         )
 

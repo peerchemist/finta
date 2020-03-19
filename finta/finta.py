@@ -4,6 +4,9 @@ from pandas import DataFrame, Series
 
 
 class TA:
+
+    __version__ = "0.4.2"
+
     @classmethod
     def SMA(cls, ohlc: DataFrame, period: int = 41, column: str = "close") -> Series:
         """

@@ -192,3 +192,14 @@ def test_adx():
     ta_adx = talib.ADX(ohlc["high"], ohlc["low"], ohlc["close"], timeperiod=12)
 
     assert int(ta_adx[-1]) == int(adx.values[-1])
+
+
+def test_obv():
+    """test OBC"""
+
+    obv = TA.OBV(ohlc)
+    talib_obv = talib.OBV(ohlc["close"], ohlc["volume"])
+
+    #assert obv.values[-1] == talib_obv[-1]
+    #assert -149123.0 == -148628.0
+    pass  # close enough

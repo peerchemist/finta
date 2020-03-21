@@ -104,6 +104,16 @@ def test_tr():
     assert round(talib_tr[-1], 5) == round(tr.values[-1], 5)
 
 
+def test_macd():
+    """test MACD"""
+
+    macd = TA.MACD(ohlc)
+    talib_macd = talib.MACD(ohlc['close'])
+
+    assert round(talib_macd[0][-1], 3) == round(macd["MACD"].values[-1], 3)
+    assert round(talib_macd[1][-1], 3) == round(macd["SIGNAL"].values[-1], 3)
+
+
 def test_atr():
     '''test TA.ATR'''
 

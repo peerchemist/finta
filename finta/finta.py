@@ -134,20 +134,34 @@ class TA:
         return pd.Series(SMA / period, name="{0} period TRIMA".format(period))
 
     @classmethod
-    def TRIX(cls, ohlc: DataFrame, period: int = 15, adjust: bool = True) -> Series:
+    def TRIX(cls, ohlc: DataFrame, period: int = 20, column: str = "close",
+             adjust: bool = True) -> Series:
         """
-        The Triple Exponential Moving Average Oscillator (TRIX) by Jack Hutson is a momentum indicator that oscillates around zero.
-        It displays the percentage rate of change between two triple smoothed exponential moving averages.
-        To calculate TRIX we calculate triple smoothed EMA3 of n periods and then substract previous period EMA3 value
-        from last EMA3 value and divide the result with yesterdays EMA3 value.
+        The TRIX indicator calculates the rate of change of a triple exponential moving average.
+        The values oscillate around zero. Buy/sell signals are generated when the TRIX crosses above/below zero.
+        A (typically) 9 period exponential moving average of the TRIX can be used as a signal line.
+        A buy/sell signals are generated when the TRIX crosses above/below the signal line and is also above/below zero.
+
+        The TRIX was developed by Jack K. Hutson, publisher of Technical Analysis of Stocks & Commodities magazine,
+        and was introduced in Volume 1, Number 5 of that magazine. 
         """
 
-        EMA1 = cls.EMA(ohlc, period)
-        EMA2 = EMA1.ewm(span=period, adjust=adjust).mean()
-        EMA3 = EMA2.ewm(span=period, adjust=adjust).mean()
-        TRIX = (EMA3 - EMA3.diff()) / EMA3.diff()
+        data = ohlc[column]
 
-        return pd.Series(TRIX, name="{0} period TRIX".format(period))
+        def _ema(data, period, adjust):
+            return pd.Series(
+                data
+                .ewm(span=period, adjust=adjust)
+                .mean()
+            )
+
+        m = _ema(
+                 _ema(_ema(data, period, adjust),
+                      period, adjust),
+                 period, adjust)
+
+        return pd.Series(100 * (m.diff() / m),
+                         name="{0} period TRIX".format(period))
 
     @classmethod
     def LWMA(cls, ohlc: DataFrame, period: int, column: str = "close") -> Series:

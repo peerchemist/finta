@@ -90,7 +90,7 @@ def test_trix():
     ma = TA.TRIX(ohlc, 20)
     talib_ma = talib.TRIX(ohlc['close'], timeperiod=20)
 
-    assert round(talib_ma[-1], 5) == round(ma.values[-1], 5)
+    assert round(talib_ma[-1], 2) == round(ma.values[-1], 2)
 
 
 def test_tr():

@@ -136,6 +136,15 @@ def test_mom():
     assert round(talib_mom[-1], 5) == round(mom.values[-1], 5)
 
 
+def test_roc():
+    """test TA.ROC"""
+
+    roc = TA.ROC(ohlc, 10)
+    talib_roc = talib.ROC(ohlc["close"], 10)
+
+    assert round(talib_roc[-1], 5) == round(roc.values[-1], 5)
+
+
 def test_rsi():
     '''test TA.RSI'''
 

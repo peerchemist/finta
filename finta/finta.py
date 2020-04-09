@@ -1505,7 +1505,8 @@ class TA:
         A signal line which is a previous value of itself is also calculated.
         """
 
-        from numpy import log
+        from numpy import log, seterr
+        seterr(divide='ignore')
 
         med = (ohlc["high"] + ohlc["low"]) / 2
         ndaylow = med.rolling(window=period).min()

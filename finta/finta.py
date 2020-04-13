@@ -714,7 +714,7 @@ class TA:
 
     @classmethod
     def BBANDS(
-        cls, ohlc: DataFrame, period: int = 20, MA: Series = None, column: str = "close"
+        cls, ohlc: DataFrame, period: int = 20, MA: Series = None, column: str = "close", std_multiplier: int = 2
     ) -> DataFrame:
         """
          Developed by John Bollinger, Bollinger Bands® are volatility bands placed above and below a moving average.
@@ -732,8 +732,8 @@ class TA:
         else:
             middle_band = pd.Series(MA, name="BB_MIDDLE")
 
-        upper_bb = pd.Series(middle_band + (2 * std), name="BB_UPPER")
-        lower_bb = pd.Series(middle_band - (2 * std), name="BB_LOWER")
+        upper_bb = pd.Series(middle_band + (std_multiplier * std), name="BB_UPPER")
+        lower_bb = pd.Series(middle_band - (std_multiplier * std), name="BB_LOWER")
 
         return pd.concat([upper_bb, middle_band, lower_bb], axis=1)
 

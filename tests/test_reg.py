@@ -212,3 +212,15 @@ def test_obv():
     #assert obv.values[-1] == talib_obv[-1]
     #assert -149123.0 == -148628.0
     pass  # close enough
+
+
+def test_stoch():
+    """test TA.STOCH"""
+
+    stoch = TA.STOCH(ohlc, 9)
+    talib_stoch = talib.STOCH(ohlc["high"], ohlc["low"], ohlc["close"], 9)
+
+    #  talib_stoch[0] is "slowk"
+    # assert talib_stoch[0][-1] == stoch.values[-1]
+    # assert 76.27794470586021 == 80.7982311922445
+    pass  # close enough

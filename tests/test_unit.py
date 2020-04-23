@@ -235,6 +235,13 @@ def test_roc():
     assert isinstance(roc, series.Series)
     assert roc.values[-1] == -16.049187698674462
 
+def test_vbm():
+    """test TA.VBM"""
+
+    vbm = TA.VBM(ohlc)
+
+    assert isinstance(vbm, series.Series)
+    assert vbm.values[-1] == -27.570386941281036
 
 def test_rsi():
     """test TA.RSI"""

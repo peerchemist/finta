@@ -561,6 +561,18 @@ class TA:
         )
 
     @classmethod
+    def VBM(cls, ohlc: DataFrame, roc_period: int = 12, atr_period: int = 26) -> Series:
+        """The Volatility-Based-Momentum (VBM) indicator, The calculation for a volatility based momentum (VBM) 
+        indicator is very similar to ROC, but divides by the security’s historical volatility instead.
+        The average true range indicator (ATR) is used to compute historical volatility.
+        VBM(n,v) = (Close — Close n periods ago) / ATR(v periods)
+        """
+
+        return pd.Series(
+            ((ohlc["close"].diff(roc_period) - ohlc["close"].shift(roc_period)) / cls.ATR(ohlc, atr_period)), name="VBM"
+        )
+
+    @classmethod
     def RSI(cls, ohlc: DataFrame, period: int = 14, adjust: bool = True) -> Series:
         """Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements.
         RSI oscillates between zero and 100. Traditionally, and according to Wilder, RSI is considered overbought when above 70 and oversold when below 30.

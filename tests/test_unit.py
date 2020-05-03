@@ -84,7 +84,7 @@ def test_trix():
     ma = TA.TRIX(ohlc)
 
     assert isinstance(ma, series.Series)
-    assert ma.values[-1] == -142.64042774606133
+    assert ma.values[-1] == -0.5498363959871698
 
 
 def test_vama():

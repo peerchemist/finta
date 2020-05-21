@@ -592,7 +592,12 @@ class TA:
         _loss = down.abs().ewm(span=period, adjust=adjust).mean()
 
         RS = _gain / _loss
-        return pd.Series(100 - (100 / (1 + RS)), name="RSI")
+        name = "RSI"
+        if period != 14:
+            name = f"RSI_period_{period}"
+
+        return pd.Series(100 - (100 / (1 + RS)), name=name)
+
 
     @classmethod
     def IFT_RSI(

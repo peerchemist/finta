@@ -985,7 +985,7 @@ class TA:
 
         return pd.Series(
             cls.STOCH(ohlc, stoch_period).rolling(center=False, window=period).mean(),
-            name="{0} perood STOCH %D.".format(period),
+            name="{0} period STOCH %D.".format(period),
         )
 
     @classmethod

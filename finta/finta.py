@@ -670,7 +670,7 @@ class TA:
                 subset = ohlc.iloc[0:index]
             else:
                 subset = ohlc.iloc[(index - time) : index]
-            return TA.RSI(subset, period=time, adjust=adjust).values[-1]
+            return cls.RSI(subset, period=time, adjust=adjust).values[-1]
 
         dates = Series(ohlc.index)
         periods = Series(range(14, len(dates)), index=ohlc.index[14:].values)

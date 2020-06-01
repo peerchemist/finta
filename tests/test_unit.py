@@ -261,6 +261,15 @@ def test_ift_rsi():
     assert rsi.values[-1] == 2.6918116852046792
 
 
+def test_dymi():
+    """test TA.DYMI"""
+
+    dymi = TA.DYMI(ohlc)
+
+    assert isinstance(dymi, series.Series)
+    assert dymi.values[-1] == 32.03257779185371
+
+
 def test_tr():
     """test TA.TR"""
 

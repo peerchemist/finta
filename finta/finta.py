@@ -644,6 +644,40 @@ class TA:
         raise NotImplementedError
 
     @classmethod
+    def DYMI(cls, ohlc: DataFrame, column: str = "close", adjust: bool = True) -> Series:
+        """
+        The Dynamic Momentum Index is a variable term RSI. The RSI term varies from 3 to 30. The variable 
+        time period makes the RSI more responsive to short-term moves. The more volatile the price is, 
+        the shorter the time period is. It is interpreted in the same way as the RSI, but provides signals earlier.
+        Readings below 30 are considered oversold, and levels over 70 are considered overbought. The indicator
+        oscillates between 0 and 100.
+        https://www.investopedia.com/terms/d/dynamicmomentumindex.asp
+        """
+
+        def _get_time(close):
+            # Value available from 14th period
+            sd = close.rolling(5).std()
+            asd = sd.rolling(10).mean()
+            v = sd / asd
+            t = 14 / v.round()
+            t[t.isna()] = 0
+            t = t.map(lambda x: int(min(max(x, 5), 30)))
+            return t
+
+        def _dmi(index):
+            time = t.iloc[index]
+            if (index - time) < 0:
+                subset = ohlc.iloc[0:index]
+            else:
+                subset = ohlc.iloc[(index - time) : index]
+            return TA.RSI(subset, period=time, adjust=adjust).values[-1]
+
+        dates = Series(ohlc.index)
+        periods = Series(range(14, len(dates)), index=ohlc.index[14:].values)
+        t = _get_time(ohlc["column"])
+        return periods.map(lambda x: _dmi(x))
+
+    @classmethod
     def TR(cls, ohlc: DataFrame) -> Series:
         """True Range is the maximum of three price ranges.
         Most recent period's high minus the most recent period's low.
@@ -1433,7 +1467,9 @@ class TA:
         return pd.concat([nbf, nsf], axis=1)
 
     @classmethod
-    def CMO(cls, ohlc: DataFrame, period: int = 9) -> DataFrame:
+    def CMO(
+        cls, ohlc: DataFrame, period: int = 9, factor: int = 100, adjust: bool = True
+    ) -> DataFrame:
         """
         Chande Momentum Oscillator (CMO) - technical momentum indicator invented by the technical analyst Tushar Chande.
         It is created by calculating the difference between the sum of all recent gains and the sum of all recent losses and then
@@ -1441,11 +1477,19 @@ class TA:
         This oscillator is similar to other momentum indicators such as the Relative Strength Index and the Stochastic Oscillator
         because it is range bounded (+100 and -100)."""
 
-        mom = ohlc["close"].diff().abs()
-        sma_mom = mom.rolling(window=period).mean()
-        mom_len = ohlc["close"].diff(period)
+        # get the price diff
+        delta = ohlc["close"].diff()
 
-        return pd.Series(100 * (mom_len / (sma_mom * period)))
+        # positive gains (up) and negative gains (down) Series
+        up, down = delta.copy(), delta.copy()
+        up[up < 0] = 0
+        down[down > 0] = 0
+
+        # EMAs of ups and downs
+        _gain = up.ewm(com=period, adjust=adjust).mean()
+        _loss = down.ewm(com=period, adjust=adjust).mean().abs()
+
+        return pd.Series(factor * ((_gain - _loss) / (_gain + _loss)), name="CMO")
 
     @classmethod
     def CHANDELIER(

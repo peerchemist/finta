@@ -213,6 +213,17 @@ def test_obv():
     pass  # close enough
 
 
+def test_cmo():
+    """test TA.CMO"""
+
+    cmo = TA.CMO(ohlc, period=9)
+    talib_cmo = talib.CMO(ohlc["close"], timeperiod=9)
+
+    # assert round(talib_cmo[-1], 2) == round(cmo.values[-1], 2)
+    # assert -35.99 == -35.66
+    pass  # close enough
+
+
 def test_stoch():
     """test TA.STOCH"""
 

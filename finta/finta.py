@@ -674,7 +674,7 @@ class TA:
 
         dates = Series(ohlc.index)
         periods = Series(range(14, len(dates)), index=ohlc.index[14:].values)
-        t = _get_time(ohlc["column"])
+        t = _get_time(ohlc[column])
         return periods.map(lambda x: _dmi(x))
 
     @classmethod

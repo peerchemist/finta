@@ -280,8 +280,7 @@ class TA:
         """
 
         d = (period * (period + 1)) / 2  # denominator
-        _weights = pd.Series(np.arange(1, period + 1))
-        weights = _weights.iloc[::-1]  # reverse the series
+        weights = pd.Series(np.arange(1, period + 1))
 
         def linear(w):
             def _compute(x):
@@ -289,8 +288,8 @@ class TA:
 
             return _compute
 
-        close_ = ohlc["close"].rolling(period, min_periods=period)
-        wma = close_.apply(linear(weights), raw=True)
+        _close = ohlc[column].rolling(period, min_periods=period)
+        wma = _close.apply(linear(weights), raw=True)
 
         return pd.Series(wma, name="{0} period WMA.".format(period))
 

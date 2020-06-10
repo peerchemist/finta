@@ -1119,8 +1119,8 @@ class TA:
          Strongly positive or negative trend movements will show a longer length between the two numbers while
          weaker positive or negative trend movement will show a shorter length."""
 
-        VMP = pd.Series(ohlc["high"] - ohlc["low"].shift().abs())
-        VMM = pd.Series(ohlc["low"] - ohlc["high"].shift().abs())
+        VMP = pd.Series((ohlc["high"] - ohlc["low"].shift()).abs())
+        VMM = pd.Series((ohlc["low"] - ohlc["high"].shift()).abs())
 
         VMPx = VMP.rolling(window=period).sum()
         VMMx = VMM.rolling(window=period).sum()

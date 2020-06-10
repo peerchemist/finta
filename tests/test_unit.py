@@ -449,7 +449,7 @@ def test_vortex():
     assert isinstance(v["VIm"], series.Series)
 
     assert v["VIp"].values[-1] == 0.7685610477050326
-    assert v["VIm"].values[-1] == -1.273051880731049
+    assert v["VIm"].values[-1] == 1.273051880731049
 
 
 def test_kst():

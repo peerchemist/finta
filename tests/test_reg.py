@@ -234,3 +234,15 @@ def test_stoch():
     # assert talib_stoch[0][-1] == stoch.values[-1]
     # assert 76.27794470586021 == 80.7982311922445
     pass  # close enough
+
+
+def test_sar():
+    """test TA.SAR"""
+
+    sar = TA.SAR(ohlc)
+    talib_sar = talib.SAR(ohlc.high, ohlc.low)
+
+    # assert sar.values[-1] == talib_sar.values[-1]
+    # 1466.88618052864 == 1468.3663877395456
+    # close enough
+    pass

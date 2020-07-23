@@ -258,7 +258,7 @@ def test_ift_rsi():
     rsi = TA.IFT_RSI(ohlc)
 
     assert isinstance(rsi, series.Series)
-    assert rsi.values[-1] == 2.6918116852046792
+    assert rsi.values[-1] == 3.2074963582863414
 
 
 def test_dymi():
@@ -267,7 +267,7 @@ def test_dymi():
     dymi = TA.DYMI(ohlc)
 
     assert isinstance(dymi, series.Series)
-    assert dymi.values[-1] == 32.03257779185371
+    assert dymi.values[-1] == 32.489756400449366
 
 
 def test_tr():

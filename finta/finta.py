@@ -591,8 +591,8 @@ class TA:
         down[down > 0] = 0
 
         # EMAs of ups and downs
-        _gain = up.ewm(span=period, adjust=adjust).mean()
-        _loss = down.abs().ewm(span=period, adjust=adjust).mean()
+        _gain = up.ewm(alpha=1.0/period, adjust=adjust).mean()
+        _loss = down.abs().ewm(alpha=1.0/period, adjust=adjust).mean()
 
         RS = _gain / _loss
         return pd.Series(100 - (100 / (1 + RS)), name="{0} period RSI".format(period))

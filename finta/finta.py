@@ -190,7 +190,7 @@ class TA:
 
     @classmethod
     def VIDYA(
-        cls, ohlcv: DataFrame, period: int = 9, smoothing_period: int = 12
+        cls, ohlcv: DataFrame, period: int = 9, smoothing_period: int = 12, column: str = "close"
     ) -> Series:
         """ Vidya (variable index dynamic average) indicator is a modification of the traditional Exponential Moving Average (EMA) indicator.
         The main difference between EMA and Vidya is in the way the smoothing factor F is calculated.
@@ -200,12 +200,12 @@ class TA:
         raise NotImplementedError
 
     @classmethod
-    def ER(cls, ohlc: DataFrame, period: int = 10) -> Series:
+    def ER(cls, ohlc: DataFrame, period: int = 10, column: str = "close") -> Series:
         """The Kaufman Efficiency indicator is an oscillator indicator that oscillates between +100 and -100, where zero is the center point.
          +100 is upward forex trending market and -100 is downwards trending markets."""
 
-        change = ohlc["close"].diff(period).abs()
-        volatility = ohlc["close"].diff().abs().rolling(window=period).sum()
+        change = ohlc[column].diff(period).abs()
+        volatility = ohlc[column].diff().abs().rolling(window=period).sum()
 
         return pd.Series(change / volatility, name="{0} period ER".format(period))
 
@@ -217,6 +217,7 @@ class TA:
         ema_fast: int = 2,
         ema_slow: int = 30,
         period: int = 20,
+        column: str = "close"
     ) -> Series:
         """Developed by Perry Kaufman, Kaufman's Adaptive Moving Average (KAMA) is a moving average designed to account for market noise or volatility.
         Its main advantage is that it takes into consideration not just the direction, but the market volatility as well."""
@@ -230,12 +231,12 @@ class TA:
         )  ## smoothing constant
 
         sma = pd.Series(
-            ohlc["close"].rolling(period).mean(), name="SMA"
+            ohlc[column].rolling(period).mean(), name="SMA"
         )  ## first KAMA is SMA
         kama = []
         # Current KAMA = Prior KAMA + smoothing_constant * (Price - Prior KAMA)
         for s, ma, price in zip(
-            sc.iteritems(), sma.shift().iteritems(), ohlc["close"].iteritems()
+            sc.iteritems(), sma.shift().iteritems(), ohlc[column].iteritems()
         ):
             try:
                 kama.append(kama[-1] + s[1] * (price[1] - kama[-1]))
@@ -251,7 +252,7 @@ class TA:
         return sma["KAMA"]
 
     @classmethod
-    def ZLEMA(cls, ohlc: DataFrame, period: int = 26, adjust: bool = True) -> Series:
+    def ZLEMA(cls, ohlc: DataFrame, period: int = 26, adjust: bool = True, column: str = "close") -> Series:
         """ZLEMA is an abbreviation of Zero Lag Exponential Moving Average. It was developed by John Ehlers and Rick Way.
         ZLEMA is a kind of Exponential moving average but its main idea is to eliminate the lag arising from the very nature of the moving averages
         and other trend following indicators. As it follows price closer, it also provides better price averaging and responds better to price swings."""
@@ -259,7 +260,7 @@ class TA:
         lag = (period - 1) / 2
 
         ema = pd.Series(
-            (ohlc["close"] + (ohlc["close"].diff(lag))),
+            (ohlc[column] + (ohlc[column].diff(lag))),
             name="{0} period ZLEMA.".format(period),
         )
 
@@ -409,6 +410,7 @@ class TA:
         period_fast: int = 12,
         period_slow: int = 26,
         signal: int = 9,
+        column: str = "close",
         adjust: bool = True,
     ) -> DataFrame:
         """
@@ -426,11 +428,11 @@ class TA:
         """
 
         EMA_fast = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_fast, adjust=adjust).mean(),
+            ohlc[column].ewm(ignore_na=False, span=period_fast, adjust=adjust).mean(),
             name="EMA_fast",
         )
         EMA_slow = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_slow, adjust=adjust).mean(),
+            ohlc[column].ewm(ignore_na=False, span=period_slow, adjust=adjust).mean(),
             name="EMA_slow",
         )
         MACD = pd.Series(EMA_fast - EMA_slow, name="MACD")
@@ -447,6 +449,7 @@ class TA:
         period_fast: int = 12,
         period_slow: int = 26,
         signal: int = 9,
+        column: str = "close",
         adjust: bool = True,
     ) -> DataFrame:
         """
@@ -457,11 +460,11 @@ class TA:
         """
 
         EMA_fast = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_fast, adjust=adjust).mean(),
+            ohlc[column].ewm(ignore_na=False, span=period_fast, adjust=adjust).mean(),
             name="EMA_fast",
         )
         EMA_slow = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_slow, adjust=adjust).mean(),
+            ohlc[column].ewm(ignore_na=False, span=period_slow, adjust=adjust).mean(),
             name="EMA_slow",
         )
         PPO = pd.Series(((EMA_fast - EMA_slow) / EMA_slow) * 100, name="PPO")
@@ -479,12 +482,13 @@ class TA:
         period_fast: int = 12,
         period_slow: int = 26,
         signal: int = 9,
+        column: str = "close",
         adjust: bool = True,
     ) -> DataFrame:
         """"Volume-Weighted MACD" is an indicator that shows how a volume-weighted moving average can be used to calculate moving average convergence/divergence (MACD).
         This technique was first used by Buff Dormeier, CMT, and has been written about since at least 2002."""
 
-        vp = ohlcv["volume"] * ohlcv["close"]
+        vp = ohlcv["volume"] * ohlcv[column]
         _fast = pd.Series(
             (vp.ewm(ignore_na=False, span=period_fast, adjust=adjust).mean())
             / (
@@ -542,25 +546,25 @@ class TA:
         return pd.concat([MACD, MACD_signal], axis=1)
 
     @classmethod
-    def MOM(cls, ohlc: DataFrame, period: int = 10) -> Series:
+    def MOM(cls, ohlc: DataFrame, period: int = 10, column: str = "close") -> Series:
         """Market momentum is measured by continually taking price differences for a fixed time interval.
         To construct a 10-day momentum line, simply subtract the closing price 10 days ago from the last closing price.
         This positive or negative value is then plotted around a zero line."""
 
-        return pd.Series(ohlc["close"].diff(period), name="MOM".format(period))
+        return pd.Series(ohlc[column].diff(period), name="MOM".format(period))
 
     @classmethod
-    def ROC(cls, ohlc: DataFrame, period: int = 12) -> Series:
+    def ROC(cls, ohlc: DataFrame, period: int = 12, column: str = "close") -> Series:
         """The Rate-of-Change (ROC) indicator, which is also referred to as simply Momentum,
         is a pure momentum oscillator that measures the percent change in price from one period to the next.
         The ROC calculation compares the current price with the price “n” periods ago."""
 
         return pd.Series(
-            (ohlc["close"].diff(period) / ohlc["close"].shift(period)) * 100, name="ROC"
+            (ohlc["close"].diff(period) / ohlc[column].shift(period)) * 100, name="ROC"
         )
 
     @classmethod
-    def VBM(cls, ohlc: DataFrame, roc_period: int = 12, atr_period: int = 26) -> Series:
+    def VBM(cls, ohlc: DataFrame, roc_period: int = 12, atr_period: int = 26, column: str = "close") -> Series:
         """The Volatility-Based-Momentum (VBM) indicator, The calculation for a volatility based momentum (VBM) 
         indicator is very similar to ROC, but divides by the security’s historical volatility instead.
         The average true range indicator (ATR) is used to compute historical volatility.
@@ -568,18 +572,18 @@ class TA:
         """
 
         return pd.Series(
-            ((ohlc["close"].diff(roc_period) - ohlc["close"].shift(roc_period)) / cls.ATR(ohlc, atr_period)), name="VBM"
+            ((ohlc[column].diff(roc_period) - ohlc[column].shift(roc_period)) / cls.ATR(ohlc, atr_period)), name="VBM"
         )
 
     @classmethod
-    def RSI(cls, ohlc: DataFrame, period: int = 14, adjust: bool = True) -> Series:
+    def RSI(cls, ohlc: DataFrame, period: int = 14,  column: str = "close", adjust: bool = True) -> Series:
         """Relative Strength Index (RSI) is a momentum oscillator that measures the speed and change of price movements.
         RSI oscillates between zero and 100. Traditionally, and according to Wilder, RSI is considered overbought when above 70 and oversold when below 30.
         Signals can also be generated by looking for divergences, failure swings and centerline crossovers.
         RSI can also be used to identify the general trend."""
 
         ## get the price diff
-        delta = ohlc["close"].diff()
+        delta = ohlc[column].diff()
 
         ## positive gains (up) and negative gains (down) Series
         up, down = delta.copy(), delta.copy()
@@ -1057,7 +1061,7 @@ class TA:
         return WR * -100
 
     @classmethod
-    def UO(cls, ohlc: DataFrame) -> Series:
+    def UO(cls, ohlc: DataFrame, column: str = "close") -> Series:
         """Ultimate Oscillator is a momentum oscillator designed to capture momentum across three different time frames.
         The multiple time frame objective seeks to avoid the pitfalls of other oscillators.
         Many momentum oscillators surge at the beginning of a strong advance and then form bearish divergence as the advance continues.
@@ -1067,7 +1071,7 @@ class TA:
         k = []  # current low or past close
         for row, _row in zip(ohlc.itertuples(), ohlc.shift(1).itertuples()):
             k.append(min(row.low, _row.close))
-        bp = pd.Series(ohlc["close"] - k, name="bp")  # Buying pressure
+        bp = pd.Series(ohlc[column] - k, name="bp")  # Buying pressure
 
         Average7 = bp.rolling(window=7).sum() / cls.TR(ohlc).rolling(window=7).sum()
         Average14 = bp.rolling(window=14).sum() / cls.TR(ohlc).rolling(window=14).sum()
@@ -1155,12 +1159,13 @@ class TA:
         long: int = 25,
         short: int = 13,
         signal: int = 13,
+        column: str = "close",
         adjust: bool = True,
     ) -> DataFrame:
         """True Strength Index (TSI) is a momentum oscillator based on a double smoothing of price changes."""
 
         ## Double smoother price change
-        momentum = pd.Series(ohlc["close"].diff())  ## 1 period momentum
+        momentum = pd.Series(ohlc[column].diff())  ## 1 period momentum
         _EMA25 = pd.Series(
             momentum.ewm(span=long, min_periods=long - 1, adjust=adjust).mean(),
             name="_price change EMA25",
@@ -1171,7 +1176,7 @@ class TA:
         )
 
         ## Double smoothed absolute price change
-        absmomentum = pd.Series(ohlc["close"].diff().abs())
+        absmomentum = pd.Series(ohlc[column].diff().abs())
         _aEMA25 = pd.Series(
             absmomentum.ewm(span=long, min_periods=long - 1, adjust=adjust).mean(),
             name="_abs_price_change EMA25",
@@ -1260,7 +1265,7 @@ class TA:
         )
 
     @classmethod
-    def OBV(cls, ohlcv: DataFrame) -> Series:
+    def OBV(cls, ohlcv: DataFrame, column: str = "close") -> Series:
         """
         On Balance Volume (OBV) measures buying and selling pressure as a cumulative indicator that adds volume on up days and subtracts volume on down days.
         OBV was developed by Joe Granville and introduced in his 1963 book, Granville's New Key to Stock Market Profits.
@@ -1275,8 +1280,8 @@ class TA:
 
         ohlcv["OBV"] = np.nan
 
-        neg_change = ohlcv["close"] < ohlcv["close"].shift(1)
-        pos_change = ohlcv["close"] > ohlcv["close"].shift(1)
+        neg_change = ohlcv[column] < ohlcv[column].shift(1)
+        pos_change = ohlcv[column] > ohlcv[column].shift(1)
 
         if pos_change.any():
             ohlcv.loc[pos_change, "OBV"] = ohlcv["volume"]
@@ -1286,7 +1291,7 @@ class TA:
         return pd.Series(ohlcv["OBV"].cumsum(), name="OBV")
 
     @classmethod
-    def WOBV(cls, ohlcv: DataFrame) -> Series:
+    def WOBV(cls, ohlcv: DataFrame, column: str = "close") -> Series:
         """
         Weighted OBV
         Can also be seen as an OBV indicator that takes the price differences into account.
@@ -1296,11 +1301,11 @@ class TA:
         hardly anything really happened.
         """
 
-        wobv = pd.Series(ohlcv["volume"] * ohlcv["close"].diff(), name="WOBV")
+        wobv = pd.Series(ohlcv["volume"] * ohlcv[column].diff(), name="WOBV")
         return wobv.cumsum()
 
     @classmethod
-    def VZO(cls, ohlc: DataFrame, period: int = 14, adjust: bool = True) -> Series:
+    def VZO(cls, ohlc: DataFrame, period: int = 14, column: str = "close", adjust: bool = True) -> Series:
         """VZO uses price, previous price and moving averages to compute its oscillating value.
         It is a leading indicator that calculates buy and sell signals based on oversold / overbought conditions.
         Oscillations between the 5% and 40% levels mark a bullish trend zone, while oscillations between -40% and 5% mark a bearish trend zone.
@@ -1308,14 +1313,14 @@ class TA:
         Alternatively, readings below -40% indicate an oversold condition, which becomes extremely oversold below -60%."""
 
         sign = lambda a: (a > 0) - (a < 0)
-        r = ohlc["close"].diff().apply(sign) * ohlc["volume"]
+        r = ohlc[column].diff().apply(sign) * ohlc["volume"]
         dvma = r.ewm(span=period, adjust=adjust).mean()
         vma = ohlc["volume"].ewm(span=period, adjust=adjust).mean()
 
         return pd.Series(100 * (dvma / vma), name="VZO")
 
     @classmethod
-    def PZO(cls, ohlc: DataFrame, period: int = 14, adjust: bool = True) -> Series:
+    def PZO(cls, ohlc: DataFrame, period: int = 14, column: str = "close", adjust: bool = True) -> Series:
         """
         The formula for PZO depends on only one condition: if today's closing price is higher than yesterday's closing price,
         then the closing price will have a positive value (bullish); otherwise it will have a negative value (bearish).
@@ -1325,32 +1330,32 @@ class TA:
         """
 
         sign = lambda a: (a > 0) - (a < 0)
-        r = ohlc["close"].diff().apply(sign) * ohlc["close"]
+        r = ohlc[column].diff().apply(sign) * ohlc[column]
         cp = pd.Series(r.ewm(span=period, adjust=adjust).mean())
         tc = cls.EMA(ohlc, period)
 
         return pd.Series(100 * (cp / tc), name="{} period PZO".format(period))
 
     @classmethod
-    def EFI(cls, ohlcv: DataFrame, period: int = 13, adjust: bool = True) -> Series:
+    def EFI(cls, ohlcv: DataFrame, period: int = 13, column: str = "close", adjust: bool = True) -> Series:
         """Elder's Force Index is an indicator that uses price and volume to assess the power
          behind a move or identify possible turning points."""
 
         # https://tradingsim.com/blog/elders-force-index/
-        fi = pd.Series(ohlcv["close"].diff() * ohlcv["volume"])
+        fi = pd.Series(ohlcv[column].diff() * ohlcv["volume"])
         return pd.Series(
             fi.ewm(ignore_na=False, span=period, adjust=adjust).mean(),
             name="{0} period Force Index".format(period),
         )
 
     @classmethod
-    def CFI(cls, ohlcv: DataFrame, adjust: bool = True) -> Series:
+    def CFI(cls, ohlcv: DataFrame, column: str = "close", adjust: bool = True) -> Series:
         """
         Cummulative Force Index.
         Adopted from  Elder's Force Index.
         """
 
-        fi1 = pd.Series(ohlcv["volume"] * ohlcv["close"].diff())
+        fi1 = pd.Series(ohlcv["volume"] * ohlcv[column].diff())
         cfi = pd.Series(
             fi1.ewm(ignore_na=False, min_periods=9, span=10, adjust=adjust).mean(),
             name="CFI",
@@ -1467,7 +1472,7 @@ class TA:
 
     @classmethod
     def CMO(
-        cls, ohlc: DataFrame, period: int = 9, factor: int = 100, adjust: bool = True
+        cls, ohlc: DataFrame, period: int = 9, factor: int = 100, column: str = "close", adjust: bool = True
     ) -> DataFrame:
         """
         Chande Momentum Oscillator (CMO) - technical momentum indicator invented by the technical analyst Tushar Chande.
@@ -1477,7 +1482,7 @@ class TA:
         because it is range bounded (+100 and -100)."""
 
         # get the price diff
-        delta = ohlc["close"].diff()
+        delta = ohlc[column].diff()
 
         # positive gains (up) and negative gains (down) Series
         up, down = delta.copy(), delta.copy()
@@ -1492,7 +1497,7 @@ class TA:
 
     @classmethod
     def CHANDELIER(
-        cls, ohlc: DataFrame, period_1: int = 14, period_2: int = 22, k: int = 3
+        cls, ohlc: DataFrame, period_1: int = 14, period_2: int = 22, k: int = 3, column: str = "close"
     ) -> DataFrame:
         """
         Chandelier Exit sets a trailing stop-loss based on the Average True Range (ATR).
@@ -1503,11 +1508,11 @@ class TA:
         """
 
         l = pd.Series(
-            ohlc["close"].rolling(window=period_2).max() - cls.ATR(ohlc, 22) * k,
+            ohlc[column].rolling(window=period_2).max() - cls.ATR(ohlc, 22) * k,
             name="Long.",
         )
         s = pd.Series(
-            ohlc["close"].rolling(window=period_1).min() - cls.ATR(ohlc, 22) * k,
+            ohlc[column].rolling(window=period_1).min() - cls.ATR(ohlc, 22) * k,
             name="Short.",
         )
 
@@ -1872,7 +1877,7 @@ class TA:
         return vfi
 
     @classmethod
-    def MSD(cls, ohlc: DataFrame, period: int = 21, ddof: int = 1) -> Series:
+    def MSD(cls, ohlc: DataFrame, period: int = 21, ddof: int = 1, column: str = "close") -> Series:
         """
         Standard deviation is a statistical term that measures the amount of variability or dispersion around an average.
         Standard deviation is also a measure of volatility. Generally speaking, dispersion is the difference between the actual value and the average value.
@@ -1886,7 +1891,7 @@ class TA:
         :ddof: Delta Degrees of Freedom. The divisor used in calculations is N - ddof, where N represents the number of elements.
         """
 
-        return pd.Series(ohlc["close"].rolling(period).std(), name="MSD")
+        return pd.Series(ohlc[column].rolling(period).std(), name="MSD")
 
     @classmethod
     def STC(
@@ -1895,6 +1900,7 @@ class TA:
         period_fast: int = 23,
         period_slow: int = 50,
         period: int = 10,
+        column: str = "close",
         adjust: bool = True,
     ) -> Series:
         """
@@ -1917,12 +1923,12 @@ class TA:
         is up, while the price tends to stabilize or follow the cycle to the upside.
         """
         EMA_fast = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_fast, adjust=adjust).mean(),
+            ohlc[column].ewm(ignore_na=False, span=period_fast, adjust=adjust).mean(),
             name="EMA_fast",
         )
 
         EMA_slow = pd.Series(
-            ohlc["close"].ewm(ignore_na=False, span=period_slow, adjust=adjust).mean(),
+            ohlc[column].ewm(ignore_na=False, span=period_slow, adjust=adjust).mean(),
             name="EMA_slow",
         )
 

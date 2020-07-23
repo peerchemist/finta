@@ -138,7 +138,7 @@ def test_hma():
     ma = TA.HMA(ohlc)
 
     assert isinstance(ma, series.Series)
-    assert ma.values[-1] == 6428.9693186290006
+    assert ma.values[-1] == 6186.937271459322
 
 
 def test_evwma():

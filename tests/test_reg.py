@@ -255,3 +255,12 @@ def test_williams():
     talib_will = talib.WILLR(ohlc["high"], ohlc["low"], ohlc["close"], 14)
 
     assert round(talib_will[-1], 5) == round(will.values[-1], 5)
+
+
+def test_uo():
+    """test TA.UO"""
+
+    uo = TA.UO(ohlc)
+    talib_uo = talib.ULTOSC(ohlc["high"], ohlc["low"], ohlc["close"])
+
+    assert round(talib_uo[-1], 5) == round(uo.values[-1], 5)

@@ -246,3 +246,12 @@ def test_sar():
     # 1466.88618052864 == 1468.3663877395456
     # close enough
     pass
+
+
+def test_williams():
+    """test TA.WILLIAMS"""
+
+    will = TA.WILLIAMS(ohlc, 14)
+    talib_will = talib.WILLR(ohlc["high"], ohlc["low"], ohlc["close"], 14)
+
+    assert round(talib_will[-1], 5) == round(will.values[-1], 5)

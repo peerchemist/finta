@@ -891,14 +891,14 @@ class TA:
         diplus = pd.Series(
             100
             * (ohlc["plus"] / cls.ATR(ohlc, period))
-            .ewm(span=period, adjust=adjust)
+            .ewm(alpha=1 / period, adjust=adjust)
             .mean(),
             name="DI+",
         )
         diminus = pd.Series(
             100
             * (ohlc["minus"] / cls.ATR(ohlc, period))
-            .ewm(span=period, adjust=adjust)
+            .ewm(alpha=1 / period, adjust=adjust)
             .mean(),
             name="DI-",
         )

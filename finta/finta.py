@@ -5,7 +5,7 @@ from pandas import DataFrame, Series
 
 class TA:
 
-    __version__ = "0.4.4"
+    __version__ = "1.0"
 
     @classmethod
     def SMA(cls, ohlc: DataFrame, period: int = 41, column: str = "close") -> Series:
@@ -591,8 +591,8 @@ class TA:
         down[down > 0] = 0
 
         # EMAs of ups and downs
-        _gain = up.ewm(span=period, adjust=adjust).mean()
-        _loss = down.abs().ewm(span=period, adjust=adjust).mean()
+        _gain = up.ewm(alpha=1.0/period, adjust=adjust).mean()
+        _loss = down.abs().ewm(alpha=1.0/period, adjust=adjust).mean()
 
         RS = _gain / _loss
         return pd.Series(100 - (100 / (1 + RS)), name="{0} period RSI".format(period))
@@ -891,14 +891,14 @@ class TA:
         diplus = pd.Series(
             100
             * (ohlc["plus"] / cls.ATR(ohlc, period))
-            .ewm(span=period, adjust=adjust)
+            .ewm(alpha=1 / period, adjust=adjust)
             .mean(),
             name="DI+",
         )
         diminus = pd.Series(
             100
             * (ohlc["minus"] / cls.ATR(ohlc, period))
-            .ewm(span=period, adjust=adjust)
+            .ewm(alpha=1 / period, adjust=adjust)
             .mean(),
             name="DI-",
         )

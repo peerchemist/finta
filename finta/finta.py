@@ -755,6 +755,88 @@ class TA:
 
         return pd.Series(_sar, index=ohlc.index)
 
+    
+    @classmethod
+    def PSAR(
+        cls,
+        ohlc: DataFrame,
+        iaf: int = 0.02,
+        maxaf: int = 0.2
+    ) -> DataFrame:
+        """
+        The parabolic SAR indicator, developed by J. Wells Wilder, is used by traders to determine trend direction and potential reversals in price. 
+        The indicator uses a trailing stop and reverse method called "SAR," or stop and reverse, to identify suitable exit and entry points. 
+        Traders also refer to the indicator as the parabolic stop and reverse, parabolic SAR, or PSAR.
+        https://www.investopedia.com/terms/p/parabolicindicator.asp
+        https://virtualizedfrog.wordpress.com/2014/12/09/parabolic-sar-implementation-in-python/        
+        """
+        
+        length = len(ohlc)
+        high, low, close = ohlc.high, ohlc.low, ohlc.close
+        dates = ohlc.index.values.tolist()
+        psar = close[0:len(close)]
+        psarbull = [None] * length
+        psarbear = [None] * length
+        bull = True
+        af = iaf
+        ep = low[0]
+        hp = high[0]
+        lp = low[0]
+
+        for i in range(2, length):
+            if bull:
+                psar[i] = psar[i - 1] + af * (hp - psar[i - 1])
+            else:
+                psar[i] = psar[i - 1] + af * (lp - psar[i - 1])
+
+            reverse = False
+
+            if bull:
+                if low[i] < psar[i]:
+                    bull = False
+                    reverse = True
+                    psar[i] = hp
+                    lp = low[i]
+                    af = iaf
+            else:
+                if high[i] > psar[i]:
+                    bull = True
+                    reverse = True
+                    psar[i] = lp
+                    hp = high[i]
+                    af = iaf
+
+            if not reverse:
+                if bull:
+                    if high[i] > hp:
+                        hp = high[i]
+                        af = min(af + iaf, maxaf)
+                    if low[i - 1] < psar[i]:
+                        psar[i] = low[i - 1]
+                    if low[i - 2] < psar[i]:
+                        psar[i] = low[i - 2]
+                else:
+                    if low[i] < lp:
+                        lp = low[i]
+                        af = min(af + iaf, maxaf)
+                    if high[i - 1] > psar[i]:
+                        psar[i] = high[i - 1]
+                    if high[i - 2] > psar[i]:
+                        psar[i] = high[i - 2]
+
+            if bull:
+                psarbull[i] = psar[i]
+            else:
+                psarbear[i] = psar[i]
+
+        psar = pd.Series(psar, name="psar", index=ohlc.index)
+        psarbear = pd.Series(psarbull, name="psarbull", index=ohlc.index)
+        psarbull = pd.Series(psarbear, name="psarbear", index=ohlc.index)
+        
+        return pd.concat([psar, psarbull, psarbear], axis=1)
+
+    
+    
     @classmethod
     def BBANDS(
         cls, ohlc: DataFrame, period: int = 20, MA: Series = None, column: str = "close", std_multiplier: int = 2
@@ -768,7 +850,7 @@ class TA:
          Pass desired moving average as <MA> argument. For example BBANDS(MA=TA.KAMA(20)).
          """
 
-        std = ohlc["close"].rolling(window=period).std()
+        std = ohlc[column].rolling(window=period).std()
 
         if not isinstance(MA, pd.core.series.Series):
             middle_band = pd.Series(cls.SMA(ohlc, period), name="BB_MIDDLE")

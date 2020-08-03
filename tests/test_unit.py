@@ -10,7 +10,7 @@ def rootdir():
     return os.path.dirname(os.path.abspath(__file__))
 
 
-data_file = os.path.join(rootdir(), "data/bittrex:btc-usdt.csv")
+data_file = os.path.join(rootdir(), "data/bittrex_btc-usdt.csv")
 
 ohlc = pd.read_csv(data_file, index_col="date", parse_dates=True)
 

@@ -768,7 +768,7 @@ class TA:
          Pass desired moving average as <MA> argument. For example BBANDS(MA=TA.KAMA(20)).
          """
 
-        std = ohlc["close"].rolling(window=period).std()
+        std = ohlc[column].rolling(window=period).std()
 
         if not isinstance(MA, pd.core.series.Series):
             middle_band = pd.Series(cls.SMA(ohlc, period), name="BB_MIDDLE")

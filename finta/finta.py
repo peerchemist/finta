@@ -599,47 +599,35 @@ class TA:
 
     @classmethod
     def IFT_RSI(
-        cls, ohlc: DataFrame, rsi_period: int = 14, wma_period: int = 9
+        cls, ohlc: DataFrame, column: str = "close", rsi_period: int = 5, wma_period: int = 9
     ) -> Series:
         """Modified Inverse Fisher Transform applied on RSI.
         Suggested method to use any IFT indicator is to buy when the indicator crosses over –0.5 or crosses over +0.5
         if it has not previously crossed over –0.5 and to sell short when the indicators crosses under +0.5 or crosses under –0.5
         if it has not previously crossed under +0.5."""
 
+        # v1 = .1 * (rsi - 50)
         v1 = pd.Series(0.1 * (cls.RSI(ohlc, rsi_period) - 50), name="v1")
 
-        ### v2 = WMA(wma_period) of v1
+        # v2 = WMA(wma_period) of v1
         d = (wma_period * (wma_period + 1)) / 2  # denominator
-        rev = v1.iloc[::-1]  # reverse the series
-        wma = []
+        weights = pd.Series(np.arange(1, wma_period + 1))
 
-        def _chunks(series, period):  # split into chunks of n elements
-            for i in enumerate(series):
-                c = rev.iloc[i[0] : i[0] + period]
-                if len(c) != period:
-                    yield None
-                else:
-                    yield c
+        def linear(w):
+            def _compute(x):
+                return (w * x).sum() / d
 
-        def _wma(chunk, period):  # calculate wma for each chunk
-            w = []
-            for price, i in zip(chunk.iloc[::-1].items(), range(period + 1)[1:]):
-                w.append(price[1] * i / d)
-            return sum(w)
+            return _compute
 
-        for i in _chunks(rev, wma_period):
-            try:
-                wma.append(_wma(i, wma_period))
-            except:
-                wma.append(None)
+        _wma = v1.rolling(wma_period, min_periods=wma_period)
+        v2 = _wma.apply(linear(weights), raw=True)
 
-        wma.reverse()  ##reverse the wma list to match the Series
-
-        v1["v2"] = pd.Series(wma, index=v1.index)
-        fish = pd.Series(
-            ((2 * v1["v2"]) - 1) ** 2 / ((2 * v1["v2"]) + 1) ** 2, name="IFT_RSI"
+        ift = pd.Series(( 
+               (v2**2 - 1) / (v2**2 + 1) 
+               ), name="IFT_RSI"
         )
-        return fish
+        
+        return ift
 
     @classmethod
     def SWI(cls, ohlc: DataFrame, period: int = 16) -> Series:

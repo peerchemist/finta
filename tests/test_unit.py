@@ -297,6 +297,15 @@ def test_sar():
     assert sar.values[-1] == 7127.1508782052497
 
 
+def test_psar():
+    """test TA.PSAR"""
+
+    sar = TA.PSAR(ohlc)
+
+    assert isinstance(sar.psar, series.Series)
+    assert sar.psar.values[-1] == 7113.566670201574
+
+
 def test_bbands():
     """test TA.BBANDS"""
 

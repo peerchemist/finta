@@ -1,11 +1,53 @@
+from functools import wraps
 import pandas as pd
 import numpy as np
 from pandas import DataFrame, Series
 
 
+def dfarg(input_='ohlc'):
+    def dfcheck(func):
+        @wraps(func)
+        def wrap(*args, **kwargs):
+
+            if isinstance(args[0], pd.DataFrame):
+                df = args[0]
+            else:
+                df = args[1]
+
+
+            inputs={'o':'open','h':'high','l':'low', 'c':'close', 'v':'volume'}
+
+            df = df.rename(columns={c:c.lower() for c in df.columns})
+
+            for l in input_:
+                if inputs[l] not in df.columns:
+                    raise LookupError('Must have a dataframe column named "{0}"'.format(inputs[l]))
+
+
+            return func(*args, **kwargs)
+
+        return wrap
+    return dfcheck
+
+
+def apply(decorator):
+    def decorate(cls):
+        for attr in cls.__dict__:
+            if callable(getattr(cls, attr)):
+                setattr(cls, attr, decorator(getattr(cls, attr)))
+
+        return cls
+    return decorate
+
+
+@apply(dfarg(input_='ohlc'))
 class TA:
 
     __version__ = "1.0"
+
+
+    def test(self):
+        print('test')
 
     @classmethod
     def SMA(cls, ohlc: DataFrame, period: int = 41, column: str = "close") -> Series:
@@ -20,6 +62,7 @@ class TA:
         )
 
     @classmethod
+    @dfarg(input_='ohlcv')
     def SMM(cls, ohlc: DataFrame, period: int = 9, column: str = "close") -> Series:
         """
         Simple moving median, an alternative to moving average. SMA, when used to estimate the underlying trend in a time series,
@@ -2008,6 +2051,9 @@ class TA:
             100 * (MACD - (STOK * MACD)) / ((STOD * MACD) - (STOK * MACD)),
             name="{0} period STC.".format(period),
         )
+
+
+
 
 
 if __name__ == "__main__":

@@ -4,26 +4,22 @@ import numpy as np
 from pandas import DataFrame, Series
 
 
-def dfarg(input_='ohlc'):
+def inputvalidator(input_='ohlc'):
     def dfcheck(func):
         @wraps(func)
         def wrap(*args, **kwargs):
 
-            if isinstance(args[0], pd.DataFrame):
-                df = args[0]
-            else:
-                df = args[1]
+            args = list(args)
+            i = 0 if isinstance(args[0], pd.DataFrame) else 1
 
+            args[i] = args[i].rename(columns={c:c.lower() for c in args[i].columns})
 
             inputs={'o':'open','h':'high','l':'low', 'c':'close', 'v':'volume'}
 
-            df = df.rename(columns={c:c.lower() for c in df.columns})
-
             for l in input_:
-                if inputs[l] not in df.columns:
+                if inputs[l] not in args[i].columns:
                     raise LookupError('Must have a dataframe column named "{0}"'.format(inputs[l]))
-
-
+            
             return func(*args, **kwargs)
 
         return wrap
@@ -40,14 +36,11 @@ def apply(decorator):
     return decorate
 
 
-@apply(dfarg(input_='ohlc'))
+@apply(inputvalidator(input_='ohlc'))
 class TA:
 
     __version__ = "1.0"
 
-
-    def test(self):
-        print('test')
 
     @classmethod
     def SMA(cls, ohlc: DataFrame, period: int = 41, column: str = "close") -> Series:
@@ -62,7 +55,6 @@ class TA:
         )
 
     @classmethod
-    @dfarg(input_='ohlcv')
     def SMM(cls, ohlc: DataFrame, period: int = 9, column: str = "close") -> Series:
         """
         Simple moving median, an alternative to moving average. SMA, when used to estimate the underlying trend in a time series,
@@ -218,6 +210,7 @@ class TA:
         raise NotImplementedError
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def VAMA(cls, ohlcv: DataFrame, period: int = 8, column: str = "close") -> Series:
         """
         Volume Adjusted Moving Average
@@ -232,6 +225,7 @@ class TA:
         return pd.Series(cumSum / cumDiv, name="{0} period VAMA".format(period))
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def VIDYA(
         cls, ohlcv: DataFrame, period: int = 9, smoothing_period: int = 12, column: str = "close"
     ) -> Series:
@@ -361,6 +355,7 @@ class TA:
         return pd.Series(hma, name="{0} period HMA.".format(period))
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def EVWMA(cls, ohlcv: DataFrame, period: int = 20) -> Series:
         """
         The eVWMA can be looked at as an approximation to the
@@ -390,6 +385,7 @@ class TA:
         )
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def VWAP(cls, ohlcv: DataFrame) -> Series:
         """
         The volume weighted average price (VWAP) is a trading benchmark used especially in pension plans.
@@ -519,6 +515,7 @@ class TA:
         return pd.concat([PPO, PPO_signal, PPO_histo], axis=1)
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def VW_MACD(
         cls,
         ohlcv: DataFrame,
@@ -560,6 +557,7 @@ class TA:
         return pd.concat([MACD, MACD_signal], axis=1)
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def EV_MACD(
         cls,
         ohlcv: DataFrame,
@@ -1309,6 +1307,7 @@ class TA:
         return pd.Series((ohlc["high"] + ohlc["low"] + ohlc["close"]) / 3, name="TP")
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def ADL(cls, ohlcv: DataFrame) -> Series:
         """The accumulation/distribution line was created by Marc Chaikin to determine the flow of money into or out of a security.
         It should not be confused with the advance/decline line. While their initials might be the same, these are entirely different indicators,
@@ -1324,6 +1323,7 @@ class TA:
         return MFV.cumsum()
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def CHAIKIN(cls, ohlcv: DataFrame, adjust: bool = True) -> Series:
         """Chaikin Oscillator, named after its creator, Marc Chaikin, the Chaikin oscillator is an oscillator that measures the accumulation/distribution
          line of the moving average convergence divergence (MACD). The Chaikin oscillator is calculated by subtracting a 10-day exponential moving average (EMA)
@@ -1373,6 +1373,7 @@ class TA:
         )
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def OBV(cls, ohlcv: DataFrame, column: str = "close") -> Series:
         """
         On Balance Volume (OBV) measures buying and selling pressure as a cumulative indicator that adds volume on up days and subtracts volume on down days.
@@ -1399,6 +1400,7 @@ class TA:
         return pd.Series(ohlcv["OBV"].cumsum(), name="OBV")
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def WOBV(cls, ohlcv: DataFrame, column: str = "close") -> Series:
         """
         Weighted OBV
@@ -1445,6 +1447,7 @@ class TA:
         return pd.Series(100 * (cp / tc), name="{} period PZO".format(period))
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def EFI(cls, ohlcv: DataFrame, period: int = 13, column: str = "close", adjust: bool = True) -> Series:
         """Elder's Force Index is an indicator that uses price and volume to assess the power
          behind a move or identify possible turning points."""
@@ -1457,6 +1460,7 @@ class TA:
         )
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def CFI(cls, ohlcv: DataFrame, column: str = "close", adjust: bool = True) -> Series:
         """
         Cummulative Force Index.
@@ -1481,6 +1485,7 @@ class TA:
         return pd.concat([bull_power, bear_power], axis=1)
 
     @classmethod
+    @inputvalidator(input_='ohlcv')
     def EMV(cls, ohlcv: Series, period: int = 14) -> Series:
         """Ease of Movement (EMV) is a volume-based oscillator that fluctuates above and below the zero line.
         As its name implies, it is designed to measure the 'ease' of price movement.

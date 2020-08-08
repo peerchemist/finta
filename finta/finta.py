@@ -14,7 +14,14 @@ def inputvalidator(input_="ohlc"):
 
             args[i] = args[i].rename(columns={c: c.lower() for c in args[i].columns})
 
-            inputs = {"o": "open", "h": "high", "l": "low", "c": "close", "v": "volume"}
+            inputs = {
+                "o": "open",
+                "h": "high",
+                "l": "low",
+                "c": kwargs.get("column", "close").lower(),
+                "v": "volume",
+            }
+            kwargs["column"] = inputs["c"]
 
             for l in input_:
                 if inputs[l] not in args[i].columns:

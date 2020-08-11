@@ -5,7 +5,7 @@ def to_dataframe(ticks: list) -> pd.DataFrame:
     """Convert list to Series compatible with the library."""
 
     df = pd.DataFrame(ticks)
-    df['time'] = pd.to_datetime(df['time'], unit='s')
+    df["time"] = pd.to_datetime(df["time"], unit="s")
     df.set_index("time", inplace=True)
 
     return df

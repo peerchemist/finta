@@ -1554,7 +1554,7 @@ class TA:
 
         distance = pd.Series(
             ((ohlcv["high"] + ohlcv["low"]) / 2)
-            - (ohlcv["high"].diff() - ohlcv["low"].diff()) / 2
+            - (ohlcv["high"].shift() - ohlcv["low"].shift()) / 2
         )
         box_ratio = pd.Series(
             (ohlcv["volume"] / 1000000) / (ohlcv["high"] - ohlcv["low"])

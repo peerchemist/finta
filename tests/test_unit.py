@@ -594,7 +594,7 @@ def test_emv():
     emv = TA.EMV(ohlc)
 
     assert isinstance(emv, series.Series)
-    assert emv.values[-1] == 2407071622.223393
+    assert emv.values[-1] == 2350965574.0489173
 
 
 def test_cci():

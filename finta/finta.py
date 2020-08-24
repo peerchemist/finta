@@ -2131,7 +2131,7 @@ class TA:
         )
 
     @classmethod
-    def EXK(cls, ohlc: DataFrame, column='close') -> float:
+    def EXK(cls, ohlc: DataFrame, column="close") -> float:
 
         """
         Excess Kurtosis
@@ -2142,12 +2142,12 @@ class TA:
         https://www.youtube.com/watch?v=-pb86fuZqr8
 
         """
-        
-        sum_of_dist = sum((ohlc[column]-ohlc[column].mean()).pow(4))
+
+        sum_of_dist = sum((ohlc[column] - ohlc[column].mean()).pow(4))
 
         normalizer = pow(ohlc[column].std(), 4) * len(ohlc[column])
 
-        return sum_of_dist/normalizer
+        return sum_of_dist / normalizer
 
 
 if __name__ == "__main__":

@@ -2138,7 +2138,7 @@ class TA:
         Kurtosis measures the "fatness" of the tails of a distribution. Positive excess kurtosis
         means that distribution has fatter tails than a normal distribution. Fat tails means there
         is a higher than normal probability of big positive and negative returns realizations. 
-        When calculating kurtosis, a result of +3.00 indicates the absence of kurtosis (distribution is mesokurtic
+        When calculating kurtosis, a result of +3.00 indicates the absence of kurtosis (distribution is mesokurtic)
         https://www.youtube.com/watch?v=-pb86fuZqr8
 
         """

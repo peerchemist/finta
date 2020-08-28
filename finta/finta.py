@@ -1259,6 +1259,12 @@ class TA:
         return pd.Series(mass.rolling(window=25).sum(), name="Mass Index")
 
     @classmethod
+    def BOP(cls, ohlc: DataFrame) -> Series:
+        """Balance Of Power indicator"""
+
+        return pd.Series((ohlc.close -  ohlc.open) / (ohlc.high - ohlc.low), name="Balance Of Power")
+
+    @classmethod
     def VORTEX(cls, ohlc: DataFrame, period: int = 14) -> DataFrame:
         """The Vortex indicator plots two oscillating lines, one to identify positive trend movement and the other
          to identify negative price movement.

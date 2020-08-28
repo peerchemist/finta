@@ -830,3 +830,12 @@ def test_stc():
 
     assert isinstance(stc, series.Series)
     assert stc.values[-1] == 10.000000000000165
+
+
+def test_exk():
+    """test TA.EXK"""
+
+    exk = TA.EXK(ohlc)
+
+    assert isinstance(exk, float)
+    assert exk == 4.049110589039371

@@ -22,7 +22,8 @@ def inputvalidator(input_="ohlc"):
                 "v": "volume",
             }
 
-            if inputs['c'] != 'close': kwargs["column"] = inputs["c"]
+            if inputs["c"] != "close":
+                kwargs["column"] = inputs["c"]
 
             for l in input_:
                 if inputs[l] not in args[i].columns:
@@ -2134,6 +2135,25 @@ class TA:
             100 * (MACD - (STOK * MACD)) / ((STOD * MACD) - (STOK * MACD)),
             name="{0} period STC.".format(period),
         )
+
+    @classmethod
+    def EXK(cls, ohlc: DataFrame, column="close") -> float:
+
+        """
+        Excess Kurtosis
+        Kurtosis measures the "fatness" of the tails of a distribution. Positive excess kurtosis
+        means that distribution has fatter tails than a normal distribution. Fat tails means there
+        is a higher than normal probability of big positive and negative returns realizations. 
+        When calculating kurtosis, a result of +3.00 indicates the absence of kurtosis (distribution is mesokurtic)
+        https://www.youtube.com/watch?v=-pb86fuZqr8
+
+        """
+
+        sum_of_dist = sum((ohlc[column] - ohlc[column].mean()).pow(4))
+
+        normalizer = pow(ohlc[column].std(), 4) * len(ohlc[column])
+
+        return sum_of_dist / normalizer
 
 
 if __name__ == "__main__":

@@ -449,6 +449,15 @@ def test_mi():
     assert mi.values[-1] == 23.928086961089647
 
 
+def test_bop():
+    """test TA.BOP"""
+
+    bop = TA.BOP(ohlc)
+
+    assert isinstance(bop, series.Series)
+    assert bop.values[-1] == 0.03045137813051517
+
+
 def test_vortex():
     """test TA.VORTEX"""
 

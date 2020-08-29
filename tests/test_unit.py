@@ -829,4 +829,4 @@ def test_exk():
     exk = TA.EXK(ohlc)
 
     assert isinstance(exk, float)
-    assert exk == 4.049110589039371
+    assert exk == 1.0713686592445835

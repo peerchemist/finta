@@ -2135,20 +2135,23 @@ class TA:
 
         """
         Excess Kurtosis
+
+        ++ NOTE MESOKURTIC(normal) DISTRIBUTION RETURNS A VALUE OF ~"0.0" ++
+        
+
         Kurtosis measures the "fatness" of the tails of a distribution. Positive excess kurtosis
         means that distribution has fatter tails than a normal distribution. Fat tails means there
         is a higher than normal probability of big positive and negative returns realizations. 
         When calculating kurtosis, a result of +3.00 indicates the absence of kurtosis (distribution is mesokurtic)
         https://www.youtube.com/watch?v=-pb86fuZqr8
 
+        Numpy implementation:
+        sum_of_dist = sum((ohlc[column] - ohlc[column].mean()).pow(4))
+        normalizer = pow(ohlc[column].std(), 4) * len(ohlc[column])
+        return (sum_of_dist / normalizer) - 3
         """
 
-        sum_of_dist = sum((ohlc[column] - ohlc[column].mean()).pow(4))
-
-        normalizer = pow(ohlc[column].std(), 4) * len(ohlc[column])
-
-        return sum_of_dist / normalizer
-
+        return ohlc[column].kurtosis()
 
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

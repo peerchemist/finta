@@ -125,7 +125,7 @@ finta expects properly formated `ohlc` DataFrame, with column names in `lowercas
 ### to resample by time period (you can choose different time period)
 `ohlc = resample(df, "24h")`
 
-### You can also load a ohlc DataFrame from .cvs file
+### You can also load a ohlc DataFrame from .csv file
 
 `data_file = ("data/bittrex:btc-usdt.csv")`
 

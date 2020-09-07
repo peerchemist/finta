@@ -10,7 +10,7 @@ def rootdir():
     return os.path.dirname(os.path.abspath(__file__))
 
 
-data_file = os.path.join(rootdir(), "data/bittrex:btc-usdt.csv")
+data_file = os.path.join(rootdir(), "data/bittrex_btc-usdt.csv")
 
 ohlc = pd.read_csv(data_file, index_col="date", parse_dates=True)
 
@@ -84,7 +84,7 @@ def test_trix():
     ma = TA.TRIX(ohlc)
 
     assert isinstance(ma, series.Series)
-    assert ma.values[-1] == -142.64042774606133
+    assert ma.values[-1] == -0.5498363959871698
 
 
 def test_vama():
@@ -129,7 +129,7 @@ def test_wma():
     ma = TA.WMA(ohlc)
 
     assert isinstance(ma, series.Series)
-    assert ma.values[-1] == 6597.1975445128883
+    assert ma.values[-1] == 6474.470030782667
 
 
 def test_hma():
@@ -138,7 +138,7 @@ def test_hma():
     ma = TA.HMA(ohlc)
 
     assert isinstance(ma, series.Series)
-    assert ma.values[-1] == 6428.9693186290006
+    assert ma.values[-1] == 6186.937271459322
 
 
 def test_evwma():
@@ -235,6 +235,13 @@ def test_roc():
     assert isinstance(roc, series.Series)
     assert roc.values[-1] == -16.049187698674462
 
+def test_vbm():
+    """test TA.VBM"""
+
+    vbm = TA.VBM(ohlc)
+
+    assert isinstance(vbm, series.Series)
+    assert vbm.values[-1] == -27.570386941281036
 
 def test_rsi():
     """test TA.RSI"""
@@ -251,7 +258,16 @@ def test_ift_rsi():
     rsi = TA.IFT_RSI(ohlc)
 
     assert isinstance(rsi, series.Series)
-    assert rsi.values[-1] == 2.6918116852046792
+    assert rsi.values[-1] == 0.6280397648727427
+
+
+def test_dymi():
+    """test TA.DYMI"""
+
+    dymi = TA.DYMI(ohlc)
+
+    assert isinstance(dymi, series.Series)
+    assert dymi.values[-1] == 32.489756400449366
 
 
 def test_tr():
@@ -279,6 +295,15 @@ def test_sar():
 
     assert isinstance(sar, series.Series)
     assert sar.values[-1] == 7127.1508782052497
+
+
+def test_psar():
+    """test TA.PSAR"""
+
+    sar = TA.PSAR(ohlc)
+
+    assert isinstance(sar.psar, series.Series)
+    assert sar.psar.values[-1] == 7113.566670201574
 
 
 def test_bbands():
@@ -348,8 +373,8 @@ def test_dmi():
     assert isinstance(dmi["DI+"], series.Series)
     assert isinstance(dmi["DI-"], series.Series)
 
-    assert dmi["DI+"].values[-1] == 5.750468483527035
-    assert dmi["DI-"].values[-1] == 27.8987716317747
+    assert dmi["DI+"].values[-1] == 7.071352885519778
+    assert dmi["DI-"].values[-1] == 28.628958180923114
 
 
 def test_adx():
@@ -358,7 +383,7 @@ def test_adx():
     adx = TA.ADX(ohlc)
 
     assert isinstance(adx, series.Series)
-    assert adx.values[-1] == 54.21179329188816
+    assert adx.values[-1] == 46.43950615435351
 
 
 def test_stoch():
@@ -424,6 +449,15 @@ def test_mi():
     assert mi.values[-1] == 23.928086961089647
 
 
+def test_bop():
+    """test TA.BOP"""
+
+    bop = TA.BOP(ohlc)
+
+    assert isinstance(bop, series.Series)
+    assert bop.values[-1] == 0.03045137813051517
+
+
 def test_vortex():
     """test TA.VORTEX"""
 
@@ -432,8 +466,8 @@ def test_vortex():
     assert isinstance(v["VIp"], series.Series)
     assert isinstance(v["VIm"], series.Series)
 
-    assert v["VIp"].values[-1] == 31.175958144620818
-    assert v["VIm"].values[-1] == -51.640155675485332
+    assert v["VIp"].values[-1] == 0.7685610477050326
+    assert v["VIm"].values[-1] == 1.273051880731049
 
 
 def test_kst():
@@ -569,7 +603,7 @@ def test_emv():
     emv = TA.EMV(ohlc)
 
     assert isinstance(emv, series.Series)
-    assert emv.values[-1] == 2407071622.223393
+    assert emv.values[-1] == -26103140.827651385
 
 
 def test_cci():
@@ -796,3 +830,12 @@ def test_stc():
 
     assert isinstance(stc, series.Series)
     assert stc.values[-1] == 10.000000000000165
+
+
+def test_exk():
+    """test TA.EXK"""
+
+    exk = TA.EXK(ohlc)
+
+    assert isinstance(exk, float)
+    assert exk == 4.049110589039371

@@ -12,7 +12,7 @@ def rootdir():
     return os.path.dirname(os.path.abspath(__file__))
 
 
-data_file = os.path.join(rootdir(), "data/poloniex:xrp-btc.json")
+data_file = os.path.join(rootdir(), "data/poloniex_xrp-btc.json")
 
 with open(data_file, "r") as outfile:
     data = json.load(outfile)

@@ -1769,10 +1769,6 @@ class TA:
     def FISH(cls, ohlc: DataFrame, period: int = 10, adjust: bool = True) -> Series:
         """
         Fisher Transform was presented by John Ehlers. It assumes that price distributions behave like square waves.
-
-        The Fisher Transform uses the mid-point or median price in a series of calculations to produce an oscillator.
-
-        A signal line which is a previous value of itself is also calculated.
         """
 
         from numpy import log, seterr

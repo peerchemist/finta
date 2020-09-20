@@ -612,7 +612,7 @@ def test_cci():
     cci = TA.CCI(ohlc)
 
     assert isinstance(cci, series.Series)
-    assert cci.values[-1] == -85.685463804097068
+    assert cci.values[-1] == -91.76341956464088
 
 
 def test_basp():

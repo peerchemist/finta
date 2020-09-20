@@ -52,7 +52,7 @@ def apply(decorator):
 @apply(inputvalidator(input_="ohlc"))
 class TA:
 
-    __version__ = "1.0"
+    __version__ = "1.1"
 
     @classmethod
     def SMA(cls, ohlc: DataFrame, period: int = 41, column: str = "close") -> Series:

@@ -1591,8 +1591,11 @@ class TA:
 
         tp = cls.TP(ohlc)
         tp_rolling = tp.rolling(window=period, min_periods=0)
+        #calculate MAD (Mean Deviation) 
+        #https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/other-measures-of-spread/a/mean-absolute-deviation-mad-review
+        mad = tp_rolling.apply( lambda s : abs(s - s.mean()).mean() )
         return pd.Series(
-            (tp - tp_rolling.mean()) / (constant * tp_rolling.std()),
+            (tp - tp_rolling.mean()) / (constant * mad ),
             name="{0} period CCI".format(period),
         )
 

@@ -319,6 +319,19 @@ def test_bbands():
     assert bb["BB_MIDDLE"].values[-1] == 7110.5508235434954
     assert bb["BB_LOWER"].values[-1] == 6008.303724282795
 
+def test_mobo():
+    """test TA.mobo"""
+    
+    mbb = TA.MOBO(ohlc)
+
+    assert isinstance(mbb["BB_UPPER"], series.Series)
+    assert isinstance(mbb["BB_MIDDLE"], series.Series)
+    assert isinstance(mbb["BB_LOWER"], series.Series)
+
+    assert mbb["BB_UPPER"].values[-1] == 6919.48336631047
+    assert mbb["BB_MIDDLE"].values[-1] == 6633.750408882997
+    assert mbb["BB_LOWER"].values[-1] == 6348.017451455525
+
 
 def test_bbwidth():
     """test TA.BBWIDTH"""

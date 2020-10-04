@@ -47,6 +47,7 @@ Finta supports 76 trading indicators:
 * Stop-and-Reverse 'SAR'
 * Bollinger Bands 'BBANDS'
 * Bollinger Bands Width 'BBWIDTH'
+* Momentum Breakout Bands 'MOBO'
 * Percent B 'PERCENT_B'
 * Keltner Channels 'KC'
 * Donchian Channel 'DO'

@@ -1687,8 +1687,8 @@ class TA:
     def CHANDELIER(
         cls,
         ohlc: DataFrame,
-        period_1: int = 22,
-        period_2: int = 22,
+        short_period: int = 22,
+        long_period: int = 22,
         k: int = 3,
     ) -> DataFrame:
         """
@@ -1700,11 +1700,11 @@ class TA:
         """
 
         l = pd.Series(
-            ohlc["high"].rolling(window=period_2).max() - cls.ATR(ohlc, 22) * k,
+            ohlc["high"].rolling(window=long_period).max() - cls.ATR(ohlc, 22) * k,
             name="Long.",
         )
         s = pd.Series(
-            ohlc["low"].rolling(window=period_1).min() + cls.ATR(ohlc, 22) * k,
+            ohlc["low"].rolling(window=short_period).min() + cls.ATR(ohlc, 22) * k,
             name="Short.",
         )
 

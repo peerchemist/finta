@@ -904,7 +904,7 @@ class TA:
         period: int = 20,
         MA: Series = None,
         column: str = "close",
-        std_multiplier: int = 2,
+        std_multiplier: float = 2,
     ) -> DataFrame:
         """
          Developed by John Bollinger, Bollinger Bands® are volatility bands placed above and below a moving average.
@@ -926,6 +926,24 @@ class TA:
         lower_bb = pd.Series(middle_band - (std_multiplier * std), name="BB_LOWER")
 
         return pd.concat([upper_bb, middle_band, lower_bb], axis=1)
+
+    @classmethod
+    def MOBO(
+        cls,
+        ohlc: DataFrame,
+        period: int = 10,
+        std_multiplier: float = 0.8,
+        column: str = "close",
+    ) -> DataFrame:
+
+        """
+        "MOBO bands are based on a zone of 0.80 standard deviation with a 10 period look-back"
+        If the price breaks out of the MOBO band it can signify a trend move or price spike
+        Contains 42% of price movements(noise) within bands.
+        """
+
+        BB = TA.BBANDS(ohlc, period=10, std_multiplier=0.8, column=column)
+        return BB
 
     @classmethod
     def BBWIDTH(
@@ -1263,7 +1281,9 @@ class TA:
     def BOP(cls, ohlc: DataFrame) -> Series:
         """Balance Of Power indicator"""
 
-        return pd.Series((ohlc.close -  ohlc.open) / (ohlc.high - ohlc.low), name="Balance Of Power")
+        return pd.Series(
+            (ohlc.close - ohlc.open) / (ohlc.high - ohlc.low), name="Balance Of Power"
+        )
 
     @classmethod
     def VORTEX(cls, ohlc: DataFrame, period: int = 14) -> DataFrame:
@@ -1591,11 +1611,11 @@ class TA:
 
         tp = cls.TP(ohlc)
         tp_rolling = tp.rolling(window=period, min_periods=0)
-        #calculate MAD (Mean Deviation) 
-        #https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/other-measures-of-spread/a/mean-absolute-deviation-mad-review
-        mad = tp_rolling.apply( lambda s : abs(s - s.mean()).mean() )
+        # calculate MAD (Mean Deviation)
+        # https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/other-measures-of-spread/a/mean-absolute-deviation-mad-review
+        mad = tp_rolling.apply(lambda s: abs(s - s.mean()).mean(), raw=True)
         return pd.Series(
-            (tp - tp_rolling.mean()) / (constant * mad ),
+            (tp - tp_rolling.mean()) / (constant * mad),
             name="{0} period CCI".format(period),
         )
 

@@ -623,7 +623,7 @@ class TA:
         The ROC calculation compares the current price with the price “n” periods ago."""
 
         return pd.Series(
-            (ohlc["close"].diff(period) / ohlc[column].shift(period)) * 100, name="ROC"
+            (ohlc[column].diff(period) / ohlc[column].shift(period)) * 100, name="ROC"
         )
 
     @classmethod

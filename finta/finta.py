@@ -1707,10 +1707,9 @@ class TA:
     def CHANDELIER(
         cls,
         ohlc: DataFrame,
-        period_1: int = 14,
-        period_2: int = 22,
+        short_period: int = 22,
+        long_period: int = 22,
         k: int = 3,
-        column: str = "close",
     ) -> DataFrame:
         """
         Chandelier Exit sets a trailing stop-loss based on the Average True Range (ATR).
@@ -1721,11 +1720,11 @@ class TA:
         """
 
         l = pd.Series(
-            ohlc[column].rolling(window=period_2).max() - cls.ATR(ohlc, 22) * k,
+            ohlc["high"].rolling(window=long_period).max() - cls.ATR(ohlc, 22) * k,
             name="Long.",
         )
         s = pd.Series(
-            ohlc[column].rolling(window=period_1).min() - cls.ATR(ohlc, 22) * k,
+            ohlc["low"].rolling(window=short_period).min() + cls.ATR(ohlc, 22) * k,
             name="Short.",
         )
 

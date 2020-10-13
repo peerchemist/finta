@@ -669,8 +669,8 @@ def test_chandelier():
     assert isinstance(chan["Long."], series.Series)
     assert isinstance(chan["Short."], series.Series)
 
-    assert chan["Long."].values[-1] == 6723.8927646477259
-    assert chan["Short."].values[-1] == 5326.4927656377258
+    assert chan["Long."].values[-1] == 6801.592764647726
+    assert chan["Short."].values[-1] == 7091.407235352274
 
 
 def test_qstick():

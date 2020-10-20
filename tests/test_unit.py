@@ -842,5 +842,5 @@ def test_stc():
     stc = TA.STC(ohlc)
 
     assert isinstance(stc, series.Series)
-    assert stc.values[-1] == 10.000000000000165
+    assert stc.values[-1] == 1.1131836193574902e-13
 

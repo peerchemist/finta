@@ -202,7 +202,7 @@ class TA:
         A buy/sell signals are generated when the TRIX crosses above/below the signal line and is also above/below zero.
 
         The TRIX was developed by Jack K. Hutson, publisher of Technical Analysis of Stocks & Commodities magazine,
-        and was introduced in Volume 1, Number 5 of that magazine. 
+        and was introduced in Volume 1, Number 5 of that magazine.
         """
 
         data = ohlc[column]
@@ -634,7 +634,7 @@ class TA:
         atr_period: int = 26,
         column: str = "close",
     ) -> Series:
-        """The Volatility-Based-Momentum (VBM) indicator, The calculation for a volatility based momentum (VBM) 
+        """The Volatility-Based-Momentum (VBM) indicator, The calculation for a volatility based momentum (VBM)
         indicator is very similar to ROC, but divides by the security’s historical volatility instead.
         The average true range indicator (ATR) is used to compute historical volatility.
         VBM(n,v) = (Close — Close n periods ago) / ATR(v periods)
@@ -719,8 +719,8 @@ class TA:
         cls, ohlc: DataFrame, column: str = "close", adjust: bool = True
     ) -> Series:
         """
-        The Dynamic Momentum Index is a variable term RSI. The RSI term varies from 3 to 30. The variable 
-        time period makes the RSI more responsive to short-term moves. The more volatile the price is, 
+        The Dynamic Momentum Index is a variable term RSI. The RSI term varies from 3 to 30. The variable
+        time period makes the RSI more responsive to short-term moves. The more volatile the price is,
         the shorter the time period is. It is interpreted in the same way as the RSI, but provides signals earlier.
         Readings below 30 are considered oversold, and levels over 70 are considered overbought. The indicator
         oscillates between 0 and 100.
@@ -828,11 +828,11 @@ class TA:
     @classmethod
     def PSAR(cls, ohlc: DataFrame, iaf: int = 0.02, maxaf: int = 0.2) -> DataFrame:
         """
-        The parabolic SAR indicator, developed by J. Wells Wilder, is used by traders to determine trend direction and potential reversals in price. 
-        The indicator uses a trailing stop and reverse method called "SAR," or stop and reverse, to identify suitable exit and entry points. 
+        The parabolic SAR indicator, developed by J. Wells Wilder, is used by traders to determine trend direction and potential reversals in price.
+        The indicator uses a trailing stop and reverse method called "SAR," or stop and reverse, to identify suitable exit and entry points.
         Traders also refer to the indicator as the parabolic stop and reverse, parabolic SAR, or PSAR.
         https://www.investopedia.com/terms/p/parabolicindicator.asp
-        https://virtualizedfrog.wordpress.com/2014/12/09/parabolic-sar-implementation-in-python/        
+        https://virtualizedfrog.wordpress.com/2014/12/09/parabolic-sar-implementation-in-python/
         """
 
         length = len(ohlc)
@@ -1248,7 +1248,7 @@ class TA:
 
     @classmethod
     def AO(cls, ohlc: DataFrame, slow_period: int = 34, fast_period: int = 5) -> Series:
-        """'EMA', 
+        """'EMA',
         Awesome Oscillator is an indicator used to measure market momentum. AO calculates the difference of a 34 Period and 5 Period Simple Moving Averages.
         The Simple Moving Averages that are used are not calculated using closing price but rather each bar's midpoints.
         AO is generally used to affirm trends or to anticipate possible reversals. """
@@ -2109,27 +2109,32 @@ class TA:
         ohlc: DataFrame,
         period_fast: int = 23,
         period_slow: int = 50,
-        period: int = 10,
+        k_period: int = 10,
+        d_period: int = 3,
         column: str = "close",
-        adjust: bool = True,
+        adjust: bool = True
     ) -> Series:
         """
+        The Schaff Trend Cycle (Oscillator) can be viewed as Double Smoothed
+        Stochastic of the MACD.
+
         Schaff Trend Cycle - Three input values are used with the STC:
         – Sh: shorter-term Exponential Moving Average with a default period of 23
         – Lg: longer-term Exponential Moving Average with a default period of 50
-        – Cycle, set at half the cycle length with a default value of 10.
+        – Cycle, set at half the cycle length with a default value of 10. (Stoch K-period)
+        - Smooth, set at smoothing at 3 (Stoch D-period)
+
         The STC is calculated in the following order:
-        First, the 23-period and the 50-period EMA and the MACD values are calculated:
-        EMA1 = EMA (Close, Short Length);
-        EMA2 = EMA (Close, Long Length);
+        EMA1 = EMA (Close, fast_period);
+        EMA2 = EMA (Close, slow_period);
         MACD = EMA1 – EMA2.
         Second, the 10-period Stochastic from the MACD values is calculated:
-        %K (MACD) = %KV (MACD, 10);
-        %D (MACD) = %DV (MACD, 10);
-        Schaff = 100 x (MACD – %K (MACD)) / (%D (MACD) – %K (MACD)).
-        In case the STC indicator is decreasing, this indicates that the trend cycle 
+        STOCH_K, STOCH_D  = StochasticFull(MACD, k_period, d_period)  // Stoch of MACD
+        STC =  average(STOCH_D, d_period) // second smoothed
+
+        In case the STC indicator is decreasing, this indicates that the trend cycle
         is falling, while the price tends to stabilize or follow the cycle to the downside.
-        In case the STC indicator is increasing, this indicates that the trend cycle 
+        In case the STC indicator is increasing, this indicates that the trend cycle
         is up, while the price tends to stabilize or follow the cycle to the upside.
         """
         EMA_fast = pd.Series(
@@ -2143,17 +2148,15 @@ class TA:
         )
 
         MACD = pd.Series((EMA_fast - EMA_slow), name="MACD")
-        STOK = (
-            (MACD - MACD.rolling(window=period).min())
-            / (MACD.rolling(window=period).max() - MACD.rolling(window=period).min())
-        ) * 100
-        STOD = STOK.rolling(window=period).mean()
 
-        return pd.Series(
-            100 * (MACD - (STOK * MACD)) / ((STOD * MACD) - (STOK * MACD)),
-            name="{0} period STC.".format(period),
-        )
+        STOK = pd.Series((
+            (MACD - MACD.rolling(window=k_period).min())
+            / (MACD.rolling(window=k_period).max() - MACD.rolling(window=k_period).min())
+            ) * 100)
 
+        STOD = STOK.rolling(window=d_period).mean()
+        STOD_DoubleSmooth = STOD.rolling(window=d_period).mean()  # "double smoothed"
+        return pd.Series(STOD_DoubleSmooth, name="{0} period STC".format(k_period))
 
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

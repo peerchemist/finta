@@ -340,7 +340,7 @@ class TA:
         """
 
         d = (period * (period + 1)) / 2  # denominator
-        weights = pd.Series(np.arange(1, period + 1))
+        weights = np.arange(1, period + 1)
 
         def linear(w):
             def _compute(x):
@@ -694,7 +694,7 @@ class TA:
 
         # v2 = WMA(wma_period) of v1
         d = (wma_period * (wma_period + 1)) / 2  # denominator
-        weights = pd.Series(np.arange(1, wma_period + 1))
+        weights = np.arange(1, wma_period + 1)
 
         def linear(w):
             def _compute(x):

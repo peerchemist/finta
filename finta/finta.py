@@ -339,18 +339,18 @@ class TA:
         :period: Specifies the number of Periods used for WMA calculation
         """
 
+        data = ohlc[[column]].values
+        sx, sy = data.strides
+        weight = np.arange(1, period + 1).reshape(1, 1, period)
         d = (period * (period + 1)) / 2  # denominator
-        weights = pd.Series(np.arange(1, period + 1))
-
-        def linear(w):
-            def _compute(x):
-                return (w * x).sum() / d
-
-            return _compute
-
-        _close = ohlc[column].rolling(period, min_periods=period)
-        wma = _close.apply(linear(weights), raw=True)
-
+        strides = np.concatenate(
+            (np.lib.stride_tricks.as_strided(data,
+                                             (data.shape[0] - period + 1, data.shape[1], period),
+                                             (sx, sy, sx)
+                                             ) * weight
+             ).sum(-1)
+        ) / d
+        wma = np.append([np.nan] * (period - 1), strides)  # strides doesnt return nan
         return pd.Series(wma, name="{0} period WMA.".format(period))
 
     @classmethod
@@ -369,8 +369,8 @@ class TA:
         half_length = int(period / 2)
         sqrt_length = int(math.sqrt(period))
 
-        wmaf = cls.WMA(ohlc, period=half_length)
-        wmas = cls.WMA(ohlc, period=period)
+        wmaf = cls.WMA(ohlc, period=half_length).values
+        wmas = cls.WMA(ohlc, period=period).values
         ohlc["deltawma"] = 2 * wmaf - wmas
         hma = cls.WMA(ohlc, column="deltawma", period=sqrt_length)
 
@@ -1604,19 +1604,31 @@ class TA:
         source: https://stockcharts.com/school/doku.php?id=chart_school:technical_indicators:commodity_channel_index_cci
 
         :param pd.DataFrame ohlc: 'open, high, low, close' pandas DataFrame
-        :period: int - number of periods to take into consideration
-        :factor float: the constant at .015 to ensure that approximately 70 to 80 percent of CCI values would fall between -100 and +100.
+        :param int period: - number of periods to take into consideration
+        :param float constant: the constant at .015 to ensure that approximately 70 to 80 percent of CCI values would fall between -100 and +100.
         :return pd.Series: result is pandas.Series
         """
-
         tp = cls.TP(ohlc)
-        tp_rolling = tp.rolling(window=period, min_periods=0)
-        # calculate MAD (Mean Deviation)
-        # https://www.khanacademy.org/math/statistics-probability/summarizing-quantitative-data/other-measures-of-spread/a/mean-absolute-deviation-mad-review
-        mad = tp_rolling.apply(lambda s: abs(s - s.mean()).mean(), raw=True)
+        data = tp.values.reshape(len(tp), 1)
+        sx, sy = data.strides
+        strides = np.lib.stride_tricks.as_strided(data,
+                                                  (data.shape[0] - period + 1, data.shape[1], period),
+                                                  (sx, sy, sx)
+                                                  )
+        mad = np.append(
+            [np.nan] * (period - 1),
+            np.concatenate(
+                abs(
+                    strides - strides.mean(axis=-1, keepdims=True)
+                ).mean(-1, keepdims=True)
+            )
+        )
+        MA = tp.rolling(window=period).mean()
+        cci = (tp.values - MA.values) / (constant * mad)
         return pd.Series(
-            (tp - tp_rolling.mean()) / (constant * mad),
+            cci,
             name="{0} period CCI".format(period),
+            index=ohlc.index
         )
 
     @classmethod

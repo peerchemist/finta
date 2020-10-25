@@ -1901,30 +1901,6 @@ class TA:
         return pd.concat([upper_band, lower_band], axis=1)
 
     @classmethod
-    def VR(cls, ohlc: DataFrame, period: int = 14) -> Series:
-        """
-        Vector Size Indicator
-        :param pd.DataFrame ohlc: 'open, high, low, close' pandas DataFrame
-        :return pd.Series: indicator calcs as pandas Series
-        """
-
-        vector_size = len(ohlc.close)
-        high_low_diff = ohlc.high - ohlc.low
-        high_close_diff = np.zeros(vector_size)
-        high_close_diff[1:] = np.abs(ohlc.high[1:] - ohlc.close[0 : vector_size - 1])
-        low_close_diff = np.zeros(vector_size)
-        low_close_diff[1:] = np.abs(ohlc.low[1:] - ohlc.close[0 : vector_size - 1])
-        vectors_stacked = np.vstack((high_low_diff, high_close_diff, low_close_diff))
-
-        tr = np.amax(vectors_stacked, axis=0)
-        vr = pd.Series(
-            tr / cls.EMA(ohlc.close, period=period),
-            name="{0} period VR.".format(period),
-        )
-
-        return vr
-
-    @classmethod
     def SQZMI(cls, ohlc: DataFrame, period: int = 20, MA: Series = None) -> DataFrame:
         """
         Squeeze Momentum Indicator

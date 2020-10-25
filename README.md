@@ -35,6 +35,7 @@ Finta supports over 80 trading indicators:
 * Elastic Volume Moving Average 'EVWMA'
 * Volume Weighted Average Price 'VWAP'
 * Smoothed Moving Average 'SMMA'
+* Fractal Adaptive Moving Average 'FRAMA'
 * Moving Average Convergence Divergence 'MACD'
 * Percentage Price Oscillator 'PPO'
 * Volume-Weighted MACD 'VW_MACD'

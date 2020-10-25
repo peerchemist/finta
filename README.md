@@ -2,6 +2,7 @@
 
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 [![PyPI](https://img.shields.io/pypi/v/finta.svg?style=flat-square)](https://pypi.python.org/pypi/finta/)
+[![Downloads](https://pepy.tech/badge/finta/month)](https://pepy.tech/project/finta/month)
 [![](https://img.shields.io/badge/python-3.4+-blue.svg)](https://www.python.org/download/releases/3.4.0/)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 [![Build Status](https://travis-ci.org/peerchemist/finta.svg?branch=master)](https://travis-ci.org/peerchemist/finta)
@@ -14,7 +15,7 @@ may not be accurate.*
 
 ## Supported indicators:
 
-Finta supports 76 trading indicators:
+Finta supports over 80 trading indicators:
 
 ```
 * Simple Moving Average 'SMA'

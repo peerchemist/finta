@@ -2086,7 +2086,7 @@ class TA:
 
     @classmethod
     def MSD(
-        cls, ohlc: DataFrame, period: int = 21, ddof: int = 1, column: str = "close"
+        cls, ohlc: DataFrame, period: int = 21, column: str = "close"
     ) -> Series:
         """
         Standard deviation is a statistical term that measures the amount of variability or dispersion around an average.
@@ -2098,7 +2098,6 @@ class TA:
         Analysts generally agree that high volatility is part of major tops, while low volatility accompanies major bottoms.
 
         :period: Specifies the number of Periods used for MSD calculation
-        :ddof: Delta Degrees of Freedom. The divisor used in calculations is N - ddof, where N represents the number of elements.
         """
 
         return pd.Series(ohlc[column].rolling(period).std(), name="MSD")

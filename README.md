@@ -91,7 +91,6 @@ Finta supports over 80 trading indicators:
 * Fisher Transform 'FISH'
 * Ichimoku Cloud 'ICHIMOKU'
 * Adaptive Price Zone 'APZ'
-* Vector Size Indicator 'VR'
 * Squeeze Momentum Indicator 'SQZMI'
 * Volume Price Trend 'VPT'
 * Finite Volume Element 'FVE'

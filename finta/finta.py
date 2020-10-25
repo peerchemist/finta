@@ -460,9 +460,43 @@ class TA:
         raise NotImplementedError
 
     @classmethod
-    def FRAMA(cls, ohlc: DataFrame, period: int = 16) -> Series:
-        """Fractal Adaptive Moving Average"""
-        raise NotImplementedError
+    def FRAMA(cls, ohlc: DataFrame, period: int = 16, batch: int=10) -> Series:
+        """Fractal Adaptive Moving Average
+        Source: http://www.stockspotter.com/Files/frama.pdf
+        Adopted from: https://www.quantopian.com/posts/frama-fractal-adaptive-moving-average-in-python
+
+        :period: Specifies the number of periods used for FRANA calculation
+        :batch: Specifies the size of batches used for FRAMA calculation
+        """
+
+        assert period % 2 == 0, print("FRAMA period must be even")
+
+        c = ohlc.close.copy()
+        window = batch * 2
+
+        hh = c.rolling(batch).max()
+        ll = c.rolling(batch).min()
+
+        n1 = (hh - ll) / batch
+        n2 = n1.shift(batch)
+
+        hh2 = c.rolling(window).max()
+        ll2 = c.rolling(window).min()
+        n3 = (hh2 - ll2) / window
+
+        # calculate fractal dimension
+        D = (np.log(n1 + n2) - np.log(n3)) / np.log(2)
+        alp = np.exp(-4.6 * (D - 1))
+        alp = np.clip(alp, .01, 1).values
+
+        filt = c.values
+        for i, x in enumerate(alp):
+            cl = c.values[i]
+            if i < window:
+                continue
+            filt[i] = cl * x + (1 - x) * filt[i - 1]
+
+        return pd.Series(filt, index=ohlc.index, name="{0} period FRAMA.".format(period))
 
     @classmethod
     def MACD(

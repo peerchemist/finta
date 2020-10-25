@@ -168,6 +168,15 @@ def test_smma():
     assert ma.values[-1] == 8020.2742957005539
 
 
+def test_frama():
+    """test TA.FRAMA"""
+
+    ma = TA.FRAMA(ohlc)
+
+    assert isinstance(ma, series.Series)
+    assert ma.values[-1] == 6574.146054542976
+
+
 def test_macd():
     """test TA.MACD"""
 

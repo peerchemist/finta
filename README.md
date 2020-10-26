@@ -10,6 +10,8 @@
 
 Common financial technical indicators implemented in Pandas.
 
+![example](examples/plot.png)
+
 *This is work in progress, bugs are expected and results of some indicators
 may not be accurate.*
 

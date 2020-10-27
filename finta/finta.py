@@ -1437,6 +1437,7 @@ class TA:
         )
 
     @classmethod
+    @inputvalidator(input_="ohlcv")
     def MFI(cls, ohlc: DataFrame, period: int = 14) -> Series:
         """The money flow index (MFI) is a momentum indicator that measures
         the inflow and outflow of money into a security over a specific period of time.
@@ -1516,6 +1517,7 @@ class TA:
         return wobv.cumsum()
 
     @classmethod
+    @inputvalidator(input_="ohlcv")
     def VZO(
         cls,
         ohlc: DataFrame,
@@ -1549,7 +1551,7 @@ class TA:
         then the closing price will have a positive value (bullish); otherwise it will have a negative value (bearish).
         source: http://traders.com/Documentation/FEEDbk_docs/2011/06/Khalil.html
 
-        :period: Specifies the number of Periods used for eVWMA calculation
+        :period: Specifies the number of Periods used for PZO calculation
         """
 
         sign = lambda a: (a > 0) - (a < 0)
@@ -1972,6 +1974,7 @@ class TA:
         return pd.Series(comb["SQZ"], name="{0} period SQZMI".format(period))
 
     @classmethod
+    @inputvalidator(input_="ohlcv")
     def VPT(cls, ohlc: DataFrame) -> Series:
         """
         Volume Price Trend
@@ -1990,6 +1993,7 @@ class TA:
         return pd.Series(vpt, name="VPT")
 
     @classmethod
+    @inputvalidator(input_="ohlcv")
     def FVE(cls, ohlc: DataFrame, period: int = 22, factor: int = 0.3) -> Series:
         """
         FVE is a money flow indicator, but it has two important innovations: first, the F VE takes into account both intra and

@@ -12,12 +12,18 @@ before_install:
     - wget http://prdownloads.sourceforge.net/ta-lib/ta-lib-0.4.0-src.tar.gz
     - tar -xvzf ta-lib-0.4.0-src.tar.gz
     - cd ta-lib/ && ./configure --prefix=/usr LDFLAGS="-lm" && make && sudo make install && cd .. && rm -r ta-lib
-# command to install dependencies
 install:
     - pip install -r requirements-test.txt
-# command to run tests
 script:
   - pytest
 branches:
   only: 
     - master
+deploy:
+  provider: pypi
+  user: peerchemist
+  password:
+    secure: "KQ3jkCdwm7rcSZM/UmUb99gYjds4B96Pq8JlK6JzdDv1fsRnGOGz1osabV2VNeFSKieFkp1x8/kYhSDB/NwKXEFGwvafCS5GZ39Dw3FzEHnD1qySsW6aPn1Z/mXyQp/jYlkW++j+qYNl/j/1xU77paKfawqqNRTJ/4ZXaR+txtWnQtC2XlNKCnPjD9DEU09yJi1GQWqb7H9eQ/HOUHXJMWBQWRX7yT1sv5+l4ZyOGoocNe0CpteA/DBjM1prCeXNHcCSi15s/58vsEHH24HWjvbI8TodDCtUBnD7VD+qTTRB+rEEGWvk6LuO+xsoAuzLqj1WFKP2NDMz35nrqrXDcBn8nLy8BfoB7YAvuXelqSJohxWoREsQB0enpPzZMywDzV4qPbsW9T3BbOCRS8evHtZPFw23a47QYX0o9qvLooQmymRqKFCKdOlxUBscdmbyTyzkUwj4ziuV+sUe9xgaq3lY6gRFlvEZYTfH6iotQp/EUSIup/iwTMIqSZ4UunxkihkZVgvzHK4d2Q8lIj/XmwuITQODGpkiZ57CzAL7g7PiGRWAteF+1VlT4EwfA6+7Op3UeAg6df9nfjqHk4GaCX5SMeRrC7z3J6HcQSSaWlImBYVSjKoZHjTkYjVOLlaYC/nbGfhJgMV+Zy+sk61KyBfr2FTgOtFuf5aKVQrDYTM="
+  on:
+    tags: true
+  skip_existing: true

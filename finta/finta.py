@@ -2171,5 +2171,33 @@ class TA:
         STOD_DoubleSmooth = STOD.rolling(window=d_period).mean()  # "double smoothed"
         return pd.Series(STOD_DoubleSmooth, name="{0} period STC".format(k_period))
 
+    @classmethod
+    @inputvalidator(input_="ohlcv")
+    def EVSTC(
+        cls,
+        ohlc: DataFrame,
+        period_fast: int = 12,
+        period_slow: int = 30,
+        k_period: int = 10,
+        d_period: int = 3,
+        adjust: bool = True
+    ) -> Series:
+        """Modification of Schaff Trend Cycle using EVWMA MACD for calculation"""
+
+        ema_slow = cls.EVWMA(ohlc, period_slow)
+        ema_fast = cls.EVWMA(ohlc, period_fast)
+
+        macd = ema_fast - ema_slow
+
+        STOK = pd.Series((
+            (macd - macd.rolling(window=k_period).min())
+            / (macd.rolling(window=k_period).max() - macd.rolling(window=k_period).min())
+            ) * 100)
+
+        STOD = STOK.rolling(window=d_period).mean()
+        STOD_DoubleSmooth = STOD.rolling(window=d_period).mean()
+
+        return pd.Series(STOD_DoubleSmooth, name="{0} period EVSTC".format(k_period))
+
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

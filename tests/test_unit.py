@@ -856,3 +856,14 @@ def test_evstc():
     assert isinstance(stc, series.Series)
     assert 0 < stc.values[-1] < 100
     assert stc.values[-1] == 4.7665575190573385e-14
+
+
+def test_williams_fractal():
+    """test TA.WILLIAMS_FRACTAL"""
+
+    fractals = TA.WILLIAMS_FRACTAL(ohlc)
+
+    assert isinstance(fractals["BullishFractal"], series.Series)
+    assert isinstance(fractals["BearishFractal"], series.Series)
+    assert fractals.BearishFractal.values[-3] == 0
+    assert fractals.BullishFractal.values[-3] == 0

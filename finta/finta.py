@@ -1434,7 +1434,7 @@ class TA:
         st_data["trend_dir"] = 0
         st_data["price"] = 0
 
-        for i in range(1, len(ohlc.values)):
+        for i in range(period + 1, len(ohlc.values)):
             st_data.loc[i, "trend_up"] = (
                 max(st_data.loc[i, "up"], st_data.loc[i - 1, "trend_up"])
                 if ohlc.loc[i - 1, "close"] > st_data.loc[i - 1, "trend_up"]

@@ -1416,8 +1416,8 @@ class TA:
         the accumulation/distribution line is of use to traders looking to measure buy/sell pressure on a security or confirm the strength of a trend."""
 
         MFM = pd.Series(
-            (ohlcv["close"] - ohlcv["low"])
-            - (ohlcv["high"] - ohlcv["close"]) / (ohlcv["high"] - ohlcv["low"]),
+            ((ohlcv["close"] - ohlcv["low"])
+            - (ohlcv["high"] - ohlcv["close"])) / (ohlcv["high"] - ohlcv["low"]),
             name="MFM",
         )  # Money flow multiplier
         MFV = pd.Series(MFM * ohlcv["volume"], name="MFV")

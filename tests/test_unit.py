@@ -530,7 +530,7 @@ def test_adl():
     adl = TA.ADL(ohlc)
 
     assert isinstance(adl, series.Series)
-    assert adl.values[-1] == 1221072523.7384958
+    assert adl.values[-1] == 303320.96403697244
 
 
 def test_chaikin():
@@ -539,7 +539,7 @@ def test_chaikin():
     c = TA.CHAIKIN(ohlc)
 
     assert isinstance(c, series.Series)
-    assert c.values[-1] == 650594.74888467789
+    assert c.values[-1] == -378.6696954900981
 
 
 def test_mfi():

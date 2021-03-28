@@ -1863,8 +1863,8 @@ class TA:
 
         tenkan_sen = pd.Series(
             (
-                ohlc["high"].rolling(window=tenkan_period).mean()
-                + ohlc["low"].rolling(window=tenkan_period).mean()
+                ohlc["high"].rolling(window=tenkan_period).max()
+                + ohlc["low"].rolling(window=tenkan_period).min()
             )
             / 2,
             name="TENKAN",
@@ -1872,8 +1872,8 @@ class TA:
 
         kijun_sen = pd.Series(
             (
-                ohlc["high"].rolling(window=kijun_period).mean()
-                + ohlc["low"].rolling(window=kijun_period).mean()
+                ohlc["high"].rolling(window=kijun_period).max()
+                + ohlc["low"].rolling(window=kijun_period).min()
             )
             / 2,
             name="KIJUN",
@@ -1881,20 +1881,21 @@ class TA:
 
         senkou_span_a = pd.Series(
             ((tenkan_sen + kijun_sen) / 2), name="senkou_span_a"
-        )  ## Leading span
+        ) .shift(kijun_period) ## Leading span
+
         senkou_span_b = pd.Series(
             (
                 (
-                    ohlc["high"].rolling(window=senkou_period).mean()
-                    + ohlc["low"].rolling(window=senkou_period).mean()
+                    ohlc["high"].rolling(window=senkou_period).max()
+                    + ohlc["low"].rolling(window=senkou_period).min()
                 )
                 / 2
             ),
             name="SENKOU",
-        )
+        ).shift(kijun_period)
 
         chikou_span = pd.Series(
-            ohlc["close"].shift(chikou_period).rolling(window=chikou_period).mean(),
+            ohlc["close"].shift(-chikou_period),
             name="CHIKOU",
         )
 

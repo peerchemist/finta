@@ -728,7 +728,10 @@ def test_ichimoku():
     assert isinstance(ichi["SENKOU"], series.Series)
     assert isinstance(ichi["CHIKOU"], series.Series)
 
-    assert ichi["SENKOU"].values[-1] == 8017.5804297030772
+    assert ichi["TENKAN"].values[-1] == 6911.5 
+    assert ichi["KIJUN"].values[-1] == 6946.5
+    assert ichi["SENKOU"].values[-1] == 8243.0 
+    assert ichi["CHIKOU"].values[-27] == 6420.45318629
 
 
 def test_apz():

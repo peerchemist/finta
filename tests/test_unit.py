@@ -330,7 +330,7 @@ def test_bbands():
 
 def test_mobo():
     """test TA.mobo"""
-    
+
     mbb = TA.MOBO(ohlc)
 
     assert isinstance(mbb["BB_UPPER"], series.Series)
@@ -870,3 +870,14 @@ def test_williams_fractal():
     assert isinstance(fractals["BearishFractal"], series.Series)
     assert fractals.BearishFractal.values[-3] == 0
     assert fractals.BullishFractal.values[-3] == 0
+
+def test_supertrend():
+    """test TA.SUPERTREND"""
+
+    st = TA.SUPERTREND(ohlc)
+
+    assert isinstance(st.trend_dir, series.Series)
+    assert isinstance(st.price, series.Series)
+
+    assert st.trend_dir.values[-3] == -1
+    assert st.price.values[-3] == 7498.7438561297895

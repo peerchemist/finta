@@ -622,12 +622,11 @@ def test_ebbp():
 def test_emv():
     """test TA.EMV"""
 
-    emv = TA.EMV(ohlc).round(decimals=8)
+    emv = TA.EMV(ohlc).round(decimals=1)
 
     assert isinstance(emv, series.Series)
-    assert emv.values[-1] == -26103140.82765138
-
-
+    assert emv.values[-1] == -26103140.8
+                             
 def test_cci():
     """test TA.CCI"""
 

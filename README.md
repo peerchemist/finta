@@ -103,8 +103,8 @@ Finta supports over 80 trading indicators:
 
 ## Dependencies:
 
--   python (3.5+)
--   pandas (0.21.1+)
+-   python (3.6+)
+-   pandas (1.0.0+)
 
 TA class is very well documented and there should be no trouble
 exploring it and using with your data. Each class method expects proper `ohlc` DataFrame as input.

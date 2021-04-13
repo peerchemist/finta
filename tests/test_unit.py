@@ -557,7 +557,7 @@ def test_obv():
     o = TA.OBV(ohlc).round(decimals=8)
 
     assert isinstance(o, series.Series)
-    assert o.values[-1] == -6731.54505144
+    assert o.values[-1] == -6726.6904375
 
 
 def test_wobv():

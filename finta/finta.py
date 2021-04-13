@@ -1492,7 +1492,7 @@ class TA:
         ohlcv["OBV"] = np.nan
 
         neg_change = ohlcv[column] < ohlcv[column].shift(1)
-        pos_change = ohlcv[column] > ohlcv[column].shift(1)
+        pos_change = ohlcv[column] >= ohlcv[column].shift(1)
 
         if pos_change.any():
             ohlcv.loc[pos_change, "OBV"] = ohlcv["volume"]

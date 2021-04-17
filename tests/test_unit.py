@@ -874,8 +874,8 @@ def test_williams_fractal():
 def test_vc():
     """test TA.VC"""
 
-    vc = TA.VC(ohlc)
+    vc = TA.VC(ohlc).round(decimals=8)
 
     assert isinstance(vc["Value Chart Open"], series.Series)
-    assert vc.values[-1][0] == 0.504698644645189
-    assert vc.values[-1][-1] == -0.8757325786805249
+    assert vc.values[-1][0] == 0.50469864
+    assert vc.values[-1][-1] == -0.87573258

@@ -2237,6 +2237,24 @@ class TA:
         )
         return pd.concat([bearish_fractals, bullish_fractals], axis=1)
 
+    @classmethod
+    def VC(cls, ohlc: DataFrame, period: int = 5) -> DataFrame:
+        """Value chart
+        Implementation based on a book by Mark Helweg & David Stendahl: Dynamic Trading Indicators: Winning with Value Charts and Price Action Profile
+        
+        :period: Specifies the number of Periods used for VC calculation
+        """
+
+        float_axis = ((ohlc.high + ohlc.low) / 2).rolling(window=period).mean()
+        vol_unit = (ohlc.high - ohlc.low).rolling(window=period).mean() * 0.2
+
+        value_chart_high = pd.Series((ohlc.high - float_axis) / vol_unit, name="Value Chart High")
+        value_chart_low = pd.Series((ohlc.low - float_axis) / vol_unit, name="Value Chart Low")
+        value_chart_close = pd.Series((ohlc.close - float_axis) / vol_unit, name="Value Chart Close")
+        value_chart_open = pd.Series((ohlc.open - float_axis) / vol_unit, name="Value Chart Open")
+
+        return pd.concat([value_chart_high, value_chart_low, value_chart_close, value_chart_open], axis=1)
+
 
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

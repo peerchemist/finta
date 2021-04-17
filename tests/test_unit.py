@@ -869,3 +869,13 @@ def test_williams_fractal():
     assert isinstance(fractals["BearishFractal"], series.Series)
     assert fractals.BearishFractal.values[-3] == 0
     assert fractals.BullishFractal.values[-3] == 0
+
+
+def test_vc():
+    """test TA.VC"""
+
+    vc = TA.VC(ohlc)
+
+    assert isinstance(vc["Value Chart Open"], series.Series)
+    assert vc.values[-1][0] == 0.504698644645189
+    assert vc.values[-1][-1] == -0.8757325786805249

@@ -1802,8 +1802,8 @@ class TA:
     def WTO(
         cls,
         ohlc: DataFrame,
-        channel_lenght: int = 10,
-        average_lenght: int = 21,
+        channel_length: int = 10,
+        average_length: int = 21,
         adjust: bool = True,
     ) -> DataFrame:
         """
@@ -1812,13 +1812,13 @@ class TA:
         """
 
         ap = cls.TP(ohlc)
-        esa = ap.ewm(span=channel_lenght, adjust=adjust).mean()
+        esa = ap.ewm(span=average_length, adjust=adjust).mean()
         d = pd.Series(
-            (ap - esa).abs().ewm(span=channel_lenght, adjust=adjust).mean(), name="d"
+            (ap - esa).abs().ewm(span=channel_length, adjust=adjust).mean(), name="d"
         )
         ci = (ap - esa) / (0.015 * d)
 
-        wt1 = pd.Series(ci.ewm(span=average_lenght, adjust=adjust).mean(), name="WT1.")
+        wt1 = pd.Series(ci.ewm(span=average_length, adjust=adjust).mean(), name="WT1.")
         wt2 = pd.Series(wt1.rolling(window=4).mean(), name="WT2.")
 
         return pd.concat([wt1, wt2], axis=1)

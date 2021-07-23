@@ -926,8 +926,8 @@ class TA:
                 psarbear[i] = psar[i]
 
         psar = pd.Series(psar, name="psar", index=ohlc.index)
-        psarbear = pd.Series(psarbull, name="psarbull", index=ohlc.index)
-        psarbull = pd.Series(psarbear, name="psarbear", index=ohlc.index)
+        psarbear = pd.Series(psarbull, name="psarbear", index=ohlc.index)
+        psarbull = pd.Series(psarbear, name="psarbull", index=ohlc.index)
 
         return pd.concat([psar, psarbull, psarbear], axis=1)
 

@@ -101,6 +101,7 @@ Finta supports over 80 trading indicators:
 * Volume Flow Indicator 'VFI'
 * Moving Standard deviation 'MSD'
 * Schaff Trend Cycle 'STC'
+* Mark Whistler's WAVE PM 'WAVEPM'
 ```
 
 ## Dependencies:

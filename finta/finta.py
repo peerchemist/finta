@@ -2255,6 +2255,50 @@ class TA:
 
         return pd.concat([value_chart_high, value_chart_low, value_chart_close, value_chart_open], axis=1)
 
+    @classmethod
+    def WAVEPM(
+        cls,
+        ohlc: DataFrame,
+        period: int = 14,
+        lookback_period: int = 100,
+        column: str = "close"
+    ) -> Series:
+        """
+        The Wave PM (Whistler Active Volatility Energy Price Mass) indicator is an oscillator described in the Mark
+        Whistler’s book “Volatility Illuminated”.
+
+        :param DataFrame ohlc: data
+        :param int period: period for moving average
+        :param int lookback_period: period for oscillator lookback
+        :return Series: WAVE PM
+        """
+
+        ma = ohlc[column].rolling(window=period).mean()
+        std = ohlc[column].rolling(window=period).std(ddof=0)
+
+        def tanh(x):
+            two = np.where(x > 0, -2, 2)
+            what = two * x
+            ex = np.exp(what)
+            j = 1 - ex
+            k = ex - 1
+            l = np.where(x > 0, j, k)
+            output = l / (1 + ex)
+            return output
+
+        def osc(input_dev, mean, power):
+            variance = Series(power).rolling(window=lookback_period).sum() / lookback_period
+            calc_dev = np.sqrt(variance) * mean
+            y = (input_dev / calc_dev)
+            oscLine = tanh(y)
+            return oscLine
+
+        dev = 3.2 * std
+        power = np.power(dev / ma, 2)
+        wavepm = osc(dev, ma, power)
+
+        return pd.Series(wavepm, name="{0} period WAVEPM".format(period))
+
 
 if __name__ == "__main__":
     print([k for k in TA.__dict__.keys() if k[0] not in "_"])

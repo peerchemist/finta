@@ -879,3 +879,11 @@ def test_vc():
     assert isinstance(vc["Value Chart Open"], series.Series)
     assert vc.values[-1][0] == 0.50469864
     assert vc.values[-1][-1] == -0.87573258
+
+def test_sma():
+    """test TA.WAVEPM"""
+
+    wavepm = TA.WAVEPM(ohlc, 14, 100, "close").round(decimals=8)
+
+    assert isinstance(wavepm, series.Series)
+    assert wavepm.values[-1] == 0.83298565

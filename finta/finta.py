@@ -460,16 +460,13 @@ class TA:
         raise NotImplementedError
 
     @classmethod
-    def FRAMA(cls, ohlc: DataFrame, period: int = 16, batch: int=10) -> Series:
+    def FRAMA(cls, ohlc: DataFrame, batch: int=10) -> Series:
         """Fractal Adaptive Moving Average
         Source: http://www.stockspotter.com/Files/frama.pdf
         Adopted from: https://www.quantopian.com/posts/frama-fractal-adaptive-moving-average-in-python
 
-        :period: Specifies the number of periods used for FRANA calculation
         :batch: Specifies the size of batches used for FRAMA calculation
         """
-
-        assert period % 2 == 0, print("FRAMA period must be even")
 
         c = ohlc.close.copy()
         window = batch * 2
@@ -496,7 +493,7 @@ class TA:
                 continue
             filt[i] = cl * x + (1 - x) * filt[i - 1]
 
-        return pd.Series(filt, index=ohlc.index, name="{0} period FRAMA.".format(period))
+        return pd.Series(filt, index=ohlc.index, name="{0} batch FRAMA.".format(batch))
 
     @classmethod
     def MACD(

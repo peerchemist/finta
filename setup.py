@@ -28,4 +28,5 @@ setup(
     license="LGPLv3+",
     packages=["finta"],
     install_requires=["pandas", "numpy"],
+    license_files=["LICENSE"]
 )
